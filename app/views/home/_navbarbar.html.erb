@@ -1,0 +1,67 @@
+<% if user_signed_in? %>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top no-print" style="background-color: rgb(180, 179, 96);">
+    <div class="container-fluid">
+      
+      <div class="mb-0">
+       <ul>
+          <h2><i><%= link_to 'Tanreb', root_path, class:'navbar-brand', style: 'color: #006633;' %></i></h2>
+       </ul>
+      </div>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0"> 
+
+        <div class="input-group mb-0 me-1">
+          <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-label="false">Attendance</button>
+            <ul class="dropdown-menu bg-light">
+                <li><a class="dropdown-item" href="<%= new_attendance_path %>">Dashboard</a></li>
+                <li><a class="dropdown-item" href="<%= attendances_path %>">Attendances</a></li>
+            </ul>
+        </div>
+
+        <div class="input-group mb-0 me-1">
+          <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Payroll</button>
+            <ul class="dropdown-menu bg-light">
+              <li><a class="dropdown-item" href="<%= payrolls_path %>">Payroll</a></li>
+            </ul>
+        </div>
+        
+  
+        <div class="input-group mb-0 me-1">
+          <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Sites</button>
+            <ul class="dropdown-menu bg-light">
+              <li><a class="dropdown-item" href="<%= sites_path %>">Sites</a></li>
+            </ul>
+        </div>
+
+        <div class="input-group mb-0 me-1">
+          <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Advances</button>
+            <ul class="dropdown-menu bg-light">
+              <li><a class="dropdown-item" href="<%= advances_path %>">Advances</a></li>
+            </ul>
+        </div>
+
+        <div class="input-group mb-0 me-1">
+          <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Employees</button>
+            <ul class="dropdown-menu bg-light">
+              <li><a class="dropdown-item" href="<%= employees_path %>">Employees</a></li>
+            </ul>
+        </div>
+          
+        
+        <form>    
+          <div class="input-group mb-0">
+           <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">My Profile</button>
+            <ul class="dropdown-menu bg-light">
+                <li><a class="dropdown-item" href="<%= edit_user_registration_path %>">Edit Profile</a></li>
+                <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item", data: { confirm: "Are you sure you want to sign out?" } %></li>
+            </ul>
+          </div> 
+        </form>
+        
+       </div> 
+     </div>
+  </nav>
+  <% end %>
+
+
