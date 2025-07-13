@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  employee: one
+  period: MyString
+  worked_days: 1
+  total_pay: 9.99
+  advance: 9.99
+  payable: 9.99
+
+two:
+  employee: two
+  period: MyString
+  worked_days: 1
+  total_pay: 9.99
+  advance: 9.99
+  payable: 9.99

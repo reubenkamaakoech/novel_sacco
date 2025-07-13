@@ -1,0 +1,25 @@
+
+  <h1>Advance Details</h1>
+
+  <p>
+    <strong>Employee:</strong>
+    <%= @advance.employee.full_name %>
+  </p>
+
+  <p>
+    <strong>Amount:</strong>
+    <%= number_to_currency(@advance.amount, unit: "Ksh ") %>
+  </p>
+
+  <p>
+    <strong>Date:</strong>
+    <%= @advance.date.strftime("%Y-%m-%d") %>
+  </p>
+
+
+<div>
+  <%= link_to "Edit this advance", edit_advance_path(@advance) %> |
+  <%= link_to "Back to advances", advances_path %>
+
+  <%= button_to "Destroy this advance", @advance, method: :delete %>
+</div>

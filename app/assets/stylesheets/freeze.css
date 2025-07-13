@@ -1,0 +1,35 @@
+.attendance-wrapper {
+  overflow: auto;
+  max-height: 80vh;
+}
+
+.attendance-table th,
+.attendance-table td {
+  white-space: nowrap;
+}
+
+/* Sticky header */
+.attendance-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  z-index: 2;
+}
+
+/* Sticky first column */
+.attendance-table th:first-child,
+.attendance-table td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: #fff;
+  z-index: 3;
+}
+
+/* Sticky second column */
+.attendance-table th:nth-child(2),
+.attendance-table td:nth-child(2) {
+  position: sticky;
+  left: 150px; /* Adjust based on the width of the first column */
+  background-color: #fff;
+  z-index: 3;
+}

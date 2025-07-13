@@ -1,0 +1,41 @@
+<div class="container">
+  
+<% if @attendances.blank? %>
+  <p>No attendance records found.</p>
+<% else %>
+  <p>Showing <%= @attendances.count %> attendance records.</p>
+<% end %>
+
+<%= link_to "New Attendance", new_attendance_path, class: "btn btn-success btn-sm" %>
+<br/>
+<br/>
+
+<% @grouped_attendances.each do |date, records_by_date| %>
+  <h4><strong><%= date.strftime("%d-%b-%Y") %></strong></h4>
+
+  <% records_by_date.group_by(&:site).each do |site, site_records| %>
+    <h5 style="margin-left: 20px;">Site: <%= site&.name || "No Site" %></h5>
+
+    <table class="table table-bordered" style="margin-left: 40px;">
+      <thead class="table-primary">
+        <tr>
+          <th>Employee</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% site_records.group_by(&:employee).each do |employee, employee_records| %>
+          <tr>
+            <td><%= employee&.full_name || "No Employee" %></td>
+            <td>
+              <%# Show details if needed or just say Present %>
+              Present
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<% end %>
+</div>
+  <%= link_to "New Attendance", new_attendance_path, class: "btn btn-success btn-sm" %>

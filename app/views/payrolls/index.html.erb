@@ -1,0 +1,118 @@
+<div class="container">
+
+<h2>Payrolls</h2>
+
+
+ <% if @payrolls.empty? %>
+  <p>No payrolls found.</p>
+<% else %>
+
+  <%= form_with url: payrolls_path, method: :get, local: true do %>
+  <div class="d-print-none">
+    <label><strong>Filter by Employee:</strong></label>
+    <%= select_tag :employee_id,
+        options_from_collection_for_select(@employees, :id, :full_name, params[:employee_id]),
+        prompt: "All Employees", class:"form-control w-25" %>
+    <%= submit_tag "Filter", class:"btn btn-success btn-sm" %>
+    <%= link_to "Clear Filter", payrolls_path, class: "btn btn-secondary btn-sm" %>
+  </div>
+<% end %>
+
+<br>
+
+<table class="table table-striped">
+  <thead class="table-primary">
+    <tr>
+      <th>Id</th>
+      <th>Employee</th>
+      <th>Phone</th>
+      <th>Id No.</th>
+      <th>Worked Days</th>
+      <th>Total Pay</th>
+      <th>Advance</th>
+      <th>Payable</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @payrolls.each do |payroll| %>
+      <tr>
+        <td><%= payroll.id %></td>
+        <td><%= payroll.employee.full_name %></td>
+        <td><%= payroll.employee.phone %></td>
+        <td><%= payroll.employee.national_id %></td> 
+        <td><%= payroll.worked_days %></td>
+        <td><%= number_to_currency(payroll.total_pay, unit:"Ksh ") %></td>
+        <td><%= number_to_currency(payroll.advance, unit:"Ksh ") %></td>
+        <td><%= number_to_currency(payroll.payable, unit:"Ksh ") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><strong>Total Pay:</strong> <%= number_to_currency(@total_pay, unit:"Ksh ") %></p
+<p><strong>Total Advances:</strong> <%= number_to_currency(@total_advances, unit:"Ksh ") %></p>
+<p><strong>Total Payable:</strong> <%= number_to_currency(@total_payable, unit:"Ksh ") %></p>
+
+
+<button id="toggle-summary" class="btn btn-primary btn-sm mb-2" style="margin-bottom: 10px;">Show Site Summary</button>
+
+<div id="summary-table" style="display: none;">
+
+<h3>Payroll Summary by Site</h3>
+<table class="table table-bordered">
+  <thead class="table-primary">
+    <tr>
+      <th rowspan="2">Site</th>
+      <th colspan="3">Current Month</th>
+      <th colspan="3">All Time</th>
+    </tr>
+    <tr>
+      <th>Employees</th>
+      <th>Worked Days</th>
+      <th>Total Pay</th>
+      <th>Employees</th>
+      <th>Worked Days</th>
+      <th>Total Pay</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @site_summaries.each do |summary| %>
+      <tr>
+        <td><%= summary[:site]&.name || "No Site" %></td>
+
+        <!-- Current Month -->
+        <td><%= summary[:current][:employees_count] %></td>
+        <td><%= summary[:current][:worked_days] %></td>
+        <td><%= number_to_currency(summary[:current][:total_pay], unit: "Ksh ") %></td>
+
+        <!-- All Time -->
+        <td><%= summary[:all_time][:employees_count] %></td>
+        <td><%= summary[:all_time][:worked_days] %></td>
+        <td><%= number_to_currency(summary[:all_time][:total_pay], unit: "Ksh ") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+</div>
+
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const button = document.getElementById("toggle-summary");
+    const summary = document.getElementById("summary-table");
+
+    if (button && summary) {
+      button.addEventListener("click", function () {
+        if (summary.style.display === "none") {
+          summary.style.display = "block";
+          button.textContent = "Hide Payroll Summary";
+        } else {
+          summary.style.display = "none";
+          button.textContent = "Show Site Summary";
+        }
+      });
+    }
+  });
+</script>
+

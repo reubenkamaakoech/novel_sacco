@@ -1,0 +1,24 @@
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Employee</th>
+      <th>Amount</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @advances.each do |att| %>
+      <tr>
+        <td><%= att.id %></td>
+        <td><%= att.employee.full_name %></td>
+        <td><%= att.amount %></td>
+        <td><%= att.date %></td>
+        <td><%= link_to "View", advance_path(att), class:"btn btn-outline-primary btn-sm" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

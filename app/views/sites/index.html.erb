@@ -1,0 +1,13 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Sites" %>
+
+<h1>Sites</h1>
+
+<div id="sites">
+  
+    <%= render "sites/site" %>
+    
+</div>
+
+<%= link_to "New site", new_site_path %>

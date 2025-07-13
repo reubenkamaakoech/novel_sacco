@@ -1,0 +1,35 @@
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Status</th>
+      <th>Full Name</th>
+      <th>Daily Pay</th>
+      <th>Phone Number</th>
+      <th>National ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @employees.each do |employee| %>
+  
+      <tr>
+        <td><%= employee.id %></td>
+        <td>
+         <%= form_with url: toggle_status_employee_path(employee), method: :patch, local: true do %>
+           <%= hidden_field_tag :status, false %>
+             <%= check_box_tag :status, true, employee.status, onchange: 'this.form.submit();' %>
+           <% end %>
+        </td>
+        <td><%= employee.full_name %></td>
+        <td><%= employee.daily_pay %></td>
+        <td><%= employee.phone %></td>
+        <td><%= employee.national_id %></td>
+      </tr>
+    <% end %>
+    
+  </tbody>
+</table>
+  
+
+ 
