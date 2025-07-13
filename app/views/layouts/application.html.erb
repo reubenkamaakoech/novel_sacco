@@ -28,16 +28,18 @@
       <%= render "home/navbarbar" %>
     </div>
 
-    <div class="container mt-4">    
-     <% if flash[:alert] %>
-        <div class="alert alert-danger">
-          <%= flash[:alert] %>
-        </div>
-      <% end %>
+    <div class="container mt-4">
+      <h1 class="text-center"><%= content_for(:title) || "Welcome to Tanreb Hue Masters" %></h1>
     </div>
-   <div>
-    <%= yield %>
-   </div>
+
+    <div>
+      <p class="text-center" style="color: green"><%= notice %></p>
+      <p class="text-center" style="color: red"><%= alert %></p
+    </div>
+  
+    <div>
+      <%= yield %>
+    </div>
 
   </body>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
