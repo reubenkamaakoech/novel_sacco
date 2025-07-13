@@ -58,6 +58,13 @@ class SitesController < ApplicationController
     end
   end
 
+  def toggle_status
+    @site = Site.find(params[:id])
+    new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
+    @site.update(status: new_status)
+     redirect_to sites_path, notice: "Site status updated."
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_site
@@ -66,6 +73,6 @@ class SitesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def site_params
-      params.expect(site: [ :name, :interior_area, :exterior_area ])
+      params.expect(site: [ :name, :interior_area, :exterior_area, :status, :labour_cost, :user_id])
     end
 end

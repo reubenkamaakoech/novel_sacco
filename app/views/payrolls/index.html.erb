@@ -1,24 +1,28 @@
 <div class="container">
 
-<h2>Payrolls</h2>
+<% content_for :title, "Payroll" %>
 
 
  <% if @payrolls.empty? %>
   <p>No payrolls found.</p>
 <% else %>
 
-  <%= form_with url: payrolls_path, method: :get, local: true do %>
-  <div class="d-print-none">
-    <label><strong>Filter by Employee:</strong></label>
+<%= form_with url: payrolls_path, method: :get, local: true, class: "row g-3 mb-4" do %>
+  <div class="col-auto d-print-none">
+    <strong><%= label_tag :period, "Select Month" %></strong>
+    <%= month_field_tag :period, @selected_period, class: "form-control", onchange: "this.form.submit();" %>
+  </div>
+
+  <div class="col-auto d-print-none">
+    <strong><%= label_tag :employee_id, "Filter by Employee" %></strong>
     <%= select_tag :employee_id,
-        options_from_collection_for_select(@employees, :id, :full_name, params[:employee_id]),
-        prompt: "All Employees", class:"form-control w-25" %>
-    <%= submit_tag "Filter", class:"btn btn-success btn-sm" %>
-    <%= link_to "Clear Filter", payrolls_path, class: "btn btn-secondary btn-sm" %>
+          options_from_collection_for_select(@employees, :id, :full_name, params[:employee_id]),
+          include_blank: "All",
+          class: "form-select",
+          onchange: "this.form.submit();" %>
   </div>
 <% end %>
 
-<br>
 
 <table class="table table-striped">
   <thead class="table-primary">
@@ -54,7 +58,7 @@
 <p><strong>Total Payable:</strong> <%= number_to_currency(@total_payable, unit:"Ksh ") %></p>
 
 
-<button id="toggle-summary" class="btn btn-primary btn-sm mb-2" style="margin-bottom: 10px;">Show Site Summary</button>
+<button id="toggle-summary" class="btn btn-primary btn-sm mb-2 d-print-none" style="margin-bottom: 10px;">Show Site Summary</button>
 
 <div id="summary-table" style="display: none;">
 

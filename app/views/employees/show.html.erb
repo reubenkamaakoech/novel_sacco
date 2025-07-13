@@ -1,6 +1,28 @@
 <<div class="container">
 
-<h3>Attendance for <%= @employee.full_name %></h3>
+<% content_for :title, "Employee Details" %>
+
+<div class="card mb-3" style="max-width: 400px;">
+  <div class="card-header bg-primary text-white">
+    Employee Bio
+  </div>
+
+  <div class="card-body">
+    <P class="card-text">
+      <strong>Name:</strong> <%= @employee.full_name %><br>
+      <strong>Phone:</strong> <%= @employee.phone %><br>
+      <strong>Id Card:</strong> <%= @employee.national_id %><br>
+      <strong>Status:</strong> <%= @employee.status? ? "Active" : "Inactive" %>
+    </p>
+  </div>
+</div>
+
+<h4><i>Attendance for <%= @employee.full_name %></i></h4>
+
+<% if @attendances.empty? %>
+  <p class="text-red">No attendance records found for <%= @employee.full_name %>.</p>
+<% end %>
+
 <ul>
   <% @attendances.each do |att| %>
     <li><%= att.work_date.strftime("%d-%b-%Y") %>: <%= att.site&.name || "No Site" %></li>

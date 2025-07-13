@@ -66,6 +66,6 @@ class AdvancesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def advance_params
-      params.expect(advance: [ :employee_id, :amount, :date ])
+      params.expect(advance: [ :employee_id, :amount, :user_id, :date ])
     end
 end

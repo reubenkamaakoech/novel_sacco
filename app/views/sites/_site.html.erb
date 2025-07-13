@@ -4,18 +4,26 @@
   <thead>
     <tr>
       <th>ID</th>
-      <th>Name</th>
+      <th>Status</th>
+      <th>Name</th>      
       <th>Interior Area</th>
       <th>Exterior Area:</th>
+      <th>Labour Cost</th>
     </tr>
   </thead>
   <tbody>
     <% @sites.each do |site| %>
       <tr>
         <td><%= site.id %></td>
-        <td><%= site.name %></td>
+        <td><%= form_with url: toggle_status_site_path(site), method: :patch, local: true do %>
+           <%= hidden_field_tag :status, false %>
+             <%= check_box_tag :status, true, site.status, onchange: 'this.form.submit();' %>
+           <% end %>
+        </td>
+        <td><%= site.name %></td>        
         <td><%= site.interior_area %></td>
         <td><%= site.exterior_area %></td>
+        <td><%= number_to_currency(site.labour_cost, unit:"Ksh ") %></td>
       </tr>
     <% end %>
   </tbody>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_050658) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_142359) do
   create_table "advances", force: :cascade do |t|
     t.integer "employee_id", null: false
     t.decimal "amount"
@@ -61,15 +61,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_050658) do
     t.index ["user_id"], name: "index_payrolls_on_user_id"
   end
 
-  create_table "sites", force: :cascade do |t|
-    t.string "name"
-    t.integer "interior_area"
-    t.integer "exterior_area"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_id", default: 1, null: false
-    t.index ["user_id"], name: "index_sites_on_user_id"
-  end
+# Could not dump table "sites" because of following StandardError
+#   Unknown type '' for column 'labour_cost'
+
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false

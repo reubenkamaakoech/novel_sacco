@@ -68,10 +68,6 @@ end
   redirect_to employees_path, notice: "Employee status updated."
 end
 
-
-
-
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_employee
@@ -80,6 +76,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def employee_params
-      params.expect(employee: [ :full_name, :daily_pay, :phone, :national_id, :site_id, :status ])
+      params.expect(employee: [ :full_name, :daily_pay, :phone, :national_id, :site_id, :status, :user_id ])
     end
 end

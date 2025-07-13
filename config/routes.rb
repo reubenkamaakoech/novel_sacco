@@ -14,7 +14,11 @@ Rails.application.routes.draw do
   resources :attendances, only: [:new, :create, :index]
   post "attendances/quick_create", to: "attendances#quick_create"
 
-  resources :sites
+  resources :sites do
+  member do
+    patch :toggle_status
+  end
+  end
   
   root "attendances#new"
   get "home/index"

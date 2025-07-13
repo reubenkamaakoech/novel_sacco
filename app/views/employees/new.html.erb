@@ -1,11 +1,11 @@
+<div class="container">
 <% content_for :title, "New employee" %>
-
-<h1>New employee</h1>
 
 <%= render "form", employee: @employee %>
 
 <br>
 
 <div>
-  <%= link_to "Back to employees", employees_path %>
+  <%= link_to "Back", employees_path, class:"btn btn-primary btn-sm" %>
+</div>
 </div>

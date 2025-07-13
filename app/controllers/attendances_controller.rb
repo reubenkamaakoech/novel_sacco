@@ -101,6 +101,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def attendance_params
-      params.expect(attendance: [ :employee_id, :site_id, :work_date ])
+      params.expect(attendance: [ :employee_id, :site_id, :work_date, :user_id ])
     end
 end

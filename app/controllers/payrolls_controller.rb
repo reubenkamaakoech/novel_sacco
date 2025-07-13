@@ -3,21 +3,25 @@ class PayrollsController < ApplicationController
   before_action :authenticate_user!
 
   # GET /payrolls or /payrolls.json
-  def index
+ def index
   @employees = Employee.all
+
+  # Use selected period or default to current month in "YYYY-MM" format
+  @selected_period = params[:period] || Date.today.strftime("%Y-%m")
 
   @payrolls = Payroll.joins(:employee)
                      .where(employees: { status: "active" })
-                     .where(period: params[:period] || Date.today.strftime("%Y-%m"))
+                     .where(period: @selected_period)
                      .order(period: :desc)
-
-  @total_payable = @payrolls.sum(:payable)
-  @total_advances = @payrolls.sum(:advance)
-  @total_pay = @payrolls.sum(:total_pay)
 
   if params[:employee_id].present?
     @payrolls = @payrolls.where(employee_id: params[:employee_id])
   end
+
+  @total_pay = @payrolls.sum(:total_pay)
+  @total_advances = @payrolls.sum(:advance)
+  @total_payable = @payrolls.sum(:payable)
+
 
   # Site summary 
   @site_summaries = Site.all.map do |site|
@@ -125,6 +129,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def payroll_params
-      params.expect(payroll: [ :employee_id, :period, :worked_days, :total_pay, :advance, :payable ])
+      params.expect(payroll: [ :employee_id, :period, :worked_days, :total_pay, :advance, :payable, :user_id ])
     end
 end
