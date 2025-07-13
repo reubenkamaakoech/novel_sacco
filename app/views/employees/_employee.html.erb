@@ -9,6 +9,7 @@
       <th>Daily Pay</th>
       <th>Phone Number</th>
       <th>National ID</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -26,6 +27,7 @@
         <td><%= employee.daily_pay %></td>
         <td><%= employee.phone %></td>
         <td><%= employee.national_id %></td>
+        <td><%= link_to "Show", employee_path(employee), class: "btn btn-primary btn-sm" %></div>        
       </tr>
     <% end %>
     

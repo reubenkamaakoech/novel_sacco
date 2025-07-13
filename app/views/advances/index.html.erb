@@ -1,12 +1,11 @@
-<p style="color: green"><%= notice %></p>
+<div class="container mt-4">
 
 <% content_for :title, "Advances" %>
-
-<h1>Advances</h1>
 
 <div id="advances">
   
     <%= render "advances/advance" %>
 </div>
 
-<%= link_to "New advance", new_advance_path %>
+<%= link_to "New advance", new_advance_path, class:"btn btn-success btn-sm" %>
+</div>

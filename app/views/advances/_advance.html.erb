@@ -1,7 +1,8 @@
 
-
+<div class="container mt-4">
+  
 <table class="table table-striped">
-  <thead>
+  <thead class="table-primary">
     <tr>
       <th>ID</th>
       <th>Employee</th>
@@ -17,8 +18,9 @@
         <td><%= att.employee.full_name %></td>
         <td><%= att.amount %></td>
         <td><%= att.date %></td>
-        <td><%= link_to "View", advance_path(att), class:"btn btn-outline-primary btn-sm" %></td>
+        <td><%= link_to "show", advance_path(att), class:"btn btn-primary btn-sm" %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+</div>

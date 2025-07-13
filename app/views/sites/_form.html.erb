@@ -14,27 +14,27 @@
   <% end %>
 
   <div>
-    <%= form.label :name, style: "display: block" %>
+    <strong><%= form.label :name, style: "display: block" %></strong>
     <%= form.text_field :name, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :interior_area, style: "display: block" %>
+    <strong><%= form.label :interior_area, style: "display: block" %></strong>
     <%= form.number_field :interior_area, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :exterior_area, style: "display: block" %>
+    <strong><%= form.label :exterior_area, style: "display: block" %></strong>
     <%= form.number_field :exterior_area, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :labour_cost, style: "display: block" %>
+    <strong><%= form.label :labour_cost, style: "display: block" %></strong>
     <%= form.number_field :labour_cost, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :status, style: "display: block" %>
+    <strong><%= form.label :status, style: "display: block" %></strong>
     <%= form.checkbox :status %>
     <%= form.label :status, "Active?" %>
   </div>

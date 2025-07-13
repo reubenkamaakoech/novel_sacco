@@ -1,12 +1,12 @@
-<% content_for :title, "Editing site" %>
+<div class="container">
 
-<h1>Editing site</h1>
+<% content_for :title, "Editing site" %>
 
 <%= render "form", site: @site %>
 
 <br>
 
 <div>
-  <%= link_to "Show this site", @site %> |
-  <%= link_to "Back to sites", sites_path %>
+  <%= link_to "Back", sites_path, class:"btn btn-primary btn-sm" %>
 </div>
+<div>

@@ -1,7 +1,7 @@
 <div class="container">
   
 <table class="table table-striped">
-  <thead>
+  <thead class="table-primary">
     <tr>
       <th>ID</th>
       <th>Status</th>
@@ -24,6 +24,7 @@
         <td><%= site.interior_area %></td>
         <td><%= site.exterior_area %></td>
         <td><%= number_to_currency(site.labour_cost, unit:"Ksh ") %></td>
+        <td><%= link_to "Show", site_path(site), class: "btn btn-primary btn-sm" %></td>
       </tr>
     <% end %>
   </tbody>

@@ -12,21 +12,22 @@
   <% end %>
 
   <div>
-    <%= form.label :employee_id, style: "display: block" %>
-    <%= form.collection_select :employee_id, Employee.all, :id, :full_name, {prompt:"-Select-"} %>
+    <strong><%= form.label :employee_id, style: "display: block" %></strong>
+    <%= form.collection_select :employee_id, Employee.all, :id, :full_name, {prompt:"-Select-"}, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :amount, style: "display: block" %>
-    <%= form.text_field :amount %>
+    <strong><%= form.label :amount, style: "display: block" %></strong>
+    <%= form.text_field :amount, class:"form-control" %>
   </div>
 
-  <div>
-    <%= form.label :date, style: "display: block" %>
-    <%= form.date_field :date %>
+  <div class="col-md-2">
+    <strong><%= form.label :date, style: "display: block" %></strong>
+    <%= form.date_field :date, class:"form-control" %>
   </div>
+  <br/>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit nil, class:"btn btn-success btn-sm" %>
   </div>
 <% end %>

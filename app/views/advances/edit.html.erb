@@ -1,12 +1,12 @@
-<% content_for :title, "Editing advance" %>
+<div class="container mt-4">
 
-<h1>Editing advance</h1>
+<% content_for :title, "Editing advance" %>
 
 <%= render "form", advance: @advance %>
 
 <br>
 
 <div>
-  <%= link_to "Show this advance", @advance %> |
-  <%= link_to "Back to advances", advances_path %>
+  <%= link_to "Back", advances_path, class:"btn btn-primary btn-sm" %>
+</div>
 </div>
