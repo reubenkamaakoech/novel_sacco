@@ -1,3 +1,5 @@
+<div class="container">
+  
 <%= form_with(model: employee) do |form| %>
   <% if employee.errors.any? %>
     <div style="color: red">
@@ -12,23 +14,23 @@
   <% end %>
 
   <div>
-    <%= form.label :full_name, style: "display: block" %>
-    <%= form.text_field :full_name %>
+    <strong><%= form.label :full_name, style: "display: block" %></strong>
+    <%= form.text_field :full_name, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :daily_pay, style: "display: block" %>
-    <%= form.text_field :daily_pay %>
+    <strong><%= form.label :daily_pay, style: "display: block" %></strong>
+    <%= form.text_field :daily_pay, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :phone, style: "display: block" %>
-    <%= form.text_field :phone %>
+    <strong><%= form.label :phone, style: "display: block" %></strong>
+    <%= form.text_field :phone, class:"form-control" %>
   </div>
 
   <div>
-    <%= form.label :national_id, style: "display: block" %>
-    <%= form.text_field :national_id %>
+    <strong><%= form.label :national_id, style: "display: block" %></strong>
+    <%= form.text_field :national_id, class:"form-control" %>
   </div>
 
   <div>
@@ -36,8 +38,10 @@
     <%= form.checkbox :status %>
     <%= form.label :status, "Active?" %>
   </div>
+  <br/>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit nil, class:"btn btn-success btn-sm" %>
   </div>
 <% end %>
+</div>

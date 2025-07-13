@@ -1,6 +1,9 @@
+<<div class="container">
+
 <h3>Attendance for <%= @employee.full_name %></h3>
 <ul>
   <% @attendances.each do |att| %>
-    <li><%= att.work_date.strftime("%d-%b") %>: <%= att.site&.name || "No Site" %></li>
+    <li><%= att.work_date.strftime("%d-%b-%Y") %>: <%= att.site&.name || "No Site" %></li>
   <% end %>
 </ul>
+</div>
