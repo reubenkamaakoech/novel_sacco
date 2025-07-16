@@ -37,20 +37,24 @@
        <% end %>
 
         <% @grouped_attendances.each do |date, date_attendances| %>
-          <tr>
-            <td><%= date.strftime("%d-%b-%Y") %></td>
-            <td colspan="3">
-              <% date_attendances.group_by(&:site).each do |site, site_attendances| %>
-                <strong><%= site&.name || "No Site" %></strong><br/>
-                <% site_attendances.group_by(&:employee).each do |employee, employee_attendances| %>
-                  <div>
-                    <%= employee&.full_name || "No Employee" %> - Present
-                  </div>
-                <% end %>
-              <% end %>
-            </td>
-          </tr>
+  <tr>
+    <td><%= date.strftime("%d-%b-%Y") %></td>
+    <td colspan="3">
+      <% date_attendances.group_by(&:site).each do |site, site_attendances| %>
+        <strong><%= site&.name || "No Site" %></strong><br/>
+
+        <% site_attendances.group_by(&:employee).each_with_index do |(employee, employee_attendances), index| %>
+          <div>
+            <%= index + 1 %>.
+            <%= employee&.full_name || "No Employee" %> - Present
+          </div>
         <% end %>
+
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+
       </tbody>
     </table>
   </div>
