@@ -1,7 +1,9 @@
+<% content_for :title, "Daily Attendance Record" %>
+
 <div class="container">
   
 <% if @attendances.blank? %>
-  <p>No attendance records found.</p>
+  <p><i class="text-red">No attendance records found.</i></p>
 <% else %>
   <p>Showing <%= @attendances.count %> attendance records.</p>
 <% end %>
@@ -9,33 +11,60 @@
 <%= link_to "New Attendance", new_attendance_path, class: "btn btn-success btn-sm" %>
 <br/>
 <br/>
+<div class="attendance-list">
+  
+  <hr/>
 
-<% @grouped_attendances.each do |date, records_by_date| %>
-  <h4><strong><%= date.strftime("%d-%b-%Y") %></strong></h4>
-
-  <% records_by_date.group_by(&:site).each do |site, site_records| %>
-    <h5 style="margin-left: 20px;">Site: <%= site&.name || "No Site" %></h5>
-
-    <table class="table table-bordered" style="margin-left: 40px;">
+  <div class="d-flex justify-content-between mb-3">
+    <%= link_to "← Previous Week", request.params.merge(start_date: (@start_date - 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+    <span><%= @start_date.strftime("%d/%b/%Y") %> <strong>to</strong> <%= @end_date.strftime("%d/%b%Y") %></span>
+    <%= link_to "Next Week →", request.params.merge(start_date: (@start_date + 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered">
       <thead class="table-primary">
         <tr>
+          <th>Date</th>
+          <th>Site</th>
           <th>Employee</th>
           <th>Status</th>
         </tr>
       </thead>
       <tbody>
-        <% site_records.group_by(&:employee).each do |employee, employee_records| %>
+
+       <% if @grouped_attendances.empty? %>
+         <p><i class="text-red">No attendances found for the selected period.</i></p>
+       <% end %>
+
+        <% @grouped_attendances.each do |date, date_attendances| %>
           <tr>
-            <td><%= employee&.full_name || "No Employee" %></td>
-            <td>
-              <%# Show details if needed or just say Present %>
-              Present
+            <td><%= date.strftime("%d-%b-%Y") %></td>
+            <td colspan="3">
+              <% date_attendances.group_by(&:site).each do |site, site_attendances| %>
+                <strong><%= site&.name || "No Site" %></strong><br/>
+                <% site_attendances.group_by(&:employee).each do |employee, employee_attendances| %>
+                  <div>
+                    <%= employee&.full_name || "No Employee" %> - Present
+                  </div>
+                <% end %>
+              <% end %>
             </td>
           </tr>
         <% end %>
       </tbody>
     </table>
-  <% end %>
-<% end %>
+  </div>
 </div>
-  <%= link_to "New Attendance", new_attendance_path, class: "btn btn-success btn-sm" %>
+<hr/>
+
+<div class="d-flex justify-content-between mb-3 mt-4">
+  <%= link_to "← Previous Week", request.params.merge(start_date: (@start_date - 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+  <span><%= @start_date.strftime("%d/%b/%Y") %> <strong>to</strong> <%= @end_date.strftime("%d/%b%Y") %></span>
+  <%= link_to "Next Week →", request.params.merge(start_date: (@start_date + 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+</div>
+
+  <div>
+    <%= link_to "New Attendance", new_attendance_path, class: "btn btn-success btn-sm" %>
+  </div>
+</div>
+<br/>

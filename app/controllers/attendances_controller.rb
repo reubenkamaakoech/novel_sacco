@@ -4,10 +4,20 @@ class AttendancesController < ApplicationController
 
   # GET /attendances or /attendances.json
   def index
-  @attendances = Attendance.includes(:site, :employee).order(:work_date, 'sites.name', 'employees.full_name')
-  @grouped_attendances = @attendances.group_by(&:work_date)
-end
+  # Parse start date or default to the beginning of this week
+  @start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : Date.today.beginning_of_week
+  @end_date = @start_date.end_of_week
+  @dates = (@start_date..@end_date).to_a
 
+  # Get attendances for this week
+  @attendances = Attendance.includes(:employee, :site)
+                           .where(work_date: @dates)
+                           .order(:work_date, 'sites.name', 'employees.full_name')
+
+  # Group attendances by date → site → employee
+  @grouped_attendances = @attendances.group_by(&:work_date)
+
+  end
 
   # GET /attendances/1 or /attendances/1.json
   def show

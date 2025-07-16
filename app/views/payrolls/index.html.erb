@@ -90,12 +90,22 @@
         <td><%= number_to_currency(payable, unit: "Ksh ") %></td>
       </tr>
     <% end %>
+      <tr class="table-primary">
+        <td><strong>Total</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><strong><%= number_to_currency(@total_pay, unit:"Ksh ") %></strong></td>
+        <td><strong><%= number_to_currency(@total_advances, unit:"Ksh ") %></strong></td>
+        <td><strong><%= number_to_currency(@total_payable, unit:"Ksh ") %></strong></td>
+      </tr>
   </tbody>
+      
+    
 </table>
 
-<p><strong>Total Pay:</strong> <%= number_to_currency(@total_pay, unit:"Ksh ") %></p>
-<p><strong>Total Advances:</strong> <%= number_to_currency(@total_advances, unit:"Ksh ") %></p>
-<p><strong>Total Payable:</strong> <%= number_to_currency(@total_payable, unit:"Ksh ") %></p>
+
 
 
 <button id="toggle-summary" class="btn btn-primary btn-sm mb-2 d-print-none" style="margin-bottom: 10px;">Show Site Summary</button>
