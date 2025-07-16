@@ -63,7 +63,6 @@ class PayrollsController < ApplicationController
       else
       start_date..end_date
       end
-
     
     current_attendances = Attendance.joins(:employee)
                                     .where(site: site, work_date: current_month_range)

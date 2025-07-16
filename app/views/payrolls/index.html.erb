@@ -57,33 +57,34 @@
         <td><%= payroll.employee.full_name %></td>
         <td><%= payroll.employee.phone %></td>
         <td><%= payroll.employee.national_id %></td> 
+        
         <%
-  # Setup date range based on @half
-  start_date = Date.parse(@selected_period + "-01")
-  mid_date = start_date + 14.days
-  end_date = start_date.end_of_month
+           # Setup date range based on @half
+            start_date = Date.parse(@selected_period + "-01")
+            mid_date = start_date + 14.days
+            end_date = start_date.end_of_month
 
-  date_range =
-    case @half
-    when "1"
-      start_date..mid_date
-    when "2"
-      (mid_date + 1.day)..end_date
-    else
-      start_date..end_date
-    end
+            date_range =
+            case @half
+            when "1"
+              start_date..mid_date
+            when "2"
+              (mid_date + 1.day)..end_date
+            else
+              start_date..end_date
+            end
 
-  # Fetch attendances and calculate values
-  attendances = payroll.employee.attendances.where(work_date: date_range)
-  worked_days = attendances.count
-  total_pay = worked_days * payroll.employee.daily_pay.to_f
-  advance = Advance.where(employee_id: payroll.employee_id, date: date_range).sum(:amount)
-  payable = total_pay - advance
-%>
-<td><%= worked_days %></td>
-<td><%= number_to_currency(total_pay, unit: "Ksh ") %></td>
-<td><%= number_to_currency(advance, unit: "Ksh ") %></td>
-<td><%= number_to_currency(payable, unit: "Ksh ") %></td>
+           # Fetch attendances and calculate values
+            attendances = payroll.employee.attendances.where(work_date: date_range)
+            worked_days = attendances.count
+            total_pay = worked_days * payroll.employee.daily_pay.to_f
+            advance = Advance.where(employee_id: payroll.employee_id, date: date_range).sum(:amount)
+            payable = total_pay - advance
+        %>
+        <td><%= worked_days %></td>
+        <td><%= number_to_currency(total_pay, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(advance, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(payable, unit: "Ksh ") %></td>
       </tr>
     <% end %>
   </tbody>
