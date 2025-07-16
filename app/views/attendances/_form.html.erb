@@ -1,66 +1,77 @@
-<h2>Attendance Table</h2>
-
+<div class="container mt-4">
+  
 <%= form_with url: attendances_path, method: :post do %>
+  
   <% if @employees.any? %>
-  <div class="attendance-wrapper">
-    <table class="table table-striped attendance-table">
-      <thead>
-        <tr>
-          <th style="min-width: 150px;">Employee Name</th>
-          <th style="min-width: 120px;">Daily Pay</th>
-            <% @dates.each do |date| %>
-          <th style="<%= 'color: red;' if date.sunday? %>">
-            <%= date.strftime('%d-%b (%A)') %>
-          </th>
-          <% end %>
-        </tr>
-      </thead>
-
-      <tbody>
-        <% @employees.each do |employee| %>
+    <div class="attendance-wrapper">
+      <table class="table table-striped attendance-table">
+        <thead>
           <tr>
-            <td><%= employee.full_name %></td>
-            <td><%= number_to_currency(employee.daily_pay, unit: "Ksh ") %></td>
-              <% @dates.each do |date| %>
-            <td>
-              <% existing_attendance = @attendances_lookup[[employee.id, date]] %>
-                
-              <% if existing_attendance %>
-                <div class="view-mode">
-                   <%= select_tag "attendances[][site_id]",
-                     options_for_select([["-Select site-", ""]] + @sites.map { |s| [s.name, s.id] }, selected: existing_attendance.site_id),
-                     disabled: true %><br>
-                   <label>
-                     <input type="checkbox" class="toggle-edit"> Edit
-                   </label>
-                 </div>
-
-                 <div class="edit-mode" style="display: none;">
-                   <%= select_tag "attendances[][site_id]",
-                     options_for_select([["-Select site-", ""]] + @sites.map { |s| [s.name, s.id] }, selected: existing_attendance.site_id),class:"form-control" %>
-                   <%= hidden_field_tag "attendances[][employee_id]", employee.id %>
-                   <%= hidden_field_tag "attendances[][work_date]", date %>
-                   <%= hidden_field_tag "attendances[][existing_id]", existing_attendance.id %> <!-- ✅ safe here -->
-                   <%= hidden_field_tag "attendances[][edited]", "true", class: "edited-flag", disabled: true %>
-                 </div>
-              <% else %>
-                <%= select_tag "attendances[][site_id]",
-                  options_from_collection_for_select(@sites, :id, :name),
-                  prompt: "-Select site-", class:"form-control" %>
-                <%= hidden_field_tag "attendances[][employee_id]", employee.id %>
-                <%= hidden_field_tag "attendances[][work_date]", date %>
-              <% end %>
-            </td>
+            <th style="min-width: 150px;">Employee Name</th>
+            <% @dates.each do |date| %>
+              <th class="<%= 'sunday-header' if date.sunday? %>">
+                <%= date.strftime('%d-%b (%A)') %>
+              </th>
             <% end %>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+        </thead>
+
+        <tbody>
+          <% @employees.each do |employee| %>
+            <tr>
+              <td><%= employee.full_name %></td>
+              <% @dates.each do |date| %>
+                <td class="<%= 'sunday-cell' if date.sunday? %>">
+                  <% existing_attendance = @attendances_lookup[[employee.id, date]] %>
+
+                  <% if existing_attendance %>
+                    <div class="view-mode">
+                      <%= select_tag "attendances[][site_id]",
+                        options_for_select([["-Select site-", ""]] + @sites.map { |s| [s.name, s.id] }, selected: existing_attendance.site_id),
+                        disabled: true,
+                        class: "form-select site-select" %><br>
+                      <label>
+                        <input type="checkbox" class="toggle-edit"> Edit
+                      </label>
+                    </div>
+
+                    <div class="edit-mode" style="display: none;">
+                      <%= select_tag "attendances[][site_id]",
+                        options_for_select([["-Select site-", ""]] + @sites.map { |s| [s.name, s.id] }, selected: existing_attendance.site_id),
+                        class: "form-select site-select" %>
+                      <%= hidden_field_tag "attendances[][employee_id]", employee.id %>
+                      <%= hidden_field_tag "attendances[][work_date]", date %>
+                      <%= hidden_field_tag "attendances[][existing_id]", existing_attendance.id %>
+                      <%= hidden_field_tag "attendances[][edited]", "true", class: "edited-flag", disabled: true %>
+                    </div>
+                  <% else %>
+                    <%= select_tag "attendances[][site_id]",
+                      options_from_collection_for_select(@sites, :id, :name),
+                      prompt: "-Select site-",
+                      class: "form-select site-select" %>
+                    <%= hidden_field_tag "attendances[][employee_id]", employee.id %>
+                    <%= hidden_field_tag "attendances[][work_date]", date %>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
     <%= submit_tag "Submit Attendance", class: "btn btn-success btn-sm" %>
-    <%= link_to "Show Attendances", attendances_path, class:"btn btn-primary btn-sm" %>
+    <%= link_to "Show Attendances", attendances_path, class: "btn btn-primary btn-sm" %>
   <% end %>
 <% end %>
+
+  <div class="d-flex justify-content-between mb-3 mt-4">
+    <%= link_to "← Previous Week", request.params.merge(start_date: (@start_date - 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+    <%= link_to "Next Week →", request.params.merge(start_date: (@start_date + 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+  </div>
+</div>
+
+
 
 <script>
   document.addEventListener("turbo:load", function () {
@@ -83,4 +94,45 @@
     });
   });
 });
+</script>
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    // Toggle edit
+    document.querySelectorAll(".toggle-edit").forEach(function (checkbox) {
+      checkbox.addEventListener("change", function () {
+        const cell = this.closest("td");
+        const view = cell.querySelector(".view-mode");
+        const edit = cell.querySelector(".edit-mode");
+        const editedFlag = edit.querySelector(".edited-flag");
+
+        if (this.checked) {
+          view.style.display = "none";
+          edit.style.display = "block";
+          if (editedFlag) editedFlag.disabled = false;
+        } else {
+          view.style.display = "block";
+          edit.style.display = "none";
+          if (editedFlag) editedFlag.disabled = true;
+        }
+      });
+    });
+
+    // Highlight cell on selection
+    document.querySelectorAll("select[name='attendances[][site_id]']").forEach(function (select) {
+      select.addEventListener("change", function () {
+        const td = this.closest("td");
+        if (this.value) {
+          td.classList.add("selected-attendance");
+        } else {
+          td.classList.remove("selected-attendance");
+        }
+      });
+
+      // Trigger highlight on page load if already selected
+      if (select.value) {
+        select.closest("td").classList.add("selected-attendance");
+      }
+    });
+  });
 </script>

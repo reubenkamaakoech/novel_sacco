@@ -76,7 +76,10 @@
 
            # Fetch attendances and calculate values
             attendances = payroll.employee.attendances.where(work_date: date_range)
-            worked_days = attendances.count
+            worked_days = payroll.employee.attendances
+                        .where(work_date: date_range)
+                        .where.not(site_id: nil)
+                        .count
             total_pay = worked_days * payroll.employee.daily_pay.to_f
             advance = Advance.where(employee_id: payroll.employee_id, date: date_range).sum(:amount)
             payable = total_pay - advance

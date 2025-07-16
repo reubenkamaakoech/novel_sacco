@@ -19,7 +19,26 @@ end
     @sites = Site.all
     @dates = (Date.current.beginning_of_month..Date.current.end_of_month).to_a
     @attendances_lookup = Attendance.all.index_by { |a| [a.employee_id, a.work_date] }
+
+  # 📅 1. Parse the start date or default to current week's beginning
+    @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today.beginning_of_week
+
+  # 📅 2. Define the 7-day range
+    @end_date = @start_date.end_of_week
+    @dates = (@start_date..@end_date).to_a
+
+  # 👷‍♂️ 3. Load active employees
+    @employees = Employee.where(status: "active")  # or use Employee.active if you have a scope
+
+  # 🏗 4. Load all sites
+    @sites = Site.all
+
+  # 📊 5. Preload existing attendances for the selected week
+    @attendances_lookup = Attendance
+      .where(work_date: @dates, employee_id: @employees.map(&:id))
+      .index_by { |a| [a.employee_id, a.work_date] }
   end
+
 
   def quick_create
   attendance = Attendance.find_or_initialize_by(

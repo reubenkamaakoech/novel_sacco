@@ -13,3 +13,17 @@
   color: blue;
   font-weight: bold;
 }
+
+  .selected-attendance {
+    background-color: #d4edda !important; /* light green */
+    transition: background-color 0.3s ease;
+  }
+
+  .sunday-cell {
+    color: red !important;
+  }
+
+  .sunday-header {
+    color: red !important;
+  }
+
