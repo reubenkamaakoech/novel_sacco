@@ -14,6 +14,19 @@
   </div>
 
   <div class="col-auto d-print-none">
+    <strong><%= label_tag :half, "Select Period Range" %></strong>
+    <% end_of_month_day = Date.parse(@selected_period + "-01").end_of_month.day.ordinalize rescue "end" %>
+      <%= select_tag :half,
+        options_for_select([
+          ["Option 1 (1st–15th)", "1"],
+          ["Option 2 (16th–#{end_of_month_day})", "2"]
+        ], params[:half]),
+        include_blank: "Full Month",
+        class: "form-select",
+        onchange: "this.form.submit();" %>
+  </div>
+
+  <div class="col-auto d-print-none">
     <strong><%= label_tag :employee_id, "Filter by Employee" %></strong>
     <%= select_tag :employee_id,
           options_from_collection_for_select(@employees, :id, :full_name, params[:employee_id]),
@@ -24,8 +37,8 @@
 <% end %>
 
 
-<table class="table table-striped">
-  <thead class="table-primary">
+<table class="table table-striped sticky-header">
+  <thead class="table-primary style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 10;"">
     <tr>
       <th>Id</th>
       <th>Employee</th>
@@ -44,16 +57,39 @@
         <td><%= payroll.employee.full_name %></td>
         <td><%= payroll.employee.phone %></td>
         <td><%= payroll.employee.national_id %></td> 
-        <td><%= payroll.worked_days %></td>
-        <td><%= number_to_currency(payroll.total_pay, unit:"Ksh ") %></td>
-        <td><%= number_to_currency(payroll.advance, unit:"Ksh ") %></td>
-        <td><%= number_to_currency(payroll.payable, unit:"Ksh ") %></td>
+        <%
+  # Setup date range based on @half
+  start_date = Date.parse(@selected_period + "-01")
+  mid_date = start_date + 14.days
+  end_date = start_date.end_of_month
+
+  date_range =
+    case @half
+    when "1"
+      start_date..mid_date
+    when "2"
+      (mid_date + 1.day)..end_date
+    else
+      start_date..end_date
+    end
+
+  # Fetch attendances and calculate values
+  attendances = payroll.employee.attendances.where(work_date: date_range)
+  worked_days = attendances.count
+  total_pay = worked_days * payroll.employee.daily_pay.to_f
+  advance = Advance.where(employee_id: payroll.employee_id, date: date_range).sum(:amount)
+  payable = total_pay - advance
+%>
+<td><%= worked_days %></td>
+<td><%= number_to_currency(total_pay, unit: "Ksh ") %></td>
+<td><%= number_to_currency(advance, unit: "Ksh ") %></td>
+<td><%= number_to_currency(payable, unit: "Ksh ") %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<p><strong>Total Pay:</strong> <%= number_to_currency(@total_pay, unit:"Ksh ") %></p
+<p><strong>Total Pay:</strong> <%= number_to_currency(@total_pay, unit:"Ksh ") %></p>
 <p><strong>Total Advances:</strong> <%= number_to_currency(@total_advances, unit:"Ksh ") %></p>
 <p><strong>Total Payable:</strong> <%= number_to_currency(@total_payable, unit:"Ksh ") %></p>
 
@@ -62,12 +98,22 @@
 
 <div id="summary-table" style="display: none;">
 
-<h3>Payroll Summary by Site</h3>
+<h3>
+  Payroll Summary by Site
+  <% if params[:half] == "1" %>
+    (1st to 15th)
+  <% elsif params[:half] == "2" %>
+    (16th to <%= Date.parse(@selected_period + "-01").end_of_month.day.ordinalize %>)
+  <% else %>
+    (Full Month)
+  <% end %>
+</h3>
+
 <table class="table table-bordered">
   <thead class="table-primary">
     <tr>
       <th rowspan="2">Site</th>
-      <th colspan="3">Current Month</th>
+      <th colspan="3"><%= Date.parse(@selected_period + "-01").strftime("%B %Y") %></th>
       <th colspan="3">All Time</th>
     </tr>
     <tr>
