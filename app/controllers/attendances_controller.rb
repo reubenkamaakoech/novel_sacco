@@ -4,6 +4,8 @@ class AttendancesController < ApplicationController
 
   # GET /attendances or /attendances.json
   def index
+    @attendances = Attendance.includes(:employee, :site).all
+    
   # Parse start date or default to the beginning of this week
   @start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : Date.today.beginning_of_week
   @end_date = @start_date.end_of_week
@@ -56,13 +58,11 @@ class AttendancesController < ApplicationController
     work_date: params[:work_date]
   )
   attendance.site_id = params[:site_id]
+  attendance.save
 
-  if attendance.save
-    head :ok
-  else
-    render json: attendance.errors.full_messages, status: :unprocessable_entity
-  end
+  head :ok
 end
+
 
 
   # GET /attendances/1/edit

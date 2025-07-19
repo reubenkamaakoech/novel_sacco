@@ -107,7 +107,10 @@ end
 
   # GET /payrolls/new
   def new
-    @payroll = Payroll.new
+    @employees = Employee.all
+    @payrolls = @employees.map do |employee|
+      Payroll.new(employee: employee)
+    end
   end
 
   # GET /payrolls/1/edit
@@ -117,6 +120,15 @@ end
   # POST /payrolls or /payrolls.json
   def create
     @payroll = Payroll.new(payroll_params)
+    @payroll.employee = Employee.find(params[:payroll][:employee_id])
+    @payroll.daily_pay_at_time = @payroll.employee.daily_pay
+
+    payroll_params[:payrolls].each do |payroll_data|
+    # Only create new payrolls; avoid updating old ones
+    Payroll.create(
+      employee_id: payroll_data[:employee_id],
+      days_worked: payroll_data[:days_worked]
+    )
 
     respond_to do |format|
       if @payroll.save
@@ -127,6 +139,7 @@ end
         format.json { render json: @payroll.errors, status: :unprocessable_entity }
       end
     end
+  end
   end
 
   # PATCH/PUT /payrolls/1 or /payrolls/1.json
@@ -165,6 +178,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def payroll_params
-      params.expect(payroll: [ :employee_id, :period, :worked_days, :total_pay, :advance, :payable, :user_id ])
+      params.expect(payroll: [ :employee_id, :period, :worked_days, :total_pay, :advance, :payable, :user_id, :daily_pay_at_time ])
     end
 end

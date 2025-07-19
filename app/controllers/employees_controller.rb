@@ -76,6 +76,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def employee_params
-      params.expect(employee: [ :full_name, :daily_pay, :phone, :national_id, :site_id, :status, :user_id ])
+      params.expect(employee: [ :full_name, :daily_pay, :phone, :national_id, :site_id, :status, :user_id, :job_category ])
     end
 end

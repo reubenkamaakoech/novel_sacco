@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_142359) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_19_092727) do
   create_table "advances", force: :cascade do |t|
     t.integer "employee_id", null: false
     t.decimal "amount"
@@ -44,6 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_142359) do
     t.datetime "updated_at", null: false
     t.boolean "status", default: true, null: false
     t.integer "user_id", default: 1, null: false
+    t.string "job_category", default: "1", null: false
     t.index ["user_id"], name: "index_employees_on_user_id"
   end
 
@@ -57,6 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_142359) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", default: 1, null: false
+    t.decimal "daily_pay_at_time"
     t.index ["employee_id"], name: "index_payrolls_on_employee_id"
     t.index ["user_id"], name: "index_payrolls_on_user_id"
   end

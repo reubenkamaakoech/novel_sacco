@@ -18,6 +18,11 @@
     <%= form.text_field :full_name, class:"form-control" %>
   </div>
 
+  <div class="field">
+    <strong><%= form.label :job_category, style: "display: block" %></strong>
+    <%= form.select :job_category, Employee::JOB_CATEGORIES, { prompt: "Select Category" }, { class: "form-control" } %>
+  </div>
+
   <div>
     <strong><%= form.label :daily_pay, style: "display: block" %></strong>
     <%= form.text_field :daily_pay, class:"form-control" %>

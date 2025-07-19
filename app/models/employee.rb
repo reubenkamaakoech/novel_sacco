@@ -5,5 +5,15 @@ class Employee < ApplicationRecord
   has_many :payrolls, dependent: :destroy
   has_many :sites, dependent: :destroy
   has_many :payrolls, through: :attendances
-  
+
+  validates :full_name, presence: true
+  validates :job_category, presence: true
+  validates :daily_pay, presence: true, numericality: { greater_than: 0 }
+
+  # optional: if you want predefined categories
+  JOB_CATEGORIES = ["Painter", "Sander", "Wallmaster", "Cleaner" ]
+
+  def self.categories
+    JOB_CATEGORIES
+  end
 end

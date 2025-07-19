@@ -10,6 +10,7 @@
   <div class="card-body">
     <P class="card-text">
       <strong>Name:</strong> <%= @employee.full_name %><br>
+      <strong>Category:</strong> <%= @employee.job_category %><br>
       <strong>Phone:</strong> <%= @employee.phone %><br>
       <strong>Id Card:</strong> <%= @employee.national_id %><br>
       <strong>Status:</strong> <%= @employee.status? ? "Active" : "Inactive" %>

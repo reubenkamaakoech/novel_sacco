@@ -1,4 +1,9 @@
 <div class="container mt-4">
+
+  <div class="d-flex justify-content-between mb-3 mt-4">
+    <%= link_to "← Previous Week", request.params.merge(start_date: (@start_date - 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+    <%= link_to "Next Week →", request.params.merge(start_date: (@start_date + 7).to_s), class: "btn btn-outline-primary btn-sm" %>
+  </div>
   
 <%= form_with url: attendances_path, method: :post do %>
   
@@ -22,14 +27,15 @@
               <td><%= employee.full_name %></td>
               <% @dates.each do |date| %>
                 <td class="<%= 'sunday-cell' if date.sunday? %>">
+                
                   <% existing_attendance = @attendances_lookup[[employee.id, date]] %>
-
+   
                   <% if existing_attendance %>
                     <div class="view-mode">
                       <%= select_tag "attendances[][site_id]",
                         options_for_select([["-Select site-", ""]] + @sites.map { |s| [s.name, s.id] }, selected: existing_attendance.site_id),
                         disabled: true,
-                        class: "form-select site-select" %><br>
+                        class: "form-select site-select" %>
                       <label>
                         <input type="checkbox" class="toggle-edit"> Edit
                       </label>
@@ -136,3 +142,5 @@
     });
   });
 </script>
+
+
