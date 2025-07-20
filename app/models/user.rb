@@ -9,4 +9,31 @@ class User < ApplicationRecord
   has_many :payrolls, dependent: :destroy
   has_many :advances, dependent: :destroy
   has_many :sites, dependent: :destroy
+
+  # Example roles: admin, manager, staff
+  ROLES = %w[admin manager staff employee]
+
+  def self.categories
+    ROLES
+  end
+
+  def admin?
+    role == 'admin'
+  end
+
+  def can_access_data?
+    access_granted?
+  end
+
+  def access_granted?
+    admin? || self[:access_granted]
+  end
+
+  def active_for_authentication?
+    super && status?
+  end
+
+  def inactive_message
+    status? ? super : :account_inactive
+  end
 end

@@ -62,11 +62,11 @@ end
   end
 
   def toggle_status
-  @employee = Employee.find(params[:id])
-  new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
-  @employee.update(status: new_status)
-  redirect_to employees_path, notice: "Employee status updated."
-end
+    @employee = Employee.find(params[:id])
+    new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
+    @employee.update(status: new_status)
+      redirect_to employees_path, notice: "Employee status updated."
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -1,7 +1,19 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+  registrations: "users/registrations"
+  }
 
-  resources :users, only: [:index,:show, :edit, :update, :destroy]
+  resources :users do
+    member do
+      patch :toggle_access
+    end
+  end
+
+   resources :users do
+    member do
+      patch :toggle_status
+    end
+  end
 
   resources :payrolls, only: [:index]
   post "payrolls/generate", to: "payrolls#generate", as: :generate_payrolls

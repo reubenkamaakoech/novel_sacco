@@ -12,11 +12,13 @@
     <%= f.text_field :username, class: "form-control" %>
   </div>
 
-  <div class="form-check mb-3">
-    <%= f.check_box :admin, class: "form-check-input" %>
-    <%= f.label :admin, class: "form-check-label" %>
-  </div>
+  <div class="field">
+  <%= f.label :role %>
+    <% first_user = User.order(:created_at).first %>
+    <%= f.select :role, User::ROLES, { prompt: "-Select Role-" }, { class: "form-control", disabled: (@user == first_user) } %>
+  </div><br/>
 
-  <%= f.submit "Update User", class: "btn btn-success" %>
+  <%= f.submit "Update User", class: "btn btn-success btn-sm" %>
 <% end %>
 </div>
+

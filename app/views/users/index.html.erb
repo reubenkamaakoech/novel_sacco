@@ -6,8 +6,10 @@
     <tr>
       <th>Id</th>
       <th>Email</th>
-      <th>Username</th>
-      <th>Admin</th>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Role</th>
+      <th>Access</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -17,16 +19,26 @@
         <td><%= user.id %></td>
         <td><%= user.email %></td>
         <td><%= user.username %></td>
-        <td><%= user.admin? ? "Yes" : "No" %></td>
+        <td>
+          <%= form_with url: toggle_status_user_path(user), method: :patch, local: true do %>
+            <%= hidden_field_tag :status, false %>
+             <%= check_box_tag :status, true, user.status, onchange: 'this.form.submit();' %>
+            <% end %>
+        </td>
+        <td><%= user.role %></td>
+        <td>
+          <%= button_to toggle_access_user_path(user), method: :patch, remote: true, form: { data: { turbo_stream: true } }, class: "btn btn-sm #{user.access_granted ? 'btn-success' : 'btn-danger'}" do %>
+            <%= user.access_granted ? 'Granted' : 'Revoked' %>
+          <% end %>
+        </td>
         <td>
           <%= link_to "Edit", edit_user_path(user), class: "btn btn-sm btn-primary" %>
-          <% unless user == current_user %>
-            <%= link_to "Delete", user_path(user), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-danger" %>
-          <% end %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 </div>
+
+
 
