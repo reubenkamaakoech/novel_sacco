@@ -1,0 +1,32 @@
+<% content_for :title, "Users" %>
+
+<div class="container">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Email</th>
+      <th>Username</th>
+      <th>Admin</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.id %></td>
+        <td><%= user.email %></td>
+        <td><%= user.username %></td>
+        <td><%= user.admin? ? "Yes" : "No" %></td>
+        <td>
+          <%= link_to "Edit", edit_user_path(user), class: "btn btn-sm btn-primary" %>
+          <% unless user == current_user %>
+            <%= link_to "Delete", user_path(user), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-danger" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</div>
+

@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
+
+  resources :users, only: [:index,:show, :edit, :update, :destroy]
+
   resources :payrolls, only: [:index]
   post "payrolls/generate", to: "payrolls#generate", as: :generate_payrolls
 

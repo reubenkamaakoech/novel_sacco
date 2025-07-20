@@ -50,8 +50,16 @@
               <li><a class="dropdown-item" href="<%= new_employee_path %>">Create New Employee</a></li>
             </ul>
         </div>
-          
-        
+
+        <% if current_user.admin? %>
+        <div class="input-group mb-0 me-1">
+          <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">User Management</button>
+            <ul class="dropdown-menu bg-light">
+              <li><a class="dropdown-item" href="<%= users_path %>">show</a></li>
+            </ul>
+        </div>
+        <% end %>     
+               
         <form>    
           <div class="input-group mb-0">
            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">My Profile</button>

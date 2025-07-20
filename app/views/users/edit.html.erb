@@ -1,0 +1,22 @@
+<% content_for :title, "Users" %>
+
+<div class="container">
+<%= form_with(model: @user, local: true) do |f| %>
+  <div class="mb-3">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :username %>
+    <%= f.text_field :username, class: "form-control" %>
+  </div>
+
+  <div class="form-check mb-3">
+    <%= f.check_box :admin, class: "form-check-input" %>
+    <%= f.label :admin, class: "form-check-label" %>
+  </div>
+
+  <%= f.submit "Update User", class: "btn btn-success" %>
+<% end %>
+</div>
