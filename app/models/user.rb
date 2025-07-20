@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_many :advances, dependent: :destroy
   has_many :sites, dependent: :destroy
 
-  # Example roles: admin, manager, staff
+  # Example roles: admin, manager, staff, employee
   ROLES = %w[admin manager staff employee]
 
   def self.categories
@@ -19,6 +19,18 @@ class User < ApplicationRecord
 
   def admin?
     role == 'admin'
+  end
+
+  def manager?
+    role == "manager"
+  end
+
+  def staff?
+    role == "staff"
+  end
+
+  def employee?
+    role == "employee"
   end
 
   def can_access_data?
