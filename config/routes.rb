@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     end
   end
 
+  post "/toggle_sign_ups", to: "settings#toggle_sign_ups", as: "toggle_sign_ups"
+
   resources :payrolls, only: [:index]
   post "payrolls/generate", to: "payrolls#generate", as: :generate_payrolls
 

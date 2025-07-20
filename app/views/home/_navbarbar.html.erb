@@ -58,7 +58,7 @@
               <li><a class="dropdown-item" href="<%= users_path %>">show</a></li>
             </ul>
         </div>
-        <% end %>     
+        <% end %>  
                
         <form>    
           <div class="input-group mb-0">
@@ -69,6 +69,17 @@
             </ul>
           </div> 
         </form>
+        
+        <% if current_user.admin? %>
+        <div>
+          <% setting = Setting.first_or_create(sign_ups_enabled: false) %>
+
+        <%= form_with url: toggle_sign_ups_path, method: :post, local: true do %>
+          <%= submit_tag(setting.sign_ups_enabled? ? "Disable Sign Ups" : "Enable Sign Ups", 
+                 class: "btn btn-#{setting.sign_ups_enabled? ? 'danger' : 'success'}") %>
+        <% end %>
+        </div>
+        <% end %>
         
        </div> 
         <% if user_signed_in? %>

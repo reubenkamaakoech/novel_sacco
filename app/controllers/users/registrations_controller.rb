@@ -1,4 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  before_action :check_sign_up_enabled, only: [:new, :create]
+
 def create
     build_resource(sign_up_params)
 
@@ -26,6 +28,15 @@ def create
       clean_up_passwords resource
       set_minimum_password_length
       respond_with resource
+    end
+  end
+
+    private
+
+  def check_sign_up_enabled
+    unless Setting.first&.sign_ups_enabled?
+      flash[:alert] = "Sign ups are currently disabled."
+      redirect_to root_path
     end
   end
 end

@@ -58,20 +58,29 @@ end
 
 
   def toggle_access
-    @user = User.find(params[:id])
-    @user.update(access_granted: !@user.access_granted)
+  @user = User.find(params[:id])  # Finds the user by ID
 
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to users_path, notice: "Access updated." }
-    end
+  @user.update(access_granted: !@user.access_granted)  
+  # Flips the current value of `access_granted`
+  # If it was true, becomes false; if false, becomes true
+
+  respond_to do |format|
+    format.turbo_stream  # If using Turbo, this will stream an update to the view
+    format.html { redirect_to users_path, notice: "Access updated." }  
+    # Fallback: redirect with a flash notice
   end
+end
+
 
   def check_admin
     redirect_to root_path, alert: "Admin access only." unless current_user&.admin?
   end
 
   private
+
+  def require_admin
+    redirect_to root_path, alert: "Not authorized." unless current_user.admin?
+  end
 
   def set_user
     @user = User.find(params[:id])

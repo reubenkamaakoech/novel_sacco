@@ -1,6 +1,16 @@
 <% content_for :title, "Users" %>
 
 <div class="container">
+
+<div>
+<% setting = Setting.first_or_create(sign_ups_enabled: false) %>
+
+<%= form_with url: toggle_sign_ups_path, method: :post, local: true do %>
+  <%= submit_tag(setting.sign_ups_enabled? ? "Disable Sign Ups" : "Enable Sign Ups", 
+                 class: "btn btn-#{setting.sign_ups_enabled? ? 'danger btn-sn' : 'success btn-sm'}") %>
+<% end %>
+</div>
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -39,6 +49,7 @@
   </tbody>
 </table>
 </div>
+
 
 
 
