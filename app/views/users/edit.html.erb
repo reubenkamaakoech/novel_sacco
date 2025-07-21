@@ -18,6 +18,11 @@
     <%= f.select :role, User::ROLES, { prompt: "-Select Role-" }, { class: "form-control", disabled: (@user == first_user) } %>
   </div><br/>
 
+  <div style="max-width: 25rem;">
+    <%= f.label :image %>
+    <%= f.file_field :image, class:"form-control" %>
+  </div><br/>
+
   <%= f.submit "Update User", class: "btn btn-success btn-sm" %>
 <% end %>
 </div>

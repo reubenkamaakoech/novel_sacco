@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :payrolls, dependent: :destroy
   has_many :advances, dependent: :destroy
   has_many :sites, dependent: :destroy
+  has_one_attached :image
 
   # Example roles: admin, manager, staff, employee
   ROLES = %w[admin manager staff employee]
