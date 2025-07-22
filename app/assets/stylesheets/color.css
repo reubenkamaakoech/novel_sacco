@@ -27,3 +27,33 @@
     color: red !important;
   }
 
+  
+  .attendance-table th.sunday-header {
+    background-color: #f8d7da; /* Light red for Sunday header */
+  }
+  
+  .attendance-table td.sunday-cell {
+    background-color: #fce4ec; /* Light pink for Sunday cells */
+  }
+
+  .selected-attendance {
+    background-color: #d1e7dd; /* Light green for selected attendance */
+  }
+  .attendance-wrapper {
+    overflow-x: auto; /* Allow horizontal scrolling */
+  }
+    .attendance-table {
+    width: 100%; /* Ensure table takes full width */
+    table-layout: fixed; /* Fixed layout for consistent column widths */
+    word-wrap: break-word; /* Break long words to prevent overflow */
+  }
+    .attendance-table th, .attendance-table td {
+    
+    text-align: center; /* Center align text in table cells */
+    vertical-align: middle; /* Vertically center content in cells */
+    padding: 8px; /* Add padding for better spacing */
+    border: 1px solid #dee2e6; /* Add border for better visibility */
+    overflow: hidden; /* Hide overflow content */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    white-space: nowrap; /* Prevent text from wrapping */
+  }
