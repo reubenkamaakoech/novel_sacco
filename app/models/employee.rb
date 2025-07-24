@@ -11,7 +11,7 @@ class Employee < ApplicationRecord
   validates :daily_pay, presence: true, numericality: { greater_than: 0 }
 
   # optional: if you want predefined categories
-  JOB_CATEGORIES = ["Painter", "Sander", "Wallmaster", "Cleaner" ]
+  JOB_CATEGORIES = ["Painter", "Sander", "Wallmaster", "Cleaner", "Sub-Contractor" ]
 
   def self.categories
     JOB_CATEGORIES
