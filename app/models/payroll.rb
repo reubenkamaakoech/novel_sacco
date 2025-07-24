@@ -3,6 +3,7 @@ class Payroll < ApplicationRecord
   belongs_to :employee
   has_many :attendances, through: :employee
   
+  
 def self.generate_for_employee_and_month(employee, period)
   start_date = Date.strptime(period, "%Y-%m").beginning_of_month
   end_date = start_date.end_of_month

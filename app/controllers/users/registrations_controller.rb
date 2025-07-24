@@ -34,9 +34,11 @@ def create
     private
 
   def check_sign_up_enabled
-    unless Setting.first&.sign_ups_enabled?
-      flash[:alert] = "Sign ups are currently disabled."
-      redirect_to root_path
-    end
+  return if User.count.zero? # Allow first user to sign up
+
+  unless Setting.first&.sign_ups_enabled?
+    flash[:alert] = "Sign ups are currently disabled."
+    redirect_to root_path
   end
+end
 end

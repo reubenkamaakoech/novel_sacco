@@ -4,7 +4,6 @@ class Employee < ApplicationRecord
   has_many :advances, dependent: :destroy
   has_many :payrolls, dependent: :destroy
   has_many :sites, dependent: :destroy
-  has_many :payrolls, through: :attendances
 
   validates :full_name, presence: true
   validates :job_category, presence: true
