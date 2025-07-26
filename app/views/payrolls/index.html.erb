@@ -37,15 +37,19 @@
 <% end %>
 
 
-<table class="table table-striped sticky-header">
+<h2>Payroll Summary</h2>
+
+<% total_pay_sum = 0 %>
+<% total_advances_sum = 0 %>
+<% total_payable_sum = 0 %>
+
+<table class="table table-bordered table-striped sticky-header">
   <thead class="table-primary style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 10;"">
     <tr>
-      <th>Id</th>
       <th>Employee</th>
-      <th>Phone</th>
-      <th>Id No.</th>
-      <th>Daily Pay At Time</th>
-      <th>Worked Days</th>
+      <th>Days Worked</th>
+      <th>Period</th>
+      <th>Daily Pay</th>
       <th>Total Pay</th>
       <th>Advance</th>
       <th>Payable</th>
@@ -53,63 +57,63 @@
   </thead>
   <tbody>
     <% @payrolls.each do |payroll| %>
+      <% 
+        # Setup date range
+        start_date = Date.parse(@selected_period + "-01")
+        mid_date = start_date + 14.days
+        end_date = start_date.end_of_month
+
+        date_range =
+          case @half
+          when "1"
+            start_date..mid_date
+          when "2"
+            (mid_date + 1.day)..end_date
+          else
+            start_date..end_date
+          end
+
+        worked_days = payroll.employee.attendances
+                       .where(work_date: date_range)
+                       .where.not(site_id: nil)
+                       .count
+
+        daily_pay = payroll.daily_pay_at_time.to_f
+        total_pay = worked_days * daily_pay
+        advance = Advance.where(employee_id: payroll.employee_id, date: date_range).sum(:amount)
+        payable = total_pay - advance
+
+        total_pay_sum += total_pay
+        total_advances_sum += advance
+        total_payable_sum += payable
+      %>
       <tr>
-        <td><%= payroll.id %></td>
         <td><%= payroll.employee.full_name %></td>
-        <td><%= payroll.employee.phone %></td>
-        <td><%= payroll.employee.national_id %></td> 
-        <td><%= payroll.daily_pay_at_time %></td>
-        
-        <%
-           # Setup date range based on @half
-            start_date = Date.parse(@selected_period + "-01")
-            mid_date = start_date + 14.days
-            end_date = start_date.end_of_month
-
-            date_range =
-            case @half
-            when "1"
-              start_date..mid_date
-            when "2"
-              (mid_date + 1.day)..end_date
-            else
-              start_date..end_date
-            end
-
-           # Fetch attendances and calculate values
-            attendances = payroll.employee.attendances.where(work_date: date_range)
-            worked_days = payroll.employee.attendances
-                        .where(work_date: date_range)
-                        .where.not(site_id: nil)
-                        .count
-            total_pay = worked_days * payroll.daily_pay_at_time.to_f
-            advance = Advance.where(employee_id: payroll.employee_id, date: date_range).sum(:amount)
-            payable = total_pay - advance
-        %>
         <td><%= worked_days %></td>
+        <td>
+          <% if @half == "1" %>
+            1st to 15th
+          <% elsif @half == "2" %>
+            16th to <%= Date.parse(@selected_period + "-01").end_of_month.day.ordinalize %>
+          <% else %>
+            Full Month
+          <% end %>
+        <td><%= number_to_currency(daily_pay, unit: "Ksh ") %></td>
         <td><%= number_to_currency(total_pay, unit: "Ksh ") %></td>
         <td><%= number_to_currency(advance, unit: "Ksh ") %></td>
         <td><%= number_to_currency(payable, unit: "Ksh ") %></td>
       </tr>
     <% end %>
-      <tr class="table-primary">
-        <td><strong>Total</strong></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><strong><%= number_to_currency(@total_pay, unit:"Ksh ") %></strong></td>
-        <td><strong><%= number_to_currency(@total_advances, unit:"Ksh ") %></strong></td>
-        <td><strong><%= number_to_currency(@total_payable, unit:"Ksh ") %></strong></td>
-      </tr>
   </tbody>
-      
-    
+  <tfoot>
+    <tr  class="table-primary style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 10;"">
+      <th colspan="4">Totals</th>
+      <th><%= number_to_currency(total_pay_sum, unit: "Ksh ") %></th>
+      <th><%= number_to_currency(total_advances_sum, unit: "Ksh ") %></th>
+      <th><%= number_to_currency(total_payable_sum, unit: "Ksh ") %></th>
+    </tr>
+  </tfoot>
 </table>
-
-
-
 
 <button id="toggle-summary" class="btn btn-primary btn-sm mb-2 d-print-none" style="margin-bottom: 10px;">Show Site Summary</button>
 
