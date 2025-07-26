@@ -1,6 +1,6 @@
 <div class="container">
 
-<% content_for :title, "Payroll" %>
+  <% content_for :title, "Payroll" %>
 
 
  <% if @payrolls.empty? %>
@@ -37,7 +37,7 @@
 <% end %>
 
 
-<h2>Payroll Summary</h2>
+<h2>Payroll Summary for <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %></h2>
 
 <% total_pay_sum = 0 %>
 <% total_advances_sum = 0 %>
@@ -49,9 +49,9 @@
       <th>Employee</th>
       <th>Days Worked</th>
       <th>Period</th>
-      <th>Daily Pay</th>
-      <th>Total Pay</th>
-      <th>Advance</th>
+      <th class="d-print-none">Daily Pay</th>
+      <th class="d-print-none">Total Pay</th>
+      <th class="d-print-none">Advance</th>
       <th>Payable</th>
     </tr>
   </thead>
@@ -98,43 +98,51 @@
           <% else %>
             Full Month
           <% end %>
-        <td><%= number_to_currency(daily_pay, unit: "Ksh ") %></td>
-        <td><%= number_to_currency(total_pay, unit: "Ksh ") %></td>
-        <td><%= number_to_currency(advance, unit: "Ksh ") %></td>
+        <td class="d-print-none"><%= number_to_currency(daily_pay, unit: "Ksh ") %></td>
+        <td class="d-print-none"><%= number_to_currency(total_pay, unit: "Ksh ") %></td>
+        <td class="d-print-none"><%= number_to_currency(advance, unit: "Ksh ") %></td>
         <td><%= number_to_currency(payable, unit: "Ksh ") %></td>
       </tr>
     <% end %>
   </tbody>
   <tfoot>
-    <tr  class="table-primary style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 10;"">
-      <th colspan="4">Totals</th>
-      <th><%= number_to_currency(total_pay_sum, unit: "Ksh ") %></th>
-      <th><%= number_to_currency(total_advances_sum, unit: "Ksh ") %></th>
-      <th><%= number_to_currency(total_payable_sum, unit: "Ksh ") %></th>
-    </tr>
-  </tfoot>
+  <!-- Screen version -->
+  <tr class="totals-row d-print-none">
+    <th colspan="4">Totals</th>
+    <th><%= number_to_currency(total_pay_sum, unit: "Ksh ") %></th>
+    <th><%= number_to_currency(total_advances_sum, unit: "Ksh ") %></th>
+    <th><%= number_to_currency(total_payable_sum, unit: "Ksh ") %></th>
+  </tr>
+
+  <!-- Print version -->
+  <tr class="totals-row d-none d-print-table-row">
+    <th colspan="3">Totals</th>
+
+    <th><%= number_to_currency(total_payable_sum, unit: "Ksh ") %></th>
+  </tr>
+</tfoot>
+
 </table>
 
 <button id="toggle-summary" class="btn btn-primary btn-sm mb-2 d-print-none" style="margin-bottom: 10px;">Show Site Summary</button>
 
 <div id="summary-table" style="display: none;">
 
-<h3>
-  Payroll Summary by Site
-  <% if params[:half] == "1" %>
-    (1st to 15th)
-  <% elsif params[:half] == "2" %>
-    (16th to <%= Date.parse(@selected_period + "-01").end_of_month.day.ordinalize %>)
-  <% else %>
-    (Full Month)
-  <% end %>
-</h3>
+<h3>Payroll Summary by Site</h3>
 
 <table class="table table-bordered">
   <thead class="table-primary">
     <tr>
       <th rowspan="2">Site</th>
-      <th colspan="3"><%= Date.parse(@selected_period + "-01").strftime("%B %Y") %></th>
+      <th colspan="3">
+         <% if params[:half] == "1" %>
+          1st to 15th, <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
+         <% elsif params[:half] == "2" %>
+          16th to <%= Date.parse(@selected_period + "-01").end_of_month.day.ordinalize %>, <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
+         <% else %>
+          All of <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
+         <% end %>
+      </th>
       <th colspan="3">All Time</th>
     </tr>
     <tr>
@@ -166,7 +174,7 @@
 </table>
 <% end %>
 </div>
-
+ 
 
 <script>
   document.addEventListener("turbo:load", function () {
