@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   
   def index
     @users = User.all
+    @online_users = User.online
   end
 
   def edit

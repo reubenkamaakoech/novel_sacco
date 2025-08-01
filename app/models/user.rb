@@ -1,4 +1,11 @@
 class User < ApplicationRecord
+  def self.online
+    where("last_seen_at >= ?", 10.minutes.ago)
+  end
+  
+   def online?
+    last_seen_at && last_seen_at > 10.minutes.ago
+  end
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
