@@ -2,11 +2,6 @@
 
   <% content_for :title, "Payroll" %>
 
-
- <% if @payrolls.empty? %>
-  <p>No payrolls found.</p>
-<% else %>
-
 <%= form_with url: payrolls_path, method: :get, local: true, class: "row g-3 mb-4" do %>
   <div class="col-auto d-print-none">
     <strong><%= label_tag :period, "Select Month" %></strong>
@@ -36,6 +31,9 @@
   </div>
 <% end %>
 
+ <% if @payrolls.empty? %>
+  <p>No payrolls found.</p>
+<% else %>
 
 <h2>Payroll Summary for <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %></h2>
 
@@ -89,7 +87,7 @@
       %>
       <tr>
         <td><%= payroll.employee.full_name %></td>
-        <td><%= worked_days %></td>
+        <td class="text-center"><%= worked_days %></td>
         <td>
           <% if @half == "1" %>
             1st to 15th
@@ -156,20 +154,24 @@
   </thead>
   <tbody>
     <% @site_summaries.each do |summary| %>
-      <tr>
-        <td><%= summary[:site]&.name || "No Site" %></td>
+  <% current = summary[:current] %>
+  <% unless current[:employees_count].to_i.zero? && current[:worked_days].to_i.zero? && current[:total_pay].to_f.zero? %>
+    <tr>
+      <td><%= summary[:site]&.name || "No Site" %></td>
 
-        <!-- Current Month -->
-        <td><%= summary[:current][:employees_count] %></td>
-        <td><%= summary[:current][:worked_days] %></td>
-        <td><%= number_to_currency(summary[:current][:total_pay], unit: "Ksh ") %></td>
+      <!-- Current Month -->
+      <td><%= current[:employees_count] %></td>
+      <td><%= current[:worked_days] %></td>
+      <td><%= number_to_currency(current[:total_pay], unit: "Ksh ") %></td>
 
-        <!-- All Time -->
-        <td><%= summary[:all_time][:employees_count] %></td>
-        <td><%= summary[:all_time][:worked_days] %></td>
-        <td><%= number_to_currency(summary[:all_time][:total_pay], unit: "Ksh ") %></td>
-      </tr>
-    <% end %>
+      <!-- All Time -->
+      <td><%= summary[:all_time][:employees_count] %></td>
+      <td><%= summary[:all_time][:worked_days] %></td>
+      <td><%= number_to_currency(summary[:all_time][:total_pay], unit: "Ksh ") %></td>
+    </tr>
+  <% end %>
+<% end %>
+
   </tbody>
 </table>
 <% end %>

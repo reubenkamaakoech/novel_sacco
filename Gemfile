@@ -65,3 +65,5 @@ end
 gem 'devise'
 gem 'letter_opener', group: :development
 
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary' # optional but useful for development
