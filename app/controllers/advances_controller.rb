@@ -4,7 +4,12 @@ class AdvancesController < ApplicationController
 
   # GET /advances or /advances.json
   def index
-    @advances = Advance.all
+    @employees = Employee.order(:full_name)
+
+  @advances = Advance.all
+  @advances = @advances.where(employee_id: params[:employee_id]) if params[:employee_id].present?
+  @advances = @advances.where("date >= ?", params[:start_date]) if params[:start_date].present?
+  @advances = @advances.where("date <= ?", params[:end_date]) if params[:end_date].present?
   end
 
   # GET /advances/1 or /advances/1.json
@@ -66,6 +71,6 @@ class AdvancesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def advance_params
-      params.expect(advance: [ :employee_id, :amount, :user_id, :date ])
+      params.expect(advance: [ :employee_id, :amount, :user_id, :date, :reason ])
     end
 end

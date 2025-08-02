@@ -11,6 +11,7 @@
     <P class="card-text">
       <strong>Name:</strong> <%= @advance.employee.full_name %><br>
       <strong>Amount:</strong> <%= number_to_currency(@advance.amount, unit: "Ksh ") %><br>
+      <strong>Reason:</strong> <%= @advance.reason %><br>
       <strong>Date:</strong> <%= @advance.date.strftime("%Y-%m-%d") %><br>
     </p>
   </div>

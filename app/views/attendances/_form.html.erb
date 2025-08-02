@@ -81,30 +81,7 @@
 
 <script>
   document.addEventListener("turbo:load", function () {
-  document.querySelectorAll(".toggle-edit").forEach(function (checkbox) {
-    checkbox.addEventListener("change", function () {
-      const cell = this.closest("td");
-      const view = cell.querySelector(".view-mode");
-      const edit = cell.querySelector(".edit-mode");
-      const editedFlag = edit.querySelector(".edited-flag");
-
-      if (this.checked) {
-        view.style.display = "none";
-        edit.style.display = "block";
-        if (editedFlag) editedFlag.disabled = false;
-      } else {
-        view.style.display = "block";
-        edit.style.display = "none";
-        if (editedFlag) editedFlag.disabled = true;
-      }
-    });
-  });
-});
-</script>
-
-<script>
-  document.addEventListener("turbo:load", function () {
-    // Toggle edit
+    // Toggle view/edit mode
     document.querySelectorAll(".toggle-edit").forEach(function (checkbox) {
       checkbox.addEventListener("change", function () {
         const cell = this.closest("td");
@@ -124,21 +101,19 @@
       });
     });
 
-    // Highlight cell on selection
+    // Apply background color when a site is selected
     document.querySelectorAll("select[name='attendances[][site_id]']").forEach(function (select) {
-      select.addEventListener("change", function () {
-        const td = this.closest("td");
-        if (this.value) {
+      function toggleClass() {
+        const td = select.closest("td");
+        if (select.value && select.value !== "") {
           td.classList.add("selected-attendance");
         } else {
           td.classList.remove("selected-attendance");
         }
-      });
-
-      // Trigger highlight on page load if already selected
-      if (select.value) {
-        select.closest("td").classList.add("selected-attendance");
       }
+
+      select.addEventListener("change", toggleClass);
+      toggleClass(); // initial check
     });
   });
 </script>

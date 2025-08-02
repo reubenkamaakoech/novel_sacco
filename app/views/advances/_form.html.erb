@@ -21,6 +21,11 @@
     <%= form.text_field :amount, class:"form-control" %>
   </div>
 
+  <div>
+    <strong><%= form.label :reason, style: "display: block" %></strong>
+    <%= form.text_area :reason, class:"form-control" %>
+  </div>
+
   <div class="col-md-2">
     <strong><%= form.label :date, style: "display: block" %></strong>
     <%= form.date_field :date, class:"form-control" %>

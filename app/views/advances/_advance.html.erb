@@ -1,26 +1,73 @@
+<div class="container mt-5">
 
-<div class="container mt-4">
-  
-<table class="table table-striped">
-  <thead class="table-primary">
-    <tr>
-      <th>ID</th>
-      <th>Employee</th>
-      <th>Amount</th>
-      <th>Date</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @advances.each do |att| %>
-      <tr>
-        <td><%= att.id %></td>
-        <td><%= att.employee.full_name %></td>
-        <td><%= att.amount %></td>
-        <td><%= att.date %></td>
-        <td><%= link_to "show", advance_path(att), class:"btn btn-primary btn-sm" %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <!-- Summary Card -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card border-success shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success">Total Advances</h5>
+          <p class="card-text h4">
+            <%= number_to_currency(@advances.sum(&:amount), unit:"Ksh ") %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Form -->
+  <%= form_with url: advances_path, method: :get, local: true do %>
+    <div class="row mb-3">
+      <div class="col-md-4" style="width: 300px;">
+        <%= label_tag :employee_id, "Filter by Employee" %>
+        <%= select_tag :employee_id,
+              options_from_collection_for_select(Employee.all, :id, :full_name, params[:employee_id]),
+              include_blank: "All Employees",
+              class: "form-select" %>
+      </div>
+      <div class="col-md-3" style="width: 200px;">
+      <%= label_tag :start_date, "Start Date" %>
+      <%= date_field_tag :start_date, params[:start_date], class: "form-control" %>
+    </div>
+
+    <div class="col-md-3" style="width: 200px;">
+      <%= label_tag :end_date, "End Date" %>
+      <%= date_field_tag :end_date, params[:end_date], class: "form-control" %>
+    </div>
+      <div class="col-md-3 d-flex align-items-end">
+      <%= submit_tag "Filter", class: "btn btn-primary me-2" %>
+      <%= link_to "Reset", advances_path, class: "btn btn-secondary" %>
+    </div>
+    </div>
+  <% end %>
+
+  <!-- Advances Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+      <thead class="table-primary text-center">
+        <tr>
+          <th>ID</th>
+          <th>Employee</th>
+          <th>Amount</th>
+          <th>Reason</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @advances.each do |att| %>
+          <tr>
+            <td class="text-center"><%= att.id %></td>
+            <td><%= att.employee.full_name %></td>
+            <td class="text-center"><%= number_to_currency(att.amount, unit:"Ksh ") %></td>
+            <td><%= att.reason %></td>
+            <td><%= att.date.strftime("%d %b %Y") %></td>
+            <td class="text-center">
+              <%= link_to "Show", advance_path(att), class: "btn btn-sm btn-primary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
 </div>

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container body_print">
 
   <% content_for :title, "Payroll" %>
 
@@ -45,8 +45,10 @@
   <thead class="table-primary style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 10;"">
     <tr>
       <th>Employee</th>
-      <th>Days Worked</th>
-      <th>Period</th>
+      <th>Phone Number</th>
+      <th>National ID</th>
+      <th class="d-print-none">Days Worked</th>
+      <th class="d-print-none">Period</th>
       <th class="d-print-none">Daily Pay</th>
       <th class="d-print-none">Total Pay</th>
       <th class="d-print-none">Advance</th>
@@ -87,8 +89,10 @@
       %>
       <tr>
         <td><%= payroll.employee.full_name %></td>
-        <td class="text-center"><%= worked_days %></td>
-        <td>
+        <td><%= payroll.employee.phone %></td>
+         <td><%= payroll.employee.national_id %></td>
+        <td class="text-center d-print-none"><%= worked_days %></td>
+        <td class="d-print-none">
           <% if @half == "1" %>
             1st to 15th
           <% elsif @half == "2" %>
@@ -106,7 +110,7 @@
   <tfoot>
   <!-- Screen version -->
   <tr class="totals-row d-print-none">
-    <th colspan="4">Totals</th>
+    <th colspan="6">Totals</th>
     <th><%= number_to_currency(total_pay_sum, unit: "Ksh ") %></th>
     <th><%= number_to_currency(total_advances_sum, unit: "Ksh ") %></th>
     <th><%= number_to_currency(total_payable_sum, unit: "Ksh ") %></th>
