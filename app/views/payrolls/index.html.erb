@@ -100,7 +100,7 @@
           <% else %>
             Full Month
           <% end %>
-        <td class="d-print-none"><%= number_to_currency(daily_pay, unit: "Ksh ") %></td>
+        <td class="d-print-none"><%= number_to_currency(payroll.daily_pay_at_time, unit: "Ksh ") %></td>
         <td class="d-print-none"><%= number_to_currency(total_pay, unit: "Ksh ") %></td>
         <td class="d-print-none"><%= number_to_currency(advance, unit: "Ksh ") %></td>
         <td><%= number_to_currency(payable, unit: "Ksh ") %></td>
