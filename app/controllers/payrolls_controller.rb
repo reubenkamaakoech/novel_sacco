@@ -127,7 +127,7 @@ end
     # Only create new payrolls; avoid updating old ones
     Payroll.create(
       employee_id: payroll_data[:employee_id],
-      days_worked: payroll_data[:days_worked]
+      worked_days: payroll_data[:worked_days]
     )
 
     respond_to do |format|

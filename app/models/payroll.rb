@@ -2,8 +2,13 @@ class Payroll < ApplicationRecord
   belongs_to :user
   belongs_to :employee
   has_many :attendances, through: :employee
-  
-  
+
+  before_validation :set_daily_pay_at_time, on: :create
+
+def set_daily_pay_at_time
+  self.daily_pay_at_time ||= employee&.daily_pay # Store the daily pay at the time of payroll creation 
+end
+ 
 def self.generate_for_employee_and_month(employee, period)
   start_date = Date.strptime(period, "%Y-%m").beginning_of_month
   end_date = start_date.end_of_month

@@ -32,7 +32,13 @@
 <% end %>
 
  <% if @payrolls.empty? %>
-  <p>No payrolls found.</p>
+  <p><i class="text-red">No payrolls found for:</i> <% if params[:half] == "1" %>
+          1st to 15th, <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
+         <% elsif params[:half] == "2" %>
+          16th to <%= Date.parse(@selected_period + "-01").end_of_month.day.ordinalize %>, <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
+         <% else %>
+          Full Month of <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
+         <% end %></p>
 <% else %>
 
 <h2>Payroll Summary for <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %></h2>
@@ -142,7 +148,7 @@
          <% elsif params[:half] == "2" %>
           16th to <%= Date.parse(@selected_period + "-01").end_of_month.day.ordinalize %>, <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
          <% else %>
-          All of <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
+          Full Month of <%= Date.parse(@selected_period + "-01").strftime("%B %Y") %>
          <% end %>
       </th>
       <th colspan="3">All Time</th>
