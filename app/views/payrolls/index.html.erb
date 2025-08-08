@@ -84,10 +84,12 @@
                        .where.not(site_id: nil)
                        .count
 
+        worked_days = payroll.worked_days
         daily_pay = payroll.daily_pay_at_time.to_f
-        total_pay = worked_days * daily_pay
-        advance = Advance.where(employee_id: payroll.employee_id, date: date_range).sum(:amount)
-        payable = total_pay - advance
+        total_pay = payroll.total_pay.to_f
+        advance = payroll.advance.to_f
+        payable = payroll.payable.to_f
+
 
         total_pay_sum += total_pay
         total_advances_sum += advance
