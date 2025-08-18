@@ -1,0 +1,65 @@
+<% content_for :title, "Member's Details" %>
+
+<div class="container">
+  <table class="table table-striped">
+    <tr>
+      <th>Name</th>
+      <td><%= @member.name %></td>
+    </tr>
+    <tr>
+      <th>Membership Number</th>
+      <td><%= @member.membership_number %></td>
+    </tr>
+    <tr>
+      <th>Monthly Contribution</th>
+      <td><%= number_to_currency(@member.monthly_contribution, unit:"Ksh ") %></td>
+    </tr>
+    <tr>
+      <th>Id Number</th>
+      <td><%= @member.id_number %></td>
+    </tr>
+    <tr>
+      <th>Phone Number</th>
+      <td><%= @member.phone_number %></td>
+    </tr>
+    <tr>
+      <th>Email</th>
+      <td><%= @member.email %></td>
+    </tr>
+    <tr>
+      <th>Join Date</th>
+      <td><%= @member.join_date %></td>
+    </tr>
+    <tr>
+      <th>Next of Kin Name</th>
+      <td><%= @member.next_of_kin_name %></td>
+    </tr>
+    <tr>
+      <th>Next of Kin Relationship</th>
+      <td><%= @member.next_of_kin_relationship %></td>
+    </tr>
+    <tr>
+      <th>Next of Kin Contact</th>
+      <td><%= @member.next_of_kin_contact %></td>
+    </tr>
+    <tr>
+      <th>Status</th>
+      <td> 
+        <span class="badge <%= @member.status? ? 'bg-success' : 'bg-secondary' %>">
+          <%= @member.status? ? "Active" : "Inactive" %>
+        </span>
+      </td>
+    </tr>
+  </table>
+
+<div>
+  <%= link_to "Edit this member", edit_member_path(@member), class:"btn btn-warning btn-sm" %> |
+  <%= link_to "Back to members", members_path, class:"btn btn-primary btn-sm" %> |
+  <%= link_to "View ID Card", id_card_member_path(@member), class: "btn btn-info btn-sm", target: "_blank" %> 
+</div><br/>
+
+<div>
+  
+  <%= button_to "Delete this member", @member, method: :delete, data: { confirm: "Are you sure you want to delete this site?" }, class: "btn btn-danger btn-sm" %>
+</div>
+</div>

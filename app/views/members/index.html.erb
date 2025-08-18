@@ -1,0 +1,11 @@
+<% content_for :title, "Members" %>
+
+<div class="container">
+<div id="members">
+
+    <%= render "members/member" %>
+   
+</div>
+
+<%= link_to "New member", new_member_path, class:"btn btn-success btn-sm" %>
+</div>

@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  membership_number: MyString
+  name: MyString
+  id_number: MyString
+  phone_number: MyString
+  email: MyString
+  join_date: 2025-08-10
+  status: false
+  next_of_kin_name: MyString
+  next_of_kin_contact: MyString
+
+two:
+  membership_number: MyString
+  name: MyString
+  id_number: MyString
+  phone_number: MyString
+  email: MyString
+  join_date: 2025-08-10
+  status: false
+  next_of_kin_name: MyString
+  next_of_kin_contact: MyString

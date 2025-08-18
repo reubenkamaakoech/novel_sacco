@@ -1,0 +1,15 @@
+<% content_for :title, "New saving" %>
+
+<div class="container">
+<%= render "form", saving: @saving %>
+
+<br>
+  
+<div>
+  <% if @saving.member_id.present? %>
+    <%= link_to "Back to member's statement", member_statement_path(member_id: @saving.member_id), class:"btn btn-primary btn-sm" %>
+  <% else %>
+    <%= link_to "Back to savings", savings_path, class:"btn btn-primary btn-sm" %>
+  <% end %>
+</div>
+</div>

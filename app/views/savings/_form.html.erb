@@ -1,0 +1,39 @@
+<div class="container">
+<%= form_with model: @saving do |form| %>
+  <div>
+    <% if current_user %>
+      <%= form.hidden_field :user_id, value: current_user.id %>
+    <% end %>
+  </div>
+
+  <% if @saving.member_id.present? %>
+    <div class="mb-3">
+      <strong><%= form.label :member_id %></strong>
+      <%= text_field_tag :member_name, @saving.member.name, class: "form-control", disabled: true %>
+      <%= form.hidden_field :member_id %>
+    </div>
+  <% else %>
+    <div class="mb-3">
+      <strong><%= form.label :member_id %></strong>
+      <%= form.collection_select :member_id, Member.all, :id, :name, { prompt: "-Select Member-" }, class: "form-control" %>
+    </div>
+  <% end %>
+
+  <div>
+    <strong><%= form.label :amount %></strong>
+    <%= form.number_field :amount, step: 0.01, class:"form-control" %>
+  </div>
+
+  <div class="col-2">
+    <strong><%= form.label :date %></strong>
+    <%= form.date_field :month, class:"form-control" %>
+  </div>
+  
+  <div class="field">
+    <strong><%= form.label :deposit_type, style: "display: block" %></strong>
+    <%= form.select :deposit_type, Saving::SAVING_CATEGORIES, { prompt: "Select Category" }, { class: "form-control" } %>
+  </div><br/>
+
+  <%= form.submit nil, class:"btn btn-success btn-sm" %>
+<% end %>
+</div>

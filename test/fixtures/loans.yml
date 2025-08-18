@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  member: one
+  available_amount: 9.99
+  amount: 9.99
+  payment_period_months: MyString
+  repayment_amount_per_month: 9.99
+
+two:
+  member: two
+  available_amount: 9.99
+  amount: 9.99
+  payment_period_months: MyString
+  repayment_amount_per_month: 9.99

@@ -1,0 +1,11 @@
+<% content_for :title, "New loan repayment" %>
+
+<div class="container">
+<%= render "form", loan_repayment: @loan_repayment %>
+
+<br>
+
+<div>
+  <%= link_to "Back to loan repayments", loan_repayments_path, class:"btn btn-primary btn-sm" %>
+</div>
+</div>

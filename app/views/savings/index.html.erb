@@ -1,0 +1,103 @@
+<% content_for :title, "Sacco Account" %>
+
+<div class="container">
+
+<div class="row mb-4">
+  <!-- Total Savings Card -->
+  <div class="col-md-4">
+    <div class="card border-success shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-success">Total Savings</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@total_savings, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+   <!-- Available for loans Card -->
+  <div class="col-md-4">
+    <div class="card border-success shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-success">Available for loans</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@available_for_loans, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Locked Savings Card -->
+  <div class="col-md-4">
+    <div class="card border-success shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-success">Locked Savings</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@locked_savings, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+<table class="table table-striped">
+  <thead class="table-primary">
+    <tr>
+      <th>Id</td>
+      <th>Member</th>
+      <th>Total Savings</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+      <% total_savings = 0 %>
+    <% @savings_summary.each do |record| %>
+      
+      <tr>
+        <td><%= record.member_id %></td>
+        <td><%= record.member_name %></td>
+        <td><%= number_to_currency(record.amount, unit: "Ksh ") %></td>
+        <td>
+          <%= link_to "View Satement", member_statement_path(member_id: record.member_id), class: "btn btn-info btn-sm" %>
+        </td>
+      </tr>
+       <% total_savings += record.amount %>
+    <% end %>
+  </tbody>
+</table>
+  <div> 
+    <%= link_to "Create random saving", new_saving_path, class:"btn btn-success btn-sm" %> 
+  </div><br/>
+
+  <div class="mb-3 p-3 border rounded bg-light">
+  <h5>Create Monthly Ordinary Savings</h5>
+  <%= form_with url: create_monthly_savings_path, method: :post, local: true, class: "row g-2 align-items-center" do |form| %>
+    <div class="col-auto">
+      <%= form.label :month, "Month", class: "form-label" %>
+      <%= form.select :month,
+          Date::MONTHNAMES.compact.each_with_index.map { |name, i| [name, i+1] },
+          selected: Date.today.month,
+          class: "form-select" %>
+    </div>
+
+    <div class="col-auto">
+      <%= form.label :year, "Year", class: "form-label" %>
+      <%= form.number_field :year,
+          value: Date.today.year,
+          class: "form-control",
+          min: 2000,
+          max: 2100 %>
+    </div>
+
+    <div class="col-auto">
+      <%= form.submit "Create Monthly Savings",
+          class: "btn btn-success btn-sm",
+          data: { confirm: "Create ordinary savings for the selected month and year?" } %>
+    </div>
+  <% end %>
+</div>
+
+</div>
+

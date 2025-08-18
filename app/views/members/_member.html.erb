@@ -1,0 +1,46 @@
+<div class="container">
+  
+<table class="table table-striped table-light">
+  <thead class="table-primary">
+    <tr>
+      <th>ID</th>
+      <th>Status</th>
+      <th>Name</th>
+      <th>Membership Number</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @members.each do |member| %>
+  
+      <tr>
+        <td><%= member.id %></td>
+        <td>
+        <%= form_with url: toggle_status_member_path(member), method: :patch, local: true do %>
+           <%= hidden_field_tag :status, false %>
+             <%= check_box_tag :status, true, member.status, onchange: 'this.form.submit();' %>
+           <% end %>
+        </td>
+        <td><%= member.name %></td>
+        <td><%= member.membership_number %></td>  
+        <td><%= link_to "Show", member_path(member), class: "btn btn-primary btn-sm" %></div>   
+        <td><%= link_to "View ID Card", id_card_member_path(member), class: "btn btn-info btn-sm", target: "_blank" %></td>
+        <td><%= link_to "View Statement", member_statement_path(member_id: member.id), class:"btn btn-info btn-sm" %></td>  
+      </tr>
+    <% end %>
+    
+  </tbody>
+</table>
+</div>
+  
+
+ 
+
+
+
+
+ 
+
+ 
+  
+ 

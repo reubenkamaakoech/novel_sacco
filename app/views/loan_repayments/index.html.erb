@@ -1,0 +1,14 @@
+<% content_for :title, "Loan repayments" %>
+
+<div class="container">
+<div id="loan_repayments">
+  <% @loan_repayments.each do |loan_repayment| %>
+    <%= render loan_repayment %>
+    <p>
+      <%= link_to "Show this loan repayment", loan_repayment %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New loan repayment", new_loan_repayment_path, class:"btn btn-success btn-sm" %>
+</div>

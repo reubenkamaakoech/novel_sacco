@@ -1,0 +1,11 @@
+<% content_for :title, "Loans" %>
+
+<div class="container">
+<div id="loans">
+  
+    <%= render "loans/loan" %>
+    
+</div>
+
+<%= link_to "New loan", new_loan_path, class:"btn btn-success btn-sm " %>
+</div>

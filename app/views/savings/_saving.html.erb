@@ -1,0 +1,20 @@
+<div class="container">
+<table class="table">
+  <thead>
+    <tr>
+      <th>Member</th>
+      <th>Total Amount Received</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @savings_summary.each do |member_id, total_amount| %>
+      <tr>
+        <td><%= Member.find(member_id).name %></td>
+        <td><%= number_to_currency(total_amount, unit:"Ksh ") %></td>
+        <td><%= link_to "Show", saving_path(saving), class: "btn btn-primary btn-sm" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</div>

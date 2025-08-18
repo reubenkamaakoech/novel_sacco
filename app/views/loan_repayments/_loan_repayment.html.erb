@@ -1,0 +1,16 @@
+
+  <p>
+    <strong>User:</strong>
+    <%= loan_repayment.user.username %>
+  </p>
+
+  <p>
+    <strong>Loan:</strong>
+    <%= loan_repayment.loan&.member&.name || "No loan assigned" %>
+  </p>
+
+  <p>
+    <strong>Amount:</strong>
+    <%= loan_repayment.amount %>
+  </p>
+

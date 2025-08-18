@@ -1,9 +1,11 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+// app/javascript/application.js
 import "@hotwired/turbo-rails"
-import "controllers"
-import "./controllers"
-import "./production_form"
-import Rails from "@rails/ujs"
-Rails.start()
+import * as bootstrap from "bootstrap"
 
-import "./channels"
+document.addEventListener("turbo:load", () => {
+  document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => {
+    if (!bootstrap.Dropdown.getInstance(el)) {
+      new bootstrap.Dropdown(el)
+    }
+  });
+});

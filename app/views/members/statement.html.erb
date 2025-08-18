@@ -1,0 +1,98 @@
+<% content_for :title, "Member's Statement" %>
+
+<div class="container">
+  <h2><%= @member.name %> - <%= @member.membership_number %></h2>
+
+  <div class="row mb-4">
+    <!-- Total Savings Card -->
+    <div class="col-md-3">
+      <div class="card border-success shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success">Total Savings</h5>
+          <p class="card-text h4">
+            <%= number_to_currency(@total_savings || 0, unit: "Ksh ") %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available for Loans Card -->
+    <div class="col-md-3">
+      <div class="card border-primary shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Available for Loans</h5>
+          <p class="card-text h4">
+            <%= number_to_currency(@available_for_loans || 0, unit: "Ksh ") %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loans Balance  -->
+    <div class="col-md-2">
+      <div class="card border-primary shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Loan Balance</h5>
+          <p class="card-text h4">
+            <td><%= number_to_currency(@loan_balance || 0, unit:"Ksh ") %></td>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Locked Savings Card -->
+    <div class="col-md-2">
+      <div class="card border-warning shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-warning">Locked Savings</h5>
+          <p class="card-text h4">
+            <%= number_to_currency(@locked_savings || 0, unit: "Ksh ") %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% if @transactions.any? %>
+<table class="table">
+  <tr class="table-primary">
+    <th>Date</th>
+    <th>Type</th>
+    <th>Debit</th>
+    <th>Credit</th>
+    <th>Balance</th>
+  </tr>
+
+  <% balance = 0 %>
+  <% @transactions.each do |t| %>
+    <% balance += t[:amount] %>
+    <tr>
+      <td><%= t[:date].strftime("%d %b %Y") %></td>
+      <td><%= t[:type] %></td>
+
+      <% if t[:amount] < 0 %>
+        <!-- Debit -->
+        <td><%= number_to_currency(t[:amount].abs, unit: "Ksh ") %></td>
+        <td>-</td>
+      <% else %>
+        <!-- Credit -->
+        <td>-</td>
+        <td><%= number_to_currency(t[:amount], unit: "Ksh ") %></td>
+      <% end %>
+
+      <td><%= number_to_currency(balance, unit: "Ksh ") %></td>
+    </tr>
+  <% end %>
+</table>
+<% else %>
+  <p class="text-danger"><i>No statements available for <%= @member.name %>.</i></p>
+<% end %>
+
+<div class="mt-3">
+  <%= link_to "Back to Sacco Account", savings_path, class: "btn btn-primary btn-sm" %>
+  <%= link_to "New Saving", new_saving_path(member_id: @member.id), class:"btn btn-success btn-sm" %>
+  <%= link_to "New loan", new_loan_path(member_id: @member.id), class:"btn btn-success btn-sm " %>
+  <%= link_to "New loan repayment", new_loan_repayment_path(loan_id: @member.loans.last.id), class:"btn btn-success btn-sm" if @member.loans.any? %>
+</div>
+</div>
+

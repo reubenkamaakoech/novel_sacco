@@ -1,0 +1,123 @@
+<%= form_with(model: loan, data: { turbo: false }) do |form| %>
+  <% if loan.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(loan.errors.count, "error") %> prohibited this loan from being saved:</h2>
+      <ul>
+        <% loan.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if current_user %>
+    <%= form.hidden_field :user_id, value: current_user.id %>
+  <% end %>
+
+  <div class="mb-4">
+    <% if @loan.member_id.present? %>
+      <div class="mb-3">
+        <strong><%= form.label :member_id %></strong>
+        <%= form.collection_select :member_id, Member.all, :id, :name, 
+      { prompt: "-Select Member-", selected: @loan.member_id }, 
+      { class: "form-control", id: "member_select", disabled: true } %>
+        <%= form.hidden_field :member_id %>
+      </div>
+    <% else %>
+     <strong><%= form.label :member_id %></strong>
+       <%= form.collection_select :member_id, Member.all, :id, :name, { prompt: "-Select Member-" }, { class: "form-control", id: "member_select" } %>
+    <% end %>
+  </div>
+
+  <div class="mb-4 d-none" id="available_amount_wrapper">
+    <strong><%= form.label :available_amount %></strong>
+    <%= form.text_field :available_amount, class: "form-control", id: "available_amount", readonly: true %>
+  </div>
+
+  <div class="mb-4">
+    <strong><%= form.label :amount %></strong>
+    <%= form.text_field :amount, class: "form-control", id: "loan_amount" %>
+  </div>
+
+  <div class="mb-4 col-2">
+    <strong><%= form.label :payment_period_months %></strong>
+    <%= form.number_field :payment_period_months, class: "form-control", id: "loan_period", max: 6, min: 1 %>
+  </div>
+
+  <div class="mb-4">
+    <strong><%= form.label :repayment_amount_per_month %></strong>
+    <%= form.text_field :repayment_amount_per_month, class: "form-control", id: "loan_repayment" %>
+  </div>
+
+  <%= form.submit nil, class: "btn btn-success btn-sm" %>
+<% end %>
+
+<script>
+document.addEventListener("turbo:load", function() {
+  const memberSelect = document.getElementById("member_select");
+  const availableWrapper = document.getElementById("available_amount_wrapper");
+  const availableField = document.getElementById("available_amount");
+  const amountField = document.getElementById("loan_amount");
+  const periodField = document.getElementById("loan_period");
+  const repaymentField = document.getElementById("loan_repayment");
+
+  let availableAmountValue = 0;
+
+  function formatKES(num) {
+    return new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" }).format(num || 0);
+  }
+
+  function fetchAvailableAmount(memberId) {
+    if (!memberId) {
+      availableWrapper.classList.add("d-none");
+      availableField.value = "";
+      return;
+    }
+
+    fetch(`/members/${memberId}/available_for_loans`, { headers: { "Accept": "application/json" } })
+      .then(r => r.json())
+      .then(data => {
+        availableAmountValue = data.available_amount;
+        availableField.value = formatKES(data.available_amount);
+        availableWrapper.classList.remove("d-none");
+      });
+  }
+
+  function updateRepayment() {
+    const amount = parseFloat(amountField.value);
+    const period = parseInt(periodField.value);
+    repaymentField.value = (!isNaN(amount) && !isNaN(period) && period > 0)
+      ? (amount / period).toFixed(2)
+      : "";
+  }
+
+  // Events
+  memberSelect.addEventListener("change", () => fetchAvailableAmount(memberSelect.value));
+  amountField.addEventListener("input", updateRepayment);
+  periodField.addEventListener("input", updateRepayment);
+
+  // Validation before submit
+  document.querySelector("form").addEventListener("submit", function(e) {
+    const enteredAmount = parseFloat(amountField.value);
+    if (enteredAmount > availableAmountValue) {
+      e.preventDefault();
+      alert("Loan amount cannot exceed available amount.");
+    }
+  });
+
+  // 🔹 This ensures the field is populated in EDIT mode
+  if (memberSelect.value) {
+    fetchAvailableAmount(memberSelect.value);
+    updateRepayment();
+  }
+});
+</script>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  let memberField = document.querySelector("input[name='loan[member_id]']");
+  if (memberField && memberField.value) {
+    fetchBalance(memberField.value); // your balance AJAX function
+  }
+});
+</script>

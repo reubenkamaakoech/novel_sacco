@@ -1,0 +1,27 @@
+<% content_for :title, "Id Card" %>
+ 
+<div class="card mb-3 container" style="max-width: 250px;">
+  <div class="card-header bg-primary text-white">
+    <h3>Novel Sacco</h3>
+  </div><br/>
+
+  <div class="text-center">  
+    <% if @member.passport_photo.attached? %>
+      <%= image_tag url_for(@member.passport_photo), 
+                style: "width:120px; height:120px; border:1px solid #000;" %>
+    <% else %>
+      <p>No Photo</p>
+    <% end %>
+  </div><br/>
+  
+  <div>
+  <p class="card-text text-center">
+    <strong>Name:</strong> <%= @member.name %><br/>
+    <strong>Membership No:</strong> <%= @member.membership_number %><br/>
+    <strong>Status:</strong> <%= @member.status? ? "Active" : "Inactive" %><br/>
+    <strong>Expiry Date:</strong> <%= 1.year.from_now.strftime("%d %B %Y") %><br/>
+  </p>
+  </div>
+  </div>
+  
+  

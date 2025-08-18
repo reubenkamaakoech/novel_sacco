@@ -12,11 +12,13 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :timeoutable, 
          :timeout_in => 30.minutes
 
-  has_many :attendances, dependent: :destroy
   has_many :employees, dependent: :destroy
-  has_many :payrolls, dependent: :destroy
   has_many :advances, dependent: :destroy
-  has_many :sites, dependent: :destroy
+  has_many :members, dependent: :destroy
+  has_many :savings, dependent: :destroy
+  has_many :loans, dependent: :destroy
+  has_many :loan_repayments, dependent: :destroy
+
   has_one_attached :image
 
   # Example roles: admin, manager, staff, employee

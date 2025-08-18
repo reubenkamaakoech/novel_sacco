@@ -1,0 +1,67 @@
+<div class="row mb-4">
+  <!-- Total Loans Card -->
+  <div class="col-md-4">
+    <div class="card border-success shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-success">Total Loans Disbursed</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@total_loans, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+   <!-- Total Loans Repaid -->
+  <div class="col-md-4">
+    <div class="card border-success shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-success">Total Loans Repaid</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@total_repayments, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Loan Balance -->
+  <div class="col-md-4">
+    <div class="card border-success shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-success">Total Loan Balance</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@loan_balance, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<div class="container">
+<table class="table">
+  <thead class="table-primary">
+    <tr>
+      <th>Id</th>
+      <th>Member</th>
+      <th>Amount</th>
+      <th>Payment period</th>
+      <th>Repayment amount per month</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @loans.each do |loan| %>
+      <tr>
+        <td><%= loan.id %></td>
+        <td><%= loan.member.name %></td>
+        <td><%= loan.amount %></td>
+        <td><%= loan.payment_period_months %> Months</td>
+        <td><%= loan.repayment_amount_per_month %></td>
+        <td><%= link_to "Show", loan_path(loan), class: "btn btn-primary btn-sm" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</div>
+ 
+
+  

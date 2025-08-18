@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_08_023721) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_18_042755) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -51,19 +51,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_023721) do
     t.index ["user_id"], name: "index_advances_on_user_id"
   end
 
-  create_table "attendances", force: :cascade do |t|
-    t.integer "employee_id", null: false
-    t.integer "site_id"
-    t.date "work_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_id", default: 1, null: false
-    t.index ["employee_id", "work_date"], name: "index_attendances_on_employee_id_and_work_date", unique: true
-    t.index ["employee_id"], name: "index_attendances_on_employee_id"
-    t.index ["site_id"], name: "index_attendances_on_site_id"
-    t.index ["user_id"], name: "index_attendances_on_user_id"
-  end
-
   create_table "employees", force: :cascade do |t|
     t.string "full_name"
     t.decimal "daily_pay"
@@ -77,19 +64,57 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_023721) do
     t.index ["user_id"], name: "index_employees_on_user_id"
   end
 
-  create_table "payrolls", force: :cascade do |t|
-    t.integer "employee_id", null: false
-    t.string "period"
-    t.integer "worked_days"
-    t.decimal "total_pay"
-    t.decimal "advance"
-    t.decimal "payable"
+  create_table "loan_repayments", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "loan_id", null: false
+    t.decimal "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", default: 1, null: false
-    t.decimal "daily_pay_at_time"
-    t.index ["employee_id"], name: "index_payrolls_on_employee_id"
-    t.index ["user_id"], name: "index_payrolls_on_user_id"
+    t.index ["loan_id"], name: "index_loan_repayments_on_loan_id"
+    t.index ["user_id"], name: "index_loan_repayments_on_user_id"
+  end
+
+  create_table "loans", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.decimal "available_amount"
+    t.decimal "amount"
+    t.string "payment_period_months"
+    t.decimal "repayment_amount_per_month"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["member_id"], name: "index_loans_on_member_id"
+    t.index ["user_id"], name: "index_loans_on_user_id"
+  end
+
+  create_table "members", force: :cascade do |t|
+    t.string "membership_number"
+    t.string "name"
+    t.string "id_number"
+    t.string "phone_number"
+    t.string "email"
+    t.date "join_date"
+    t.boolean "status", default: true
+    t.string "next_of_kin_name"
+    t.string "next_of_kin_contact"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.string "next_of_kin_relationship"
+    t.decimal "monthly_contribution"
+    t.index ["user_id"], name: "index_members_on_user_id"
+  end
+
+  create_table "savings", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.decimal "amount"
+    t.string "deposit_type"
+    t.date "month"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_savings_on_member_id"
+    t.index ["user_id"], name: "index_savings_on_user_id"
   end
 
   create_table "settings", force: :cascade do |t|
@@ -97,10 +122,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_023721) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-# Could not dump table "sites" because of following StandardError
-#   Unknown type '' for column 'labour_cost'
-
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -123,11 +144,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_023721) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "advances", "employees"
   add_foreign_key "advances", "users"
-  add_foreign_key "attendances", "employees"
-  add_foreign_key "attendances", "sites"
-  add_foreign_key "attendances", "users"
   add_foreign_key "employees", "users"
-  add_foreign_key "payrolls", "employees"
-  add_foreign_key "payrolls", "users"
-  add_foreign_key "sites", "users"
+  add_foreign_key "loan_repayments", "loans"
+  add_foreign_key "loan_repayments", "users"
+  add_foreign_key "loans", "members"
+  add_foreign_key "loans", "users"
+  add_foreign_key "members", "users"
+  add_foreign_key "savings", "members"
+  add_foreign_key "savings", "users"
 end
