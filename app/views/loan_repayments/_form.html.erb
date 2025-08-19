@@ -18,11 +18,8 @@
   <div class="mb-4">
    <% if @loan_repayment.loan_id.present? %>
       <div class="mb-3">
-        <strong><%= form.label :member_id %></strong>
-        <%= form.collection_select :member_id, Member.all, :id, :name, 
-      { prompt: "-Select Member-", selected: @loan_repayment.loan_id }, 
-      { class: "form-control", id: "member_select", disabled: true } %>
-        <%= form.hidden_field :member_id %>
+        <%= text_field_tag :member_name, @loan_repayment.loan.member.name, class: "form-control", disabled: true %>
+  <%= form.hidden_field :member_id, value: @loan_repayment.loan.member_id %>
       </div>
     <% else %>
     <%= form.label :loan_id, style: "display: block" %>
