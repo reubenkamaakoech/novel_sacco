@@ -21,7 +21,7 @@
   <h5>Generate Monthly Loan Repayments</h5>
   <%= form_with url: generate_monthly_loan_repayments_path, method: :post, local: true, class: "row g-2 align-items-center" do |form| %>
     <div class="col-auto">
-      <%= form.label :month, "Month", class: "form-label" %>
+  
       <%= form.select :month,
           Date::MONTHNAMES.compact.each_with_index.map { |name, i| [name, i+1] },
           selected: Date.today.month,
@@ -29,7 +29,7 @@
     </div>
 
     <div class="col-auto">
-      <%= form.label :year, "Year", class: "form-label" %>
+    
       <%= form.number_field :year,
           value: Date.today.year,
           class: "form-control",

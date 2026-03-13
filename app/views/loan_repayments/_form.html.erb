@@ -15,17 +15,24 @@
     <%= form.hidden_field :user_id, value: current_user.id %>
   <% end %>
 
-  <div class="mb-4">
-   <% if @loan_repayment.loan_id.present? %>
-      <div class="mb-3">
-        <%= text_field_tag :member_name, @loan_repayment.loan.member.name, class: "form-control", disabled: true %>
-        <%= form.hidden_field :loan_id, value: @loan_repayment.loan.id %> 
-      </div>
-    <% else %>
-      <%= form.label :loan_id, style: "display: block" %>
-      <%= form.collection_select :loan_id, Loan.all, :id, :member_name, { prompt:"-Select loan-" }, class: "form-control" %>
-    <% end %>
-  </div>
+  <div class="mb-3">
+  <% if params[:member_id].present? %>
+    <!-- Show member name -->
+    <%= text_field_tag :member_name, Member.find(params[:member_id]).name, class: "form-control", disabled: true %>
+    <!-- Hidden member_id field -->
+    <%= form.hidden_field :member_id, value: params[:member_id], id: "member_select" %>
+  <% else %>
+    <%= form.label :member_id, "Select Member" %>
+    <%= form.collection_select :member_id, Member.all, :id, :name,
+          { prompt: "-Select member-" }, { class: "form-control", id: "member_select" } %>
+  <% end %>
+</div>
+
+<!-- Loan dropdown -->
+<div class="mb-3">
+  <%= form.label :loan_id, "Select Loan" %>
+  <%= form.select :loan_id, [], { prompt: "-Select loan-" }, class: "form-control", id: "loan_select" %>
+</div>
 
   <div class="mb-4">
     <%= form.label :amount, style: "display: block" %>
@@ -41,3 +48,41 @@
     <%= form.submit nil, class:"btn btn-success btn-sm" %>
   </div>
 <% end %>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const memberSelect = document.getElementById("member_select");
+  const loanSelect = document.getElementById("loan_select");
+
+  function fetchLoans(memberId) {
+    loanSelect.innerHTML = '<option value="">-Loading loans-</option>';
+    if (!memberId) {
+      loanSelect.innerHTML = '<option value="">-Select loan-</option>';
+      return;
+    }
+
+    fetch(`/members/${memberId}/loans.json`)
+      .then(res => res.json())
+      .then(loans => {
+        let options = '<option value="">-Select loan-</option>';
+        loans.forEach(l => {
+          options += `<option value="${l.id}">${l.id} - ${l.amount}</option>`;
+        });
+        loanSelect.innerHTML = options;
+      });
+  }
+
+  // 1️⃣ Listen for changes (for new selections)
+  memberSelect.addEventListener("change", () => {
+    fetchLoans(memberSelect.value);
+  });
+
+  // 2️⃣ Force fetch if member is prefilled (from params)
+  if (memberSelect.value) {
+    // Small timeout ensures the DOM is fully ready
+    setTimeout(() => {
+      fetchLoans(memberSelect.value);
+    }, 50);
+  }
+});
+</script>

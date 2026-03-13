@@ -1,11 +1,10 @@
-
   <p>
-    <strong>User:</strong>
-    <%= loan_repayment.user.username %>
+    <strong>Loan Id:</strong>
+    <%= loan_repayment.id %>
   </p>
-
+  
   <p>
-    <strong>Loan:</strong>
+    <strong>Member:</strong>
     <%= loan_repayment.loan&.member&.name || "No loan assigned" %>
   </p>
 
@@ -17,5 +16,10 @@
   <p>
     <strong>Repayment Month:</strong>
     <%= loan_repayment.repayment_month.strftime("%b %Y") %>
+  </p>
+
+  <p>
+    <strong>Created By:</strong>
+    <%= loan_repayment.user.username %>
   </p>
 

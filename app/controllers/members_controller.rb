@@ -62,6 +62,11 @@ class MembersController < ApplicationController
     end
   end
 
+  def loans
+    member = Member.find(params[:member_id])
+    render json: member.loans.select(:id, :amount)
+  end
+
    def toggle_status
     @member = Member.find(params[:id])
     new_status = ActiveModel::Type::Boolean.new.cast(params[:status])

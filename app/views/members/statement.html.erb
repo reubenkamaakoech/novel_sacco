@@ -101,7 +101,7 @@
   <%= link_to "Back to Sacco Account", savings_path, class: "btn btn-primary btn-sm" %>
   <%= link_to "New Saving", new_saving_path(member_id: @member.id), class:"btn btn-success btn-sm" %>
   <%= link_to "New loan", new_loan_path(member_id: @member.id), class:"btn btn-success btn-sm " %>
-  <%= link_to "New loan repayment", new_loan_repayment_path(loan_id: @member.loans.last.id), class:"btn btn-success btn-sm" if @member.loans.any? %>
+  <%= link_to "New Loan Repayment", new_loan_repayment_path(member_id: @member.id), class: "btn btn-success btn-sm" %>
 </div>
 </div>
 

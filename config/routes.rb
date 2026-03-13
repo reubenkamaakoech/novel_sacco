@@ -19,6 +19,10 @@ Rails.application.routes.draw do
   end
 
   resources :members do
+    get 'loans', to: 'members#loans'
+  end
+
+  resources :members do
   member do
     patch :toggle_status
   end
