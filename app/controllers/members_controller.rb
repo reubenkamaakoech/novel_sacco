@@ -92,15 +92,15 @@ class MembersController < ApplicationController
     @transactions = []
 
     @savings.each do |s|
-      @transactions << { date: s.created_at, type: "Saving", amount: s.amount }
+      @transactions << { date: s.created_at, type: "Saving", amount: s.amount, deposit_type: s.deposit_type, record: s }
     end
 
     @loans.each do |l|
-      @transactions << { date: l.created_at, type: "Loan", amount: -l.amount }
+      @transactions << { date: l.created_at, type: "Loan", amount: -l.amount, record: l }
     end
 
     @repayments.each do |r|
-      @transactions << { date: r.created_at, type: "Repayment", amount: r.amount }
+      @transactions << { date: r.created_at, type: "Repayment", amount: r.amount, record: r }
     end
 
     # Sort by date for proper statement view

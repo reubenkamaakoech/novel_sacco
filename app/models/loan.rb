@@ -10,8 +10,26 @@ class Loan < ApplicationRecord
 
   validate :amount_cannot_exceed_available
 
+   scope :active_with_balance, -> {
+    left_joins(:loan_repayments)
+      .group(:id)
+      .having("SUM(loan_repayments.amount) < loans.amount")
+  }
+
   def member_name
     member.name   # assuming members table has a "name" column
+  end
+
+  def total_loans
+     amount  
+  end
+
+  def loan_repayments_total
+    loan_repayments.sum(:amount)
+  end
+
+  def balance
+    (total_loans||0) - loan_repayments_total
   end
 
   private

@@ -19,17 +19,22 @@
    <% if @loan_repayment.loan_id.present? %>
       <div class="mb-3">
         <%= text_field_tag :member_name, @loan_repayment.loan.member.name, class: "form-control", disabled: true %>
-  <%= form.hidden_field :member_id, value: @loan_repayment.loan.member_id %>
+        <%= form.hidden_field :loan_id, value: @loan_repayment.loan.id %> 
       </div>
     <% else %>
-    <%= form.label :loan_id, style: "display: block" %>
-    <%= form.collection_select :loan_id, Loan.all, :id, :member_name, { prompt:"-Select loan-" }, class: "form-control" %>
+      <%= form.label :loan_id, style: "display: block" %>
+      <%= form.collection_select :loan_id, Loan.all, :id, :member_name, { prompt:"-Select loan-" }, class: "form-control" %>
     <% end %>
   </div>
 
   <div class="mb-4">
     <%= form.label :amount, style: "display: block" %>
     <%= form.text_field :amount, class:"form-control" %>
+  </div>
+
+  <div class="mb-4 col-md-4">
+    <%= form.label :repayment_month, style: "display: block" %>
+    <%= form.date_field :repayment_month, class:"form-control" %>
   </div>
 
   <div>

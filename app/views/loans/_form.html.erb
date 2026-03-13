@@ -49,6 +49,11 @@
     <%= form.text_field :repayment_amount_per_month, class: "form-control", id: "loan_repayment" %>
   </div>
 
+  <div class="form-check form-switch mb-3">
+    <%= form.check_box :status, class: "form-check-input", id: "statusSwitch" %>
+    <%= form.label :status, "Active Loan?", class: "form-check-label", for: "statusSwitch" %>
+  </div><br/>
+
   <%= form.submit nil, class: "btn btn-success btn-sm" %>
 <% end %>
 

@@ -10,5 +10,41 @@
   <% end %>
 </div>
 
+<div>
 <%= link_to "New loan repayment", new_loan_repayment_path, class:"btn btn-success btn-sm" %>
+<% if LoanRepayment.where(repayment_month: Date.today.beginning_of_month).exists? %>
+  <button class="btn btn-secondary" disabled>
+    Repayments already generated for <%= Date.today.strftime("%B %Y") %>
+  </button>
+<% else %>
+  <div class="mb-3 p-3 border rounded bg-light">
+  <h5>Generate Monthly Loan Repayments</h5>
+  <%= form_with url: generate_monthly_loan_repayments_path, method: :post, local: true, class: "row g-2 align-items-center" do |form| %>
+    <div class="col-auto">
+      <%= form.label :month, "Month", class: "form-label" %>
+      <%= form.select :month,
+          Date::MONTHNAMES.compact.each_with_index.map { |name, i| [name, i+1] },
+          selected: Date.today.month,
+          class: "form-select" %>
+    </div>
+
+    <div class="col-auto">
+      <%= form.label :year, "Year", class: "form-label" %>
+      <%= form.number_field :year,
+          value: Date.today.year,
+          class: "form-control",
+          min: 2000,
+          max: 2100 %>
+    </div>
+
+    <div class="col-auto">
+      <%= form.submit "Generate Repayments",
+          class: "btn btn-primary btn-sm",
+          data: { confirm: "Are you sure you want to generate repayments for the selected month and year?" } %>
+    </div>
+  <% end %>
 </div>
+<% end %>
+</div>
+</div>
+<br/>

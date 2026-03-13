@@ -1,7 +1,16 @@
 Rails.application.routes.draw do
-  resources :loan_repayments
+  resources :loan_repayments do
+  collection do
+    post :generate_monthly
+  end
+  end
+
   get '/members/:id/available_for_loans', to: 'members#available_for_loans'
-  resources :loans
+  resources :loans do
+  member do
+    patch :toggle_status
+  end
+  end
 
   resources :savings do
   collection do
@@ -54,7 +63,7 @@ Rails.application.routes.draw do
   end
   end
   
-  root "members#index"
+  root "savings#index"
   get "home/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

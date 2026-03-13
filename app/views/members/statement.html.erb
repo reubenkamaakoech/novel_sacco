@@ -68,7 +68,16 @@
     <% balance += t[:amount] %>
     <tr>
       <td><%= t[:date].strftime("%d %b %Y") %></td>
-      <td><%= t[:type] %></td>
+      
+      <td>
+        <% if t[:type] == "Saving" %>
+          <%= link_to "#{t[:type]} (#{t[:deposit_type]})", saving_path(t[:record]), class: "text-success" %>
+        <% elsif t[:type] == "Loan" %>
+          <%= link_to t[:type], loan_path(t[:record]), class: "text-danger" %>
+        <% elsif t[:type] == "Repayment" %>
+          <%= link_to t[:type], loan_repayment_path(t[:record]), class: "text-primary" %>
+        <% end %>
+      </td>
 
       <% if t[:amount] < 0 %>
         <!-- Debit -->

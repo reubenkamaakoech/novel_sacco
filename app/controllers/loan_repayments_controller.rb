@@ -1,5 +1,6 @@
 class LoanRepaymentsController < ApplicationController
   before_action :set_loan_repayment, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!
 
   # GET /loan_repayments or /loan_repayments.json
   def index
@@ -12,8 +13,11 @@ class LoanRepaymentsController < ApplicationController
 
   # GET /loan_repayments/new
   def new
-    @loan_repayment = LoanRepayment.new
-    @loan_repayment.loan_id = params[:loan_id] if params[:loan_id].present?
+    if params[:loan_id].present?
+      @loan_repayment = LoanRepayment.new(loan_id: params[:loan_id])
+     else
+      @loan_repayment = LoanRepayment.new
+    end
   end
 
   # GET /loan_repayments/1/edit
@@ -58,6 +62,41 @@ class LoanRepaymentsController < ApplicationController
     end
   end
 
+def generate_monthly
+  # Get selected month/year, default to current
+  month = params[:month].presence || Date.today.month
+  year  = params[:year].presence  || Date.today.year
+  selected_date = Date.new(year.to_i, month.to_i, 1)
+
+  created_members = []
+  skipped_members = []
+
+  Member.where(status: true).find_each do |member|
+    # Skip if already has ordinary loan repayment for selected month/year
+    if Saving.where(member_id: member.id)
+             .where("strftime('%m', month) = ? AND strftime('%Y', month) = ?", selected_date.strftime('%m'), selected_date.strftime('%Y'))
+             .exists?
+      skipped_members << member.name
+      next
+    end
+
+    LoanRepayment.create!(
+      loan_id: member.loans.active_with_balance.first&.id,
+      amount: loan.repayment_amount,
+      month: selected_date,
+      user_id: current_user.id
+    )
+    created_members << member.name
+  end
+
+  message = []
+  message << "#{created_members.count} ordinary loan repayments created for #{selected_date.strftime('%B %Y')}." if created_members.any?
+  message << "Skipped: #{skipped_members.sort.join(', ')}" if skipped_members.any?
+
+  redirect_to loan_repayments_path, notice: message.join(" ")
+end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_loan_repayment
@@ -66,6 +105,6 @@ class LoanRepaymentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def loan_repayment_params
-      params.expect(loan_repayment: [ :user_id, :loan_id, :member_id, :amount ])
+      params.expect(loan_repayment: [ :user_id, :loan_id, :amount, :repayment_month, ])
     end
 end

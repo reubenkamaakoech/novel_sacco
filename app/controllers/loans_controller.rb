@@ -55,6 +55,13 @@ class LoansController < ApplicationController
     end
   end
 
+  def toggle_status
+    @loan = Loan.find(params[:id])
+    new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
+    @loan.update(status: new_status)
+      redirect_to loans_path, notice: "Loan status updated."
+  end
+
   # DELETE /loans/1 or /loans/1.json
   def destroy
     @loan.destroy!
@@ -73,6 +80,6 @@ class LoansController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def loan_params
-      params.expect(loan: [ :member_id, :available_amount, :amount, :payment_period_months, :repayment_amount_per_month, :user_id ])
+      params.expect(loan: [ :member_id, :available_amount, :amount, :payment_period_months, :repayment_amount_per_month, :user_id, :status ])
     end
 end

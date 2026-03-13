@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_18_042755) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_26_181643) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -70,6 +70,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_18_042755) do
     t.decimal "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "repayment_month", null: false
+    t.date "repayment_date"
+    t.index ["loan_id", "repayment_month"], name: "index_loan_repayments_on_loan_id_and_repayment_month", unique: true
     t.index ["loan_id"], name: "index_loan_repayments_on_loan_id"
     t.index ["user_id"], name: "index_loan_repayments_on_user_id"
   end
@@ -83,6 +86,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_18_042755) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.boolean "status", default: true, null: false
     t.index ["member_id"], name: "index_loans_on_member_id"
     t.index ["user_id"], name: "index_loans_on_user_id"
   end

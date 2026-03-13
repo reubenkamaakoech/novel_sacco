@@ -6,6 +6,7 @@
       <th>ID</th>
       <th>Status</th>
       <th>Name</th>
+      <th>Monthly Contribution</th>
       <th>Membership Number</th>
       <th colspan="3">Actions</th>
     </tr>
@@ -22,6 +23,7 @@
            <% end %>
         </td>
         <td><%= member.name %></td>
+        <td><%= number_to_currency(member.monthly_contribution, unit:"Ksh ") %></td>
         <td><%= member.membership_number %></td>  
         <td><%= link_to "Show", member_path(member), class: "btn btn-primary btn-sm" %></div>   
         <td><%= link_to "View ID Card", id_card_member_path(member), class: "btn btn-info btn-sm", target: "_blank" %></td>
