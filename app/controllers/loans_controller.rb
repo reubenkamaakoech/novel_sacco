@@ -19,7 +19,7 @@ class LoansController < ApplicationController
   def new
     @loan = Loan.new
     @loan.member_id = params[:member_id] if params[:member_id].present?
-    @members = Member.all
+    @members = Member.where(status: true)
     @available_for_loans = nil # only set after selecting member
   end
 

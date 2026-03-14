@@ -2,6 +2,14 @@ class Loan < ApplicationRecord
   belongs_to :member
   has_many :loan_repayments, dependent: :destroy
 
+  validate :member_must_be_active
+
+   def member_must_be_active
+     if member && !member.status
+      errors.add(:member_id, "is not active")
+     end
+   end
+
   validates :payment_period_months, numericality: { 
     only_integer: true, 
     greater_than: 0, 

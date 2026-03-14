@@ -18,14 +18,14 @@
     <% if @loan.member_id.present? %>
       <div class="mb-3">
         <strong><%= form.label :member_id %></strong>
-        <%= form.collection_select :member_id, Member.all, :id, :name, 
+        <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
       { prompt: "-Select Member-", selected: @loan.member_id }, 
       { class: "form-control", id: "member_select", disabled: true } %>
         <%= form.hidden_field :member_id %>
       </div>
     <% else %>
      <strong><%= form.label :member_id %></strong>
-       <%= form.collection_select :member_id, Member.all, :id, :name, { prompt: "-Select Member-" }, { class: "form-control", id: "member_select" } %>
+       <%= form.collection_select :member_id, Member.where(status: true), :id, :name, { prompt: "-Select Member-" }, { class: "form-control", id: "member_select" } %>
     <% end %>
   </div>
 
