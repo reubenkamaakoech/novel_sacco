@@ -68,11 +68,20 @@ class MembersController < ApplicationController
   end
 
    def toggle_status
-    @member = Member.find(params[:id])
-    new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
-    @member.update(status: new_status)
-      redirect_to members_path, notice: "Member status updated."
+  @member = Member.find(params[:id])
+  new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
+
+  if !new_status && @member.loans.where(status: true).exists?
+    redirect_to members_path, alert: "Cannot deactivate member with an active loan."
+    return
   end
+
+  if @member.update(status: new_status)
+    redirect_to members_path, notice: "Member status updated successfully."
+  else
+    redirect_to members_path, alert: "Failed to update member status."
+  end
+end
 
   def available_for_loans
     member = Member.find(params[:id])
