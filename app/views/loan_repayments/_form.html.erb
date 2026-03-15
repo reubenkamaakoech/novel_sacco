@@ -50,7 +50,7 @@
 <% end %>
 
 <script>
-document.addEventListener("turbo:load", () => {
+  document.addEventListener("turbo:load", () => {
   const memberSelect = document.getElementById("member_select");
   const loanSelect = document.getElementById("loan_select");
 
@@ -62,27 +62,25 @@ document.addEventListener("turbo:load", () => {
     }
 
     fetch(`/members/${memberId}/loans.json`)
-      .then(res => res.json())
-      .then(loans => {
-        let options = '<option value="">-Select loan-</option>';
-        loans.forEach(l => {
-          options += `<option value="${l.id}">${l.id} - ${l.amount}</option>`;
-        });
-        loanSelect.innerHTML = options;
-      });
-  }
+  .then(res => res.json())
+  .then(loans => {
+    let options = '<option value="">-Select loan-</option>';
+    loans.forEach(l => {
+      options += `<option value="${l.id}">${l.id} - Balance: Ksh ${l.balance}</option>`;
+    });
+    loanSelect.innerHTML = options;
+  });  }
 
-  // 1️⃣ Listen for changes (for new selections)
-  memberSelect.addEventListener("change", () => {
-    fetchLoans(memberSelect.value);
-  });
-
-  // 2️⃣ Force fetch if member is prefilled (from params)
-  if (memberSelect.value) {
-    // Small timeout ensures the DOM is fully ready
-    setTimeout(() => {
+  // Fetch loans on member change
+  if (memberSelect) {
+    memberSelect.addEventListener("change", () => {
       fetchLoans(memberSelect.value);
-    }, 50);
+    });
+
+    // Prefill loans if member already selected (edit mode)
+    if (memberSelect.value) {
+      setTimeout(() => fetchLoans(memberSelect.value), 50);
+    }
   }
 });
 </script>

@@ -64,9 +64,16 @@ class MembersController < ApplicationController
   end
 
   def loans
-    member = Member.find(params[:member_id])
-    render json: member.loans.select(:id, :amount)
-  end
+  member = Member.find(params[:member_id])
+  render json: member.loans.map { |loan|
+    {
+      id: loan.id,
+      amount: loan.amount,
+      repaid: loan.loan_repayments.sum(:amount),
+      balance: loan.amount - loan.loan_repayments.sum(:amount)
+    }
+  }.select { |loan| loan[:balance] > 0 }  # only loans with remaining balance
+end
 
   # PATCH /members/:id/toggle_status
   def toggle_status

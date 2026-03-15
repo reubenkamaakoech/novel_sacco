@@ -63,7 +63,7 @@ class LoanRepaymentsController < ApplicationController
   end
 
 def generate_monthly
-  # Get selected month/year, default to current
+  # Selected month/year or default to current
   month = params[:month].presence || Date.today.month
   year  = params[:year].presence  || Date.today.year
   selected_date = Date.new(year.to_i, month.to_i, 1)
@@ -72,30 +72,46 @@ def generate_monthly
   skipped_members = []
 
   Member.where(status: true).find_each do |member|
-    # Skip if already has ordinary loan repayment for selected month/year
-    if Saving.where(member_id: member.id)
-             .where("strftime('%m', month) = ? AND strftime('%Y', month) = ?", selected_date.strftime('%m'), selected_date.strftime('%Y'))
-             .exists?
+    # Find the first active loan with balance
+    loan = member.loans.active_with_balance.first
+    next unless loan # Skip member if no active loan
+
+    # Skip if repayment already exists for this loan/month
+    if LoanRepayment.where(loan_id: loan.id)
+                    .where("strftime('%m', repayment_month) = ? AND strftime('%Y', repayment_month) = ?", 
+                           selected_date.strftime('%m'), 
+                           selected_date.strftime('%Y'))
+                    .exists?
       skipped_members << member.name
       next
     end
 
+    # Determine repayment amount: cannot exceed remaining balance
+    remaining_balance = loan.amount - loan.loan_repayments.sum(:amount)
+    repayment_amount = [loan.repayment_amount_per_month, remaining_balance].min
+
+    # Create repayment
     LoanRepayment.create!(
-      loan_id: member.loans.active_with_balance.first&.id,
-      amount: loan.repayment_amount,
-      month: selected_date,
+      loan_id: loan.id,
+      amount: repayment_amount,
+      repayment_month: selected_date,
       user_id: current_user.id
     )
     created_members << member.name
+
+    # Update loan status automatically if fully repaid
+    if loan.loan_repayments.sum(:amount) >= loan.amount
+      loan.update(status: false)
+    end
   end
 
+  # Prepare feedback message
   message = []
   message << "#{created_members.count} ordinary loan repayments created for #{selected_date.strftime('%B %Y')}." if created_members.any?
-  message << "Skipped: #{skipped_members.sort.join(', ')}" if skipped_members.any?
+  message << "Skipped (no active loan or already repaid): #{skipped_members.sort.join(', ')}" if skipped_members.any?
 
   redirect_to loan_repayments_path, notice: message.join(" ")
 end
-
 
   private
     # Use callbacks to share common setup or constraints between actions.

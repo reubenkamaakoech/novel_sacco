@@ -2,8 +2,9 @@ class Loan < ApplicationRecord
   belongs_to :member
   has_many :loan_repayments, dependent: :destroy
   
-  # Callback to auto-disable loan if fully repaid
-  before_save :disable_if_fully_repaid
+  validate :single_active_loan, on: :create   # <-- this is the new validation
+  # Prevent status being set to true if loan is fully repaid
+  before_update :prevent_reopening_fully_paid_loan, if: :status_changed?
   
   validate :member_must_be_active
 
@@ -21,11 +22,11 @@ class Loan < ApplicationRecord
 
   validate :amount_cannot_exceed_available
 
-   scope :active_with_balance, -> {
-    left_joins(:loan_repayments)
-      .group(:id)
-      .having("SUM(loan_repayments.amount) < loans.amount")
-  }
+  scope :active_with_balance, -> {
+  left_joins(:loan_repayments)
+    .group(:id)
+    .having("COALESCE(SUM(loan_repayments.amount), 0) < loans.amount")
+}
 
   def member_name
     member.name   # assuming members table has a "name" column
@@ -44,10 +45,21 @@ class Loan < ApplicationRecord
   end
 
   private
-  def disable_if_fully_repaid
-    self.status = false if balance <= 0
+  def prevent_reopening_fully_paid_loan
+    if balance <= 0 && status
+      errors.add(:status, "cannot be reactivated: loan is fully repaid")
+      throw(:abort) # stops the update
+    end
   end
+  
+   # New validation: only one active loan at a time
+  def single_active_loan
+    return unless member
 
+    if member.loans.where(status: true).exists?
+      errors.add(:member_id, "already has an active loan")
+    end
+  end
 
   def amount_cannot_exceed_available
     return if member.nil?
