@@ -103,39 +103,39 @@ end
   end
 
   def statement
-    @member = Member.find(params[:id])
+  @member = Member.find(params[:id])
 
-    @savings = @member.savings.order(created_at: :asc)
-    @loans = @member.loans.order(created_at: :asc)
-    @repayments = @member.loan_repayments.order(created_at: :asc)
-    @total_savings = @member.savings.sum(:amount)
-    @locked_savings = @total_savings * 0.25
-    @available_for_loans = @total_savings - @locked_savings
-    @total_loans = @member.loans.sum(:amount)
+  @savings = @member.savings.order(:created_at)
+  @loans = @member.loans.order(:created_at)
 
-     # repayments
-    @repayments = LoanRepayment.where(loan_id: @member.id)
-    @total_repayments = @repayments.sum(:amount)
-    @loan_balance = @total_loans - @total_repayments
+  # get all repayments via loans
+  @repayments = LoanRepayment.where(loan_id: @member.loans.pluck(:id)).order(:created_at)
 
-    # Combine transactions into one list for statement
-    @transactions = []
+  @total_savings = @savings.sum(:amount)
+  @locked_savings = @total_savings * 0.25
+  @available_for_loans = @total_savings - @locked_savings
+  @total_loans = @loans.sum(:amount)
+  @total_repayments = @repayments.sum(:amount)
+  @loan_balance = @total_loans - @total_repayments
 
-    @savings.each do |s|
-      @transactions << { date: s.created_at, type: "Saving", amount: s.amount, deposit_type: s.deposit_type, record: s }
-    end
+  # Combine transactions into one array
+  @transactions = []
 
-    @loans.each do |l|
-      @transactions << { date: l.created_at, type: "Loan", amount: -l.amount, record: l }
-    end
-
-    @repayments.each do |r|
-      @transactions << { date: r.created_at, type: "Repayment", amount: r.amount, record: r }
-    end
-
-    # Sort by date for proper statement view
-    @transactions.sort_by! { |t| t[:date] }
+  @savings.each do |s|
+    @transactions << { date: s.created_at, type: "Saving", amount: s.amount, deposit_type: s.deposit_type, record: s }
   end
+
+  @loans.each do |l|
+    @transactions << { date: l.created_at, type: "Loan", amount: -l.amount, record: l }
+  end
+
+  @repayments.each do |r|
+    @transactions << { date: r.created_at, type: "Repayment", amount: r.amount, record: r }
+  end
+
+  # Sort by date
+  @transactions.sort_by! { |t| t[:date] }
+end
 
   private
     # Use callbacks to share common setup or constraints between actions.
