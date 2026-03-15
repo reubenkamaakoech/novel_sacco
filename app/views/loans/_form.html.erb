@@ -15,19 +15,20 @@
   <% end %>
 
   <div class="mb-4">
-    <% if @loan.member_id.present? %>
-      <div class="mb-3">
-        <strong><%= form.label :member_id %></strong>
-        <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
-      { prompt: "-Select Member-", selected: @loan.member_id }, 
-      { class: "form-control", id: "member_select", disabled: true } %>
-        <%= form.hidden_field :member_id %>
-      </div>
-    <% else %>
-     <strong><%= form.label :member_id %></strong>
-       <%= form.collection_select :member_id, Member.where(status: true), :id, :name, { prompt: "-Select Member-" }, { class: "form-control", id: "member_select" } %>
-    <% end %>
-  </div>
+  <% if @loan.member_id.present? %>
+    <div class="mb-3">
+      <strong><%= form.label :member_id %></strong>
+      <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
+        { prompt: "-Select Member-", selected: @loan.member_id }, 
+        { class: "form-control", id: "member_select", disabled: true } %>
+      <%= form.hidden_field :member_id %>
+    </div>
+  <% else %>
+    <strong><%= form.label :member_id %></strong>
+    <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
+          { prompt: "-Select Member-" }, { class: "form-control", id: "member_select" } %>
+  <% end %>
+</div>
 
   <div class="mb-4 d-none" id="available_amount_wrapper">
     <strong><%= form.label :available_amount %></strong>
@@ -117,12 +118,34 @@ document.addEventListener("turbo:load", function() {
   }
 });
 </script>
+ 
 
 <script>
 document.addEventListener("turbo:load", () => {
   let memberField = document.querySelector("input[name='loan[member_id]']");
   if (memberField && memberField.value) {
     fetchBalance(memberField.value); // your balance AJAX function
+  }
+});
+</script>
+
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const memberSelect = document.getElementById("member_select");
+
+  if (memberSelect && !memberSelect.disabled) {
+    // Build a JS object: member_id => has active loan
+    const activeLoans = <%= raw Member.all.map { |m| [m.id, m.loans.where(status: true).exists?] }.to_h.to_json %>;
+
+    // Disable options with active loans
+    Array.from(memberSelect.options).forEach(option => {
+      const memberId = parseInt(option.value);
+      if (memberId && activeLoans[memberId]) {
+        option.disabled = true;           // disable the option
+        option.text += " (Active loan)";  // append text to show why
+      }
+    });
   }
 });
 </script>

@@ -100,8 +100,24 @@
 <div class="mt-3">
   <%= link_to "Back to Sacco Account", savings_path, class: "btn btn-primary btn-sm" %>
   <%= link_to "New Saving", new_saving_path(member_id: @member.id), class:"btn btn-success btn-sm" %>
-  <%= link_to "New loan", new_loan_path(member_id: @member.id), class:"btn btn-success btn-sm " %>
-  <%= link_to "New Loan Repayment", new_loan_repayment_path(member_id: @member.id), class: "btn btn-success btn-sm" %>
+
+  <% if @member.loans.where(status: true).exists? %>
+    <button class="btn btn-secondary btn-sm" disabled>
+      Active Loan Exists
+    </button>
+  <% else %>
+    <%= link_to "New loan", new_loan_path(member_id: @member.id), class: "btn btn-success btn-sm" %>
+  <% end %>
+
+  <% if @member.loans.where(status: true).exists? %>
+  <%= link_to "New Loan Repayment",
+      new_loan_repayment_path(member_id: @member.id),
+      class: "btn btn-success btn-sm" %>
+  <% else %>
+    <button class="btn btn-secondary btn-sm" disabled>
+      No Active Loan
+    </button>
+  <% end %>
 </div>
 </div>
 

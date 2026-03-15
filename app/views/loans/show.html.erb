@@ -62,6 +62,14 @@
   <% end %>
 
   <div class="mt-2">
-    <%= link_to "Add Repayment", new_loan_repayment_path(loan_id: @loan.id), class: "btn btn-success btn-sm" %>
+    <% if @loan.balance > 0 %>
+  <%= link_to "New Loan Repayment",
+      new_loan_repayment_path(member_id: @loan.member_id),
+      class: "btn btn-success btn-sm" %>
+<% else %>
+  <button class="btn btn-secondary btn-sm" disabled>
+    Loan Fully Paid
+  </button>
+<% end %>
   </div>
 </div>

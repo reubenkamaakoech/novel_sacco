@@ -13,6 +13,8 @@ class LoansController < ApplicationController
 
   # GET /loans/1 or /loans/1.json
   def show
+    @loan = Loan.find(params[:id])
+    @member = @loan.member
   end
 
   # GET /loans/new
