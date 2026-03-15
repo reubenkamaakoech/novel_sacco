@@ -1,7 +1,10 @@
 class Loan < ApplicationRecord
   belongs_to :member
   has_many :loan_repayments, dependent: :destroy
-
+  
+  # Callback to auto-disable loan if fully repaid
+  before_save :disable_if_fully_repaid
+  
   validate :member_must_be_active
 
    def member_must_be_active
@@ -41,6 +44,10 @@ class Loan < ApplicationRecord
   end
 
   private
+  def disable_if_fully_repaid
+    self.status = false if balance <= 0
+  end
+
 
   def amount_cannot_exceed_available
     return if member.nil?

@@ -56,11 +56,39 @@ class LoansController < ApplicationController
   end
 
   def toggle_status
-    @loan = Loan.find(params[:id])
-    new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
-    @loan.update(status: new_status)
-      redirect_to loans_path, notice: "Loan status updated."
+  @loan = Loan.find(params[:id])
+  new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
+
+  # Only allow toggle if fully repaid
+  total_repaid = @loan.loan_repayments.sum(:amount)
+  if total_repaid < @loan.amount
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          dom_id(@loan, :status),
+          partial: "loans/status_toggle",
+          locals: { loan: @loan, alert: "Cannot toggle: loan not fully repaid" }
+        )
+      end
+      format.html { redirect_to loans_path, alert: "Cannot update status: loan not fully repaid." }
+    end
+    return
   end
+
+  # Loan fully paid → update status
+  @loan.update(status: new_status)
+
+  respond_to do |format|
+    format.turbo_stream do
+      render turbo_stream: turbo_stream.replace(
+        dom_id(@loan, :status),
+        partial: "loans/status_toggle",
+        locals: { loan: @loan }
+      )
+    end
+    format.html { redirect_to loans_path, notice: "Loan status updated." }
+  end
+end
 
   # DELETE /loans/1 or /loans/1.json
   def destroy

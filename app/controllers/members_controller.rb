@@ -1,6 +1,7 @@
 class MembersController < ApplicationController
   before_action :set_member, only: %i[ show edit update destroy statement]
   before_action :authenticate_user!
+  before_action :set_member, only: [:toggle_status]
 
   # GET /members or /members.json
   def index
@@ -67,28 +68,36 @@ class MembersController < ApplicationController
     render json: member.loans.select(:id, :amount)
   end
 
-   def toggle_status
-  @member = Member.find(params[:id])
-  new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
+  # PATCH /members/:id/toggle_status
+  def toggle_status
+    new_status = ActiveModel::Type::Boolean.new.cast(params[:status])
 
-  if !new_status && @member.loans.where(status: true).exists?
-    redirect_to members_path, alert: "Cannot deactivate member with an active loan."
-    return
+    if !new_status && @member.loans.where(status: true).exists?
+      # cannot deactivate member with active loan
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@member, :status), partial: "members/status_toggle", locals: { member: @member }) }
+        format.html { redirect_to members_path, alert: "Cannot deactivate member with an active loan." }
+      end
+      return
+    end
+
+    @member.update(status: new_status)
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@member, :status), partial: "members/status_toggle", locals: { member: @member }) }
+      format.html { redirect_to members_path, notice: "Member status updated." }
+    end
   end
 
-  if @member.update(status: new_status)
-    redirect_to members_path, notice: "Member status updated successfully."
-  else
-    redirect_to members_path, alert: "Failed to update member status."
-  end
-end
-
+  
   def available_for_loans
     member = Member.find(params[:id])
       render json: { available_amount: member.available_for_loans }
   end
 
   def statement
+    @member = Member.find(params[:id])
+
     @savings = @member.savings.order(created_at: :asc)
     @loans = @member.loans.order(created_at: :asc)
     @repayments = @member.loan_repayments.order(created_at: :asc)

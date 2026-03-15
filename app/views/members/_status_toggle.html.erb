@@ -1,0 +1,49 @@
+<%= turbo_frame_tag dom_id(member, :status) do %>
+  <%= form_with url: toggle_status_member_path(member), method: :patch, local: false do %>
+    <label class="switch">
+      <%= check_box_tag :status, true, member.status, onchange: 'this.form.submit()' %>
+      <span class="slider round"></span>
+    </label>
+  <% end %>
+<% end %>
+
+<!-- INLINE CSS FOR TOGGLE PILL -->
+<style>
+/* Small ON/OFF pill toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #dc3545; /* red = OFF */
+  transition: .4s;
+  border-radius: 20px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #28a745; /* green = ON */
+}
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+</style>

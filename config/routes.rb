@@ -19,6 +19,12 @@ Rails.application.routes.draw do
   end
 
   resources :members do
+    member do
+      get :statement
+    end
+  end
+
+  resources :members do
     get 'loans', to: 'members#loans'
   end
 

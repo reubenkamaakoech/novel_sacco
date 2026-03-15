@@ -39,34 +39,33 @@
 <div class="container">
 <table class="table">
   <thead class="table-primary">
+  <tr>
+    <th>Id</th>
+    <th>Member</th>
+    <th>Amount</th>
+    <th>Payment period</th>
+    <th>Repayment amount per month</th>
+    <th>Balance</th> <!-- New column -->
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+<tbody>
+  <% @loans.each do |loan| %>
     <tr>
-      <th>Id</th>
-      <th>Member</th>
-      <th>Amount</th>
-      <th>Payment period</th>
-      <th>Repayment amount per month</th>
-      <th>Status</th>
-      <th>Actions</th>
+      <td><%= loan.id %></td>
+      <td><%= loan.member.name %></td>
+      <td><%= number_to_currency(loan.amount, unit: "Ksh ") %></td>
+      <td><%= loan.payment_period_months %> Months</td>
+      <td><%= number_to_currency(loan.repayment_amount_per_month, unit: "Ksh ") %></td>
+      <td><%= number_to_currency(loan.balance, unit: "Ksh ") %></td> <!-- Show balance -->
+      <td>
+        <%= render "loans/status_toggle", loan: loan %>
+      </td>
+      <td><%= link_to "Show", loan_path(loan), class: "btn btn-primary btn-sm" %></td>
     </tr>
-  </thead>
-  <tbody>
-    <% @loans.each do |loan| %>
-      <tr>
-        <td><%= loan.id %></td>
-        <td><%= loan.member.name %></td>
-        <td><%= loan.amount %></td>
-        <td><%= loan.payment_period_months %> Months</td>
-        <td><%= loan.repayment_amount_per_month %></td>
-        <td>
-        <%= form_with url: toggle_status_loan_path(loan), method: :patch, local: true do %>
-           <%= hidden_field_tag :status, false %>
-             <%= check_box_tag :status, true, loan.status, onchange: 'this.form.submit();' %>
-           <% end %>
-        </td>
-        <td><%= link_to "Show", loan_path(loan), class: "btn btn-primary btn-sm" %></td>
-      </tr>
-    <% end %>
-  </tbody>
+  <% end %>
+</tbody>
 </table>
 </div>
  
