@@ -22,7 +22,7 @@
         <div class="card-body">
           <h5 class="card-title text-primary">Available for Loans</h5>
           <p class="card-text h4">
-            <%= number_to_currency(@available_for_loans || 0, unit: "Ksh ") %>
+            <%= number_to_currency((@total_savings - Member::LOCKED_SAVINGS_RATIO * (@total_savings || 0)), unit: "Ksh ") %>
           </p>
         </div>
       </div>
@@ -46,7 +46,7 @@
         <div class="card-body">
           <h5 class="card-title text-warning">Locked Savings</h5>
           <p class="card-text h4">
-            <%= number_to_currency(@locked_savings || 0, unit: "Ksh ") %>
+            <%= number_to_currency(Member::LOCKED_SAVINGS_RATIO * (@total_savings || 0), unit: "Ksh ") %>
           </p>
         </div>
       </div>
@@ -71,7 +71,12 @@
       
       <td>
         <% if t[:type] == "Saving" %>
-          <%= link_to "#{t[:type]} (#{t[:deposit_type]})", saving_path(t[:record]), class: "text-success" %>
+          <%= link_to "#{t[:deposit_type]} #{t[:type]}",
+            saving_path(t[:record]),
+            class: case t[:deposit_type]
+              when "random" then "text-dark"
+              else "text-success"
+            end %>
         <% elsif t[:type] == "Loan" %>
           <%= link_to t[:type], loan_path(t[:record]), class: "text-danger" %>
         <% elsif t[:type] == "Repayment" %>

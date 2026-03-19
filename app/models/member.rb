@@ -7,12 +7,14 @@ class Member < ApplicationRecord
 
    before_create :set_membership_number
 
+   LOCKED_SAVINGS_RATIO = 0.333333
+
    def total_savings
     savings.sum(:amount)
   end
 
   def locked_savings
-    total_savings * 0.25
+    total_savings * LOCKED_SAVINGS_RATIO  
   end
 
   def available_for_loans
