@@ -41,7 +41,7 @@ class Loan < ApplicationRecord
   end
 
   def balance
-    (total_loans||0) - loan_repayments_total
+    amount.to_f - LoanRepayment.where(loan_id: id).sum(:amount)
   end
 
   private

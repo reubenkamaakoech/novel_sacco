@@ -7,15 +7,21 @@ class LoanRepayment < ApplicationRecord
   
   validate :cannot_exceed_loan_balance
    
-  after_save :close_loan_if_fully_paid
+  after_commit :close_loan_if_fully_paid
 
   private
 
   def close_loan_if_fully_paid
-    if loan.balance <= 0
-      loan.update(status: false)
-    end
+  return unless loan
+
+  loan.reload
+
+  total_paid = LoanRepayment.where(loan_id: loan.id).sum(:amount)
+
+  if total_paid >= loan.amount
+    loan.update_column(:status, false)  # 🔥 bypass validations
   end
+end
 
   def cannot_exceed_loan_balance
   return if amount.blank? || loan.blank?
