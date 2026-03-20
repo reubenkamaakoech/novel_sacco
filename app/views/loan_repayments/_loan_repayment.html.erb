@@ -1,25 +1,36 @@
-  <p>
-    <strong>Loan Id:</strong>
-    <%= loan_repayment.id %>
-  </p>
+  <table class="table table-striped">
+  <thead class="table-primary">
+    <tr>
+      <th>#</th>
+      <th>Loan Id:</th>
+      <th>Member:</th>
+      <th>Amount:</th>
+      <th>Repayment Month:</th>
+      <th>Created By:</th>
+      <th>Actions:</th>
+    </tr>
+  </thead>
+    <tbody>
+     <% @loan_repayments.each do |loan_repayment| %>
+      <tr>
+        <td><%= loan_repayment.id %></td>
+        <td><%= loan_repayment.loan_id %></td>
+        <td><%= loan_repayment.loan&.member&.name || "No loan assigned" %></td>
+        <td><%= number_to_currency(loan_repayment.amount, unit: "Ksh ") %></td>
+        <td><%= loan_repayment.repayment_month.strftime("%b %Y") %></td>
+        <td><%= loan_repayment.user.username %></td>
+        <td>
+          <%= link_to "Show", loan_repayment_path(loan_repayment), class: "btn btn-primary btn-sm" %>
+          <%= link_to "Edit", edit_loan_repayment_path(loan_repayment), class: "btn btn-warning btn-sm" %>
+          <%= link_to "Delete", loan_repayment_path(loan_repayment), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+
+
+
+
+
   
-  <p>
-    <strong>Member:</strong>
-    <%= loan_repayment.loan&.member&.name || "No loan assigned" %>
-  </p>
-
-  <p>
-    <strong>Amount:</strong>
-    <%= loan_repayment.amount %>
-  </p>
-
-  <p>
-    <strong>Repayment Month:</strong>
-    <%= loan_repayment.repayment_month.strftime("%b %Y") %>
-  </p>
-
-  <p>
-    <strong>Created By:</strong>
-    <%= loan_repayment.user.username %>
-  </p>
-

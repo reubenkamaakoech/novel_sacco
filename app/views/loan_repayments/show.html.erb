@@ -1,6 +1,30 @@
 
 <div class="container">
-<%= render @loan_repayment %>
+
+<p>
+  <strong>Loan Id:</strong>
+  <%= @loan_repayment.loan_id %>
+</p>
+
+<p>
+  <strong>Member:</strong>
+  <%= @loan_repayment.member.name %> (<%= @loan_repayment.member.membership_number %>)
+</p>
+
+<p>
+  <strong>Loan Amount:</strong>
+  <%= number_to_currency(@loan_repayment.loan.amount, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Repayment Amount:</strong>
+  <%= number_to_currency(@loan_repayment.amount, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Created by:</strong>
+  <%= @loan_repayment.user.username %>
+</p>
 
 <div>
   <%= link_to "Edit this loan repayment", edit_loan_repayment_path(@loan_repayment), class:"btn btn-warning btn-sm" %> |
