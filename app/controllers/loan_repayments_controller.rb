@@ -1,5 +1,6 @@
 class LoanRepaymentsController < ApplicationController
   before_action :set_loan_repayment, only: %i[ show edit update destroy ]
+  before_action :prevent_edit_if_closed, only: [:edit, :update, :destroy]
   before_action :authenticate_user!
 
   # GET /loan_repayments or /loan_repayments.json
@@ -111,6 +112,15 @@ def generate_monthly
   message << "Skipped (no active loan or already repaid): #{skipped_members.sort.join(', ')}" if skipped_members.any?
 
   redirect_to loan_repayments_path, notice: message.join(" ")
+end
+
+def prevent_edit_if_closed
+  loan = @loan_repayment.loan
+
+  if loan.nil? || !loan.status || loan.balance <= 0
+    redirect_to loan_repayments_path,
+      alert: "This loan is closed or fully paid. You cannot modify repayments."
+  end
 end
 
   private

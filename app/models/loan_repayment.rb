@@ -10,7 +10,7 @@ class LoanRepayment < ApplicationRecord
   after_commit :close_loan_if_fully_paid
 
   private
-
+  
   def close_loan_if_fully_paid
   return unless loan
 

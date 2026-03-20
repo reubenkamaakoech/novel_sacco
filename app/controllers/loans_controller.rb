@@ -1,5 +1,6 @@
 class LoansController < ApplicationController
   before_action :set_loan, only: %i[ show edit update destroy ]
+  before_action :prevent_edit_if_closed, only: [:edit, :update, :destroy]
   before_action :authenticate_user!
 
   # GET /loans or /loans.json
@@ -101,6 +102,13 @@ end
       format.json { head :no_content }
     end
   end
+
+  def prevent_edit_if_closed
+  if @loan.nil? || !@loan.status || @loan.balance <= 0
+    redirect_to loans_path,
+      alert: "This loan is closed or fully paid. You cannot modify it."
+  end
+end
 
   private
     # Use callbacks to share common setup or constraints between actions.
