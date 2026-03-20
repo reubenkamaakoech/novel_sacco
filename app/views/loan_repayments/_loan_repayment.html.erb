@@ -21,8 +21,18 @@
         <td><%= loan_repayment.user.username %></td>
         <td>
           <%= link_to "Show", loan_repayment_path(loan_repayment), class: "btn btn-primary btn-sm" %>
-          <%= link_to "Edit", edit_loan_repayment_path(loan_repayment), class: "btn btn-warning btn-sm" %>
-          <%= link_to "Delete", loan_repayment_path(loan_repayment), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+
+          <% if loan_repayment.loan&.status %>
+            <%= link_to "Edit", edit_loan_repayment_path(loan_repayment), class: "btn btn-warning btn-sm" %>
+            <%= link_to "Delete", loan_repayment_path(loan_repayment),
+              method: :delete,
+              data: { confirm: "Are you sure?" },
+              class: "btn btn-danger btn-sm" %>
+          <% else %>
+           <button class="btn btn-warning btn-sm" disabled>Edit</button>
+           <button class="btn btn-danger btn-sm" disabled>Delete</button>
+          <% end %>
+        </td>
       </tr>
       <% end %>
     </tbody>
