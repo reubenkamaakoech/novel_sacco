@@ -20,7 +20,7 @@
     <div class="col-md-3">
       <div class="card border-primary shadow-sm">
         <div class="card-body">
-          <h5 class="card-title text-primary">Available for Loans</h5>
+          <h5 class="card-title text-primary">Available for Loans (<%= 100 - AppConfig.locked_percentage %>%) </h5>
           <p class="card-text h4">
             <%= number_to_currency((@total_savings - Member.locked_ratio * (@total_savings || 0)), unit: "Ksh ") %>
           </p>
@@ -44,8 +44,7 @@
     <div class="col-md-4">
       <div class="card border-danger shadow-sm">
         <div class="card-body">
-          <h5 class="card-title text-danger">Locked Savings</h5>
-          <%= AppConfig.locked_percentage %>% is locked and not available for loans to member.
+          <h5 class="card-title text-danger">Locked Savings (<%= AppConfig.locked_percentage %>%) </h5>
           <p class="card-text h4">
             <%= number_to_currency(Member.locked_ratio * (@total_savings || 0), unit: "Ksh ") %>
           </p>
@@ -80,6 +79,9 @@
             end %>
         <% elsif t[:type] == "Loan" %>
           <%= link_to t[:type], loan_path(t[:record]), class: "text-danger" %>
+            <span class="badge <%= t[:record].status ? 'bg-danger' : 'bg-success' %>">
+           <%= t[:record].status ? 'Active' : 'Serviced' %>
+          </span>
         <% elsif t[:type] == "Repayment" %>
           <%= link_to t[:type], loan_repayment_path(t[:record]), class: "text-primary" %>
         <% end %>
