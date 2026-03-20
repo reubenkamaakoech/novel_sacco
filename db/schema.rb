@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_26_181643) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_20_065458) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -49,6 +49,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_26_181643) do
     t.string "reason"
     t.index ["employee_id"], name: "index_advances_on_employee_id"
     t.index ["user_id"], name: "index_advances_on_user_id"
+  end
+
+  create_table "app_configs", force: :cascade do |t|
+    t.integer "locked_savings_percentage", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_app_configs_on_user_id"
   end
 
   create_table "employees", force: :cascade do |t|
@@ -148,6 +156,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_26_181643) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "advances", "employees"
   add_foreign_key "advances", "users"
+  add_foreign_key "app_configs", "users"
   add_foreign_key "employees", "users"
   add_foreign_key "loan_repayments", "loans"
   add_foreign_key "loan_repayments", "users"

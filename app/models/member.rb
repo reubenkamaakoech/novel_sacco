@@ -5,39 +5,45 @@ class Member < ApplicationRecord
     has_many :loan_repayments, through: :loans
     has_one_attached :passport_photo
 
-   before_create :set_membership_number
+    before_create :set_membership_number
 
-   LOCKED_SAVINGS_RATIO = 0.333333
+    def self.locked_percentage
+      AppConfig.first&.locked_savings_percentage.to_d || 0
+    end
 
-   def total_savings
-    savings.sum(:amount)
-  end
+    def self.locked_ratio
+      locked_percentage / 100
+    end
 
-  def locked_savings
-    total_savings * LOCKED_SAVINGS_RATIO  
-  end
-
-  def available_for_loans
-    total_savings - locked_savings
-  end
-
-private
-
-def set_membership_number
-  return if membership_number.present?
-
-   # Extract only numeric part from membership_number, ignoring the prefix
-   last_number = Member
-     .where("membership_number LIKE ?", "NS%")
-     .pluck(:membership_number)
-     .map { |num| num.gsub(/\D/, '').to_i } # remove non-digits
-     .max
-
-   if last_number.present?
-     new_number = last_number + 1
-     self.membership_number = "NS#{new_number.to_s.rjust(3, '0')}"
-   else
-     self.membership_number = "NS001"
+    def total_savings
+     savings.sum(:amount)
    end
- end
+
+   def locked_savings
+     total_savings * self.class.locked_ratio 
+   end
+
+   def available_for_loans
+     total_savings - locked_savings
+   end
+
+   private
+
+   def set_membership_number
+     return if membership_number.present?
+
+    # Extract only numeric part from membership_number, ignoring the prefix
+     last_number = Member
+       .where("membership_number LIKE ?", "NS%")
+       .pluck(:membership_number)
+       .map { |num| num.gsub(/\D/, '').to_i } # remove non-digits
+       .max
+
+    if last_number.present?
+      new_number = last_number + 1
+       self.membership_number = "NS#{new_number.to_s.rjust(3, '0')}"
+    else
+     self.membership_number = "NS001"
+    end
+  end
 end

@@ -1,0 +1,7 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  locked_savings_percentage: 9.99
+
+two:
+  locked_savings_percentage: 9.99

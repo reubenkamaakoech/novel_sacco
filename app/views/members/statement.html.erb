@@ -22,7 +22,7 @@
         <div class="card-body">
           <h5 class="card-title text-primary">Available for Loans</h5>
           <p class="card-text h4">
-            <%= number_to_currency((@total_savings - Member::LOCKED_SAVINGS_RATIO * (@total_savings || 0)), unit: "Ksh ") %>
+            <%= number_to_currency((@total_savings - Member.locked_ratio * (@total_savings || 0)), unit: "Ksh ") %>
           </p>
         </div>
       </div>
@@ -41,12 +41,13 @@
     </div>
 
     <!-- Locked Savings Card -->
-    <div class="col-md-2">
-      <div class="card border-warning shadow-sm">
+    <div class="col-md-4">
+      <div class="card border-danger shadow-sm">
         <div class="card-body">
-          <h5 class="card-title text-warning">Locked Savings</h5>
+          <h5 class="card-title text-danger">Locked Savings</h5>
+          <%= AppConfig.locked_percentage %>% is locked and not available for loans to member.
           <p class="card-text h4">
-            <%= number_to_currency(Member::LOCKED_SAVINGS_RATIO * (@total_savings || 0), unit: "Ksh ") %>
+            <%= number_to_currency(Member.locked_ratio * (@total_savings || 0), unit: "Ksh ") %>
           </p>
         </div>
       </div>
@@ -125,4 +126,3 @@
   <% end %>
 </div>
 </div>
-

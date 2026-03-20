@@ -69,6 +69,25 @@
           </ul>
         </li>
 
+        <!-- Saving Percentage -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark"
+            href="javascript:void(0);"
+            data-bs-toggle="dropdown">
+            Saving Percentage
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="savingPercentageDropdown">
+            <li><%= link_to "Edit Saving Percentage", edit_app_config_path(AppConfig.first), class: "dropdown-item" %></li>
+          </ul>
+        </li>
+
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="loanRepaymentsDropdown">
+            <li><%= link_to "New Loan Repayment", new_loan_repayment_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Loan Repayments", loan_repayments_path, class: "dropdown-item" %></li>
+          </ul>
+        </li>
+
         <!-- Advances -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-dark"

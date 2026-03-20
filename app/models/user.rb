@@ -18,6 +18,7 @@ class User < ApplicationRecord
   has_many :savings, dependent: :destroy
   has_many :loans, dependent: :destroy
   has_many :loan_repayments, dependent: :destroy
+  has_many :app_configs, dependent: :destroy
 
   has_one_attached :image
 

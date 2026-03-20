@@ -1,10 +1,14 @@
 Rails.application.routes.draw do
+  get "app_configs/edit"
+  get "app_configs/update"
   resources :loan_repayments do
   collection do
     post :generate_monthly
   end
   end
-
+  
+  resource :app_config, only: [:edit, :update]
+  
   get '/members/:id/available_for_loans', to: 'members#available_for_loans'
   resources :loans do
   member do

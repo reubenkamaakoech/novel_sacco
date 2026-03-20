@@ -112,7 +112,7 @@ end
   @repayments = LoanRepayment.where(loan_id: @member.loans.pluck(:id)).order(:created_at)
 
   @total_savings = @savings.sum(:amount)
-  @locked_savings = @total_savings * 0.25
+  @locked_savings = @total_savings * Member.locked_ratio
   @available_for_loans = @total_savings - @locked_savings
   @total_loans = @loans.sum(:amount)
   @total_repayments = @repayments.sum(:amount)

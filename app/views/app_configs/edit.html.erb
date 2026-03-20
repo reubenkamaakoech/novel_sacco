@@ -1,0 +1,20 @@
+
+<div class="container mb-4">
+  
+  
+
+<h4>System Settings</h4>
+
+<%= form_with model: @config, local: true do |f| %>
+  <div class="mb-3">
+    <%= f.label :locked_savings_percentage, "Locked Savings (%)" %>
+    <%= f.number_field :locked_savings_percentage, step: 1, class: "form-control" %>
+  </div>
+
+  <%= f.submit "Save", class: "btn btn-primary" %>
+  <%= link_to "Back to Dashboard", root_path, class: "btn btn-secondary" %>
+<% end %>
+
+
+</div>
+

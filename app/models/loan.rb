@@ -65,7 +65,7 @@ class Loan < ApplicationRecord
     return if member.nil?
 
     total_savings = member.savings.sum(:amount)
-    locked_savings = total_savings * Member::LOCKED_SAVINGS_RATIO
+    locked_savings = total_savings * Member.locked_ratio
     available_for_loans = total_savings - locked_savings
 
     if amount.present? && amount > available_for_loans

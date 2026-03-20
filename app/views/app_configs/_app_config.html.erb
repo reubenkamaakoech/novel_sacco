@@ -1,0 +1,15 @@
+  <p>
+    <strong>#:</strong>
+    <%= app_config.id %>
+  </p>
+  
+  <p>
+    <strong>Locked Savings Percentage:</strong>
+    <%= app_config.locked_savings_percentage || "No loan assigned" %>
+  </p>
+
+    <p>
+    <strong>Created By:</strong>
+    <%= app_config.user.username %>
+  </p>
+

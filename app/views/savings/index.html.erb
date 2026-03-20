@@ -4,7 +4,7 @@
 
 <div class="row mb-4">
   <!-- Total Savings Card -->
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="card border-success shadow-sm">
       <div class="card-body">
         <h5 class="card-title text-success">Total Savings</h5>
@@ -16,10 +16,10 @@
   </div>
 
    <!-- Available for loans Card -->
-  <div class="col-md-4">
-    <div class="card border-success shadow-sm">
+  <div class="col-md-3">
+    <div class="card border-primary shadow-sm">
       <div class="card-body">
-        <h5 class="card-title text-success">Available for loans</h5>
+        <h5 class="card-title text-primary">Available for loans</h5>
         <p class="card-text h4">
           <%= number_to_currency(@available_for_loans, unit: "Ksh ") %>
         </p>
@@ -29,10 +29,11 @@
   
 
   <!-- Locked Savings Card -->
-  <div class="col-md-4">
-    <div class="card border-success shadow-sm">
+  <div class="col-md-5">
+    <div class="card border-danger shadow-sm">
       <div class="card-body">
-        <h5 class="card-title text-success">Locked Savings</h5>
+        <h5 class="card-title text-danger">Locked Savings</h5>
+        <%= AppConfig.locked_percentage %>% of total savings is locked and not available for loans to members.
         <p class="card-text h4">
           <%= number_to_currency(@locked_savings, unit: "Ksh ") %>
         </p>

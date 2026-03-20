@@ -6,7 +6,7 @@ class SavingsController < ApplicationController
   def index
     @savings = Saving.includes(:member).all
     @total_savings = Saving.sum(:amount)
-    @locked_savings = @total_savings * Member::LOCKED_SAVINGS_RATIO
+    @locked_savings = @total_savings * Member.locked_ratio
     @available_for_loans = @total_savings - @locked_savings
 
     @savings_summary = Member
