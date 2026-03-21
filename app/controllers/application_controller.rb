@@ -1,23 +1,48 @@
 class ApplicationController < ActionController::Base
-  # app/controllers/application_controller.rb
-before_action :update_user_activity
+  before_action :authenticate_user!
 
-def update_user_activity
-  if current_user
-    current_user.update_column(:last_seen_at, Time.current)
+  # Generic authorization
+  def authorize_resource!(resource = nil)
+    resource ||= resource_for_permission
+    return unless current_user
+
+    unless allowed?(current_user, resource, current_action_type)
+      redirect_to root_path, alert: "Not authorized"
+    end
   end
-end
 
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
-   
-  # allow username to be creted when signing up
-  before_action :configure_permitted_parameters, if: :devise_controller?
+  def resource_for_permission
+    # Map controllers to resources for Permission table
+    case controller_name
+    when "statements"
+      "members/statement"
+    else
+      controller_name
+    end
+  end
 
-  protected
+  def allowed?(user, resource, action)
+    return true if user.role == "admin"
 
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :image])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:username, :image])
+    permission = Permission.find_by(role: user.role, resource: resource)
+    return false unless permission
+
+    case action
+    when :create then permission.can_create
+    when :read   then permission.can_read
+    when :update then permission.can_update
+    when :delete then permission.can_delete
+    else false
+    end
+  end
+
+  def current_action_type
+    case action_name
+    when "index", "show" then :read
+    when "new", "create" then :create
+    when "edit", "update" then :update
+    when "destroy" then :delete
+    else :read
+    end
   end
 end

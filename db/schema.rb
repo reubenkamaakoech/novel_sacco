@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_20_065458) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_20_213849) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -115,6 +115,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_20_065458) do
     t.string "next_of_kin_relationship"
     t.decimal "monthly_contribution"
     t.index ["user_id"], name: "index_members_on_user_id"
+  end
+
+  create_table "permissions", force: :cascade do |t|
+    t.string "role"
+    t.string "resource"
+    t.boolean "can_create", default: false, null: false
+    t.boolean "can_read", default: false, null: false
+    t.boolean "can_update", default: false, null: false
+    t.boolean "can_delete", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "savings", force: :cascade do |t|

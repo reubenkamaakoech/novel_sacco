@@ -2,6 +2,15 @@ class MembersController < ApplicationController
   before_action :set_member, only: %i[ show edit update destroy statement]
   before_action :authenticate_user!
   before_action :set_member, only: [:toggle_status]
+  before_action :authorize_resource!, except: [:index]
+
+  def authorize_resource!(resource = @member)
+    return unless current_user # skip if not signed in
+    
+    unless allowed?(current_user, resource, current_action_type)
+      redirect_to root_path, alert: "Not authorized"
+    end
+  end
 
   # GET /members or /members.json
   def index

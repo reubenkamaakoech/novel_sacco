@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "permissions/index"
+  get "permissions/update"
   get "app_configs/edit"
   get "app_configs/update"
   resources :loan_repayments do
@@ -6,6 +8,12 @@ Rails.application.routes.draw do
     post :generate_monthly
   end
   end
+
+  resources :permissions, only: [:index] do
+  collection do
+    post :update
+  end
+end
   
   resource :app_config, only: [:edit, :update]
   

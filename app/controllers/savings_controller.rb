@@ -1,6 +1,15 @@
 class SavingsController < ApplicationController
   before_action :set_saving, only: %i[ show edit update destroy ]
   before_action :authenticate_user!
+  before_action :authorize_resource!, except: [:index]
+
+  def authorize_resource!(resource = @saving)
+    return unless current_user # skip if not signed in
+    
+    unless allowed?(current_user, resource, current_action_type)
+      redirect_to root_path, alert: "Not authorized"
+    end
+  end
 
   # GET /savings or /savings.json
   def index

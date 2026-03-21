@@ -1,0 +1,22 @@
+<% content_for :title, "Role Permissions" %>
+
+<div class="container">
+  
+<%= form_with url: permissions_path, method: :post, local: true do %>
+  <% @roles.each do |role| %>
+    <h4><%= role.capitalize %></h4>
+    <% @resources.each do |resource| %>
+      <% permission = @permissions[[role, resource]] %>
+      <div class="border p-2 mb-2">
+        <strong><%= resource.capitalize %></strong><br>
+        <%= check_box_tag "permissions[#{role}][#{resource}][can_create]", "1", permission.can_create %> Create
+        <%= check_box_tag "permissions[#{role}][#{resource}][can_read]", "1", permission.can_read %> Read
+        <%= check_box_tag "permissions[#{role}][#{resource}][can_update]", "1", permission.can_update %> Update
+        <%= check_box_tag "permissions[#{role}][#{resource}][can_delete]", "1", permission.can_delete %> Delete
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= submit_tag "Save Permissions", class: "btn btn-primary" %>
+<% end %>
+</div>

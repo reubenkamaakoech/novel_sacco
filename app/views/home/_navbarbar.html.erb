@@ -88,6 +88,25 @@
           </ul>
         </li>
 
+        <!-- Permissions -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark"
+            href="javascript:void(0);"
+            data-bs-toggle="dropdown">
+            Permissions
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="permissionsDropdown">
+            <li><%= link_to "Edit Permissions", permissions_path, class: "dropdown-item" %></li>
+          </ul>
+        </li>
+
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="loanRepaymentsDropdown">
+            <li><%= link_to "New Loan Repayment", new_loan_repayment_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Loan Repayments", loan_repayments_path, class: "dropdown-item" %></li>
+          </ul>
+        </li>
+
         <!-- Advances -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-dark"
