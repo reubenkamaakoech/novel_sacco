@@ -1,5 +1,5 @@
 class MembersController < ApplicationController
-  before_action :set_member, only: %i[ show edit update destroy statement]
+  before_action :set_member, only: %i[show edit update destroy statement toggle_status]
   before_action :authenticate_user!
   before_action :set_member, only: [:toggle_status]
   before_action :authorize_resource!, except: [:index]
@@ -19,6 +19,7 @@ class MembersController < ApplicationController
 
   # GET /members/1 or /members/1.json
   def show
+    @member = Member.find(params[:id])
   end
 
   # GET /members/new
@@ -28,6 +29,7 @@ class MembersController < ApplicationController
 
   # GET /members/1/edit
   def edit
+    @member = Member.find(params[:id])
   end
 
   def id_card
@@ -149,7 +151,7 @@ end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_member
-      @member = Member.find(params[:member_id] || params[:id])
+      @member = Member.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

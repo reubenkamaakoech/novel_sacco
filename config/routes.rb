@@ -9,11 +9,7 @@ Rails.application.routes.draw do
   end
   end
 
-  resources :permissions, only: [:index] do
-  collection do
-    post :update
-  end
-end
+  resources :permissions, only: [:index, :create]
   
   resource :app_config, only: [:edit, :update]
   
