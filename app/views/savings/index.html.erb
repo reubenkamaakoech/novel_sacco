@@ -78,18 +78,18 @@
     
       <%= form.select :month,
           Date::MONTHNAMES.compact.each_with_index.map { |name, i| [name, i+1] },
-          selected: Date.today.month,
-          class: "form-select" %>
-    </div>
-
-    <div class="col-auto">
+          {selected: Date.today.month},
+          class: "form-select" %>  
+      </div>
+    
+      <div class="col-auto">
     
       <%= form.number_field :year,
           value: Date.today.year,
           class: "form-control",
           min: 2000,
           max: 2100 %>
-    </div>
+      </div>
 
     <div class="col-auto">
       <%= form.submit "Create Monthly Savings",

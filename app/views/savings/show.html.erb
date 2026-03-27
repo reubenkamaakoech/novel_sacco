@@ -1,8 +1,6 @@
+<% content_for :title, "#{@saving.member.name}'s Saving (#{@saving.created_at.strftime('%B %d, %Y')})" %>
+
 <div class="container">
-<p>
-  <strong>Member:</strong>
-  <%= @saving.member.name %>
-</p>
 <p>
   <strong>Amount:</strong>
   <%= number_to_currency(@saving.amount, unit: "Ksh ") %>
@@ -10,10 +8,6 @@
 <p>
   <strong>Deposit Type:</strong>
   <%= @saving.deposit_type %>
-</p>
-<p>
-  <strong>Month:</strong>
-  <%= @saving.month %>
 </p>
 <p>
   <strong>Added By:</strong>

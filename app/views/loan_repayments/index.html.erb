@@ -24,7 +24,7 @@
   
       <%= form.select :month,
           Date::MONTHNAMES.compact.each_with_index.map { |name, i| [name, i+1] },
-          selected: Date.today.month,
+          {selected: Date.today.month},
           class: "form-select" %>
     </div>
 
