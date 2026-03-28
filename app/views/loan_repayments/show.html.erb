@@ -1,14 +1,10 @@
+<% content_for :title, "#{@loan_repayment.loan.member.name}'s Loan Repayment (#{@loan_repayment.created_at.strftime('%B %d, %Y')})" %>
 
 <div class="container">
 
 <p>
   <strong>Loan Id:</strong>
   <%= @loan_repayment.loan_id %>
-</p>
-
-<p>
-  <strong>Member:</strong>
-  <%= @loan_repayment.member.name %> (<%= @loan_repayment.member.membership_number %>)
 </p>
 
 <p>
@@ -19,6 +15,16 @@
 <p>
   <strong>Repayment Amount:</strong>
   <%= number_to_currency(@loan_repayment.amount, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Balance at Time:</strong>
+  <%= number_to_currency(@loan_repayment.balance_at_time, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Loan Balance After Payment:</strong>
+  <%= number_to_currency(@loan_repayment.balance_after, unit: "Ksh ") %>
 </p>
 
 <p>

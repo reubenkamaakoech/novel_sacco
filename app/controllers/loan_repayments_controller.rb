@@ -140,6 +140,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def loan_repayment_params
-      params.expect(loan_repayment: [ :user_id, :loan_id, :amount, :repayment_month, ])
+      params.expect(loan_repayment: [ :user_id, :loan_id, :amount, :repayment_month, :balance_at_time, :balance_after ])
     end
 end

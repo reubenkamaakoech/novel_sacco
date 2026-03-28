@@ -1,9 +1,6 @@
-<div class="container">
-  <p>
-    <strong>Member:</strong>
-    <%= @loan.member.name %>
-  </p>
+<% content_for :title, "#{@loan.member.name}'s Loan (#{@loan.created_at.strftime('%B %d, %Y')})" %>
 
+<div class="container">
   <p>
     <strong>Loan Amount:</strong>
     <%= number_to_currency(@loan.amount, unit: "Ksh ") %>
@@ -17,6 +14,11 @@
   <p>
     <strong>Repayment Amount per Month:</strong>
     <%= number_to_currency(@loan.repayment_amount_per_month, unit: "Ksh ") %>
+  </p>
+
+  <p>
+    <strong>Loan Balance:</strong>
+    <%= number_to_currency(@loan.balance, unit: "Ksh ") %>
   </p>
 
   <div>

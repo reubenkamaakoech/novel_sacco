@@ -94,7 +94,9 @@
       <% else %>
         <!-- Credit -->
         <td>-</td>
-        <td><%= number_to_currency(t[:amount], unit: "Ksh ") %></td>
+        <td class="<%= 'text-primary' if t[:type] == 'Repayment' %>">
+          <%= number_to_currency(t[:amount], unit: "Ksh ") %>
+        </td>
       <% end %>
 
       <td><%= number_to_currency(balance, unit: "Ksh ") %></td>

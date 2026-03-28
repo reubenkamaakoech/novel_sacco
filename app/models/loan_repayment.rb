@@ -9,6 +9,13 @@ class LoanRepayment < ApplicationRecord
    
   after_commit :close_loan_if_fully_paid
 
+  before_create :store_balance
+
+  def store_balance
+    self.balance_at_time = loan.balance 
+    self.balance_after  = loan.balance - amount
+  end
+
   private
   
   def close_loan_if_fully_paid
