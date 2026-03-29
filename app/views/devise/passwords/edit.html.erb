@@ -1,28 +1,38 @@
-<div class="container">
-<h2>Change your password</h2>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+  <div class="col-md-4">
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-  <%= f.hidden_field :reset_password_token %>
+    <h2 class="text-center mb-3">Change your password</h2>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em><br />
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <%= f.hidden_field :reset_password_token %>
+
+      <div class="mb-3">
+        <label class="form-label">New password</label>
+        <% if @minimum_password_length %>
+          <small class="text-muted d-block">
+            (<%= @minimum_password_length %> characters minimum)
+          </small>
+        <% end %>
+        <%= f.password_field :password, autofocus: true, autocomplete: "new-password",
+              class: 'form-control', placeholder: 'New password' %>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Confirm new password</label>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password",
+              class: 'form-control', placeholder: 'Confirm password' %>
+      </div>
+
+      <div class="d-grid">
+        <%= f.submit "Change my password", class: 'btn btn-success btn-sm' %>
+      </div>
+
     <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class:'form-control', placeholder:'New-password' %>
-  </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password", class:'form-control', placeholder:'New-password' %>
-  </div>
-  
-  <br>
-  <div class="actions">
-    <%= f.submit "Change my password", class:'btn btn-success btn-sm' %>
-  </div>
-<% end %>
+    <div class="text-center mt-3">
+      <%= render "devise/shared/links" %>
+    </div>
 
-<%= render "devise/shared/links" %>
+  </div>
 </div>
