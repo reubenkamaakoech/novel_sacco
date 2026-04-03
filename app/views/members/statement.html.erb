@@ -107,7 +107,7 @@
   <p class="text-danger"><i>No statements available for <%= @member.name %>.</i></p>
 <% end %>
 
-<div class="mt-3">
+<div class="mt-4">
   <%= link_to "Back to Sacco Account", savings_path, class: "btn btn-primary btn-sm" %>
   <%= link_to "New Saving", new_saving_path(member_id: @member.id), class:"btn btn-success btn-sm" %>
 
@@ -130,3 +130,5 @@
   <% end %>
 </div>
 </div>
+<br>
+
