@@ -31,7 +31,7 @@
       <button class="btn btn-warning btn-sm" disabled title="Loan is closed">Edit</button>
     <% end %>
     </div>
-    <div class="mt-2">
+    <div class="mt-2 mb-3">
     <% if @loan&.status %>
       <%= button_to "Delete", @loan,
         method: :delete,
@@ -41,6 +41,9 @@
       <button class="btn btn-danger btn-sm" disabled title="Loan is closed">Delete</button>
     <% end %>
   </div>
+
+  <div>
+   <%= link_to "Back", loans_path, class: "btn btn-primary btn-sm" %>
 
   <hr>
 

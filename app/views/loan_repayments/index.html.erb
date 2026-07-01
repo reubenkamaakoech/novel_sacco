@@ -10,14 +10,17 @@
 
 </div>
 
-<div>
-<%= link_to "New loan repayment", new_loan_repayment_path, class:"btn btn-success btn-sm" %>
-<% if LoanRepayment.where(repayment_month: Date.today.beginning_of_month).exists? %>
-  <button class="btn btn-secondary" disabled>
-    Repayments already generated for <%= Date.today.strftime("%B %Y") %>
-  </button>
-<% else %>
-  <div class="mb-3 p-3 border rounded bg-light">
+<div class="mb-3">
+  <%= link_to "New loan repayment", new_loan_repayment_path, class:"btn btn-success btn-sm" %>
+  
+  <% if LoanRepayment.where(repayment_month: Date.today.beginning_of_month).exists? %>
+    <button class="btn btn-secondary" disabled>
+      Repayments already generated for <%= Date.today.strftime("%B %Y") %>
+    </button>
+  <% else %>
+</div>
+
+<div class="mb-3 p-3 border rounded bg-light">
   <h5>Generate Monthly Loan Repayments</h5>
   <%= form_with url: generate_monthly_loan_repayments_path, method: :post, local: true, class: "row g-2 align-items-center" do |form| %>
     <div class="col-auto">

@@ -17,6 +17,7 @@ class SavingsController < ApplicationController
     @total_savings = Saving.sum(:amount)
     @locked_savings = @total_savings * Member.locked_ratio
     @available_for_loans = @total_savings - @locked_savings
+    @loan_balance = Loan.sum(:amount) - LoanRepayment.sum(:amount)
 
     @savings_summary = Member
       .where(status: true) # only active members

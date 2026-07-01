@@ -2,7 +2,7 @@
 
 <div class="container">
 
-<div class="row mb-4">
+<div class="row mb-3">
   <!-- Total Savings Card -->
   <div class="col-md-3">
     <div class="card border-success shadow-sm">
@@ -26,13 +26,24 @@
       </div>
     </div>
   </div>
-  
 
-  <!-- Locked Savings Card -->
-  <div class="col-md-5">
+  <!-- Total Loan Balance -->
+  <div class="col-md-3">
     <div class="card border-danger shadow-sm">
       <div class="card-body">
-        <h5 class="card-title text-danger">Locked Savings (<%= AppConfig.locked_percentage %>%) </h5>
+        <h5 class="card-title text-danger">Total Loans Disbursed</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@loan_balance, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div> 
+
+  <!-- Locked Savings Card -->
+  <div class="col-md-3">
+    <div class="card border-warning shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-warning">Locked Savings (<%= AppConfig.locked_percentage %>%) </h5>
           <p class="card-text h4">
           <%= number_to_currency(@locked_savings, unit: "Ksh ") %>
         </p>
@@ -45,7 +56,7 @@
 <table class="table table-striped">
   <thead class="table-primary">
     <tr>
-      <th>Id</td>
+      <th>Id</th>
       <th>Member</th>
       <th>Total Savings</th>
       <th>Actions</th>
@@ -65,6 +76,7 @@
       </tr>
        <% total_savings += record.amount %>
     <% end %>
+  
   </tbody>
 </table>
   <div> 
