@@ -6,7 +6,10 @@ class Loan < ApplicationRecord
   # Prevent status being set to true if loan is fully repaid
   before_update :prevent_reopening_fully_paid_loan, if: :status_changed?
   
+  validates :amount, presence: true, numericality: { greater_than: 0 }
+  validates :bank_charges, presence: true
   validate :member_must_be_active
+  before_validation :calculate_installments
 
    def member_must_be_active
      if member && !member.status
@@ -23,7 +26,8 @@ class Loan < ApplicationRecord
   validate :amount_cannot_exceed_available
 
   scope :active_with_balance, -> {
-  left_joins(:loan_repayments)
+  where(status: true)
+    .left_joins(:loan_repayments)
     .group(:id)
     .having("COALESCE(SUM(loan_repayments.amount), 0) < loans.amount")
 }
@@ -41,7 +45,24 @@ class Loan < ApplicationRecord
   end
 
   def balance
-    amount.to_f - LoanRepayment.where(loan_id: id).sum(:amount)
+    amount.to_d - loan_repayments.sum(:amount).to_d
+  end
+
+  def calculate_installments
+  return if amount.blank? || payment_period_months.blank?
+
+  loan_amount = amount.to_d
+  period = payment_period_months.to_i
+  charges = bank_charges.to_d
+
+  monthly = loan_amount / period
+
+  self.repayment_amount_per_month = monthly.round(2)
+  self.first_installment = (monthly + charges).round(2)
+end
+
+  def total_amount_payable
+    amount + bank_charges.to_d
   end
 
   private

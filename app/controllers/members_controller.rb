@@ -145,6 +145,15 @@ end
   @transactions.sort_by! { |t| t[:date] }
 end
 
+def closing_summary
+  member = Member.find(params[:id])
+
+  render json: {
+    total_savings: member.total_savings,
+    loan_balance: member.loans.active_with_balance.sum(&:balance)
+  }
+end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_member

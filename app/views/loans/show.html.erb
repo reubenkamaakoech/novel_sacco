@@ -17,6 +17,11 @@
   </p>
 
   <p>
+    <strong>Bank Charges:</strong>
+    <%= number_to_currency(@loan.bank_charges, unit: "Ksh ") %>
+  </p>
+  
+  <p>
     <strong>Loan Balance:</strong>
     <%= number_to_currency(@loan.balance, unit: "Ksh ") %>
   </p>

@@ -1,0 +1,169 @@
+<%= form_with(model: closing_book) do |form| %>
+  <% if closing_book.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(closing_book.errors.count, "error") %> prohibited this closing_book from being saved:</h2>
+
+      <ul>
+        <% closing_book.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if current_user %>
+    <%= form.hidden_field :user_id, value: current_user.id %>
+  <% end %>
+
+  <div class="mb-4">
+  <% if @closing_book.member_id.present? %>
+    <div class="mb-3">
+      <strong><%= form.label :member_id %></strong>
+      <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
+        { prompt: "-Select Member-", selected: @closing_book.member_id }, 
+        { class: "form-control", id: "member_select", disabled: true } %>
+      <%= form.hidden_field :member_id %>
+    </div>
+  <% else %>
+    <strong><%= form.label :member_id %></strong>
+    <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
+          { prompt: "-Select Member-" }, { class: "form-control", id: "member_select" } %>
+  <% end %>
+</div>
+  
+  <div class="mb-4" style="width: 200px">
+    <%= form.label :closing_date, style: "display: block" %>
+    <%= form.date_field :closing_date,
+        value: form.object.new_record? ? Date.current : form.object.closing_date,
+        class: "form-control" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :total_savings %>
+    <!-- Display only -->
+    <input type="text" id="total_savings_display" class="form-control bg-secondary-subtle" readonly>
+
+    <!-- Submitted to Rails -->
+    <%= form.hidden_field :total_savings, id: "total_savings" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :loan_balance %>
+    <!-- Display only -->
+    <input type="text" id="loan_balance_display" class="form-control bg-secondary-subtle" readonly>
+
+    <!-- Submitted to Rails -->
+    <%= form.hidden_field :loan_balance, id: "loan_balance" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :withdrawal_charges, style: "display: block" %>
+    <%= form.text_field :withdrawal_charges, class: "form-control" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :other_charges, style: "display: block" %>
+    <%= form.text_field :other_charges, class: "form-control" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :amount_paid %>
+    <!-- Display only -->
+    <input type="text" id="amount_paid_display" class="form-control bg-secondary-subtle" readonly>
+
+    <!-- Submitted to Rails -->
+    <%= form.hidden_field :amount_paid, id: "amount_paid" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :remarks, style: "display: block" %>
+    <%= form.textarea :remarks, class: "form-control" %>
+  </div>
+
+  <div>
+    <%= form.submit nil, class: "btn btn-success btn-sm" %>
+  </div>
+<% end %>
+
+
+<script>
+document.addEventListener("turbo:load", function () {
+  const memberSelect = document.getElementById("member_select");
+
+  // Hidden fields (submitted to Rails)
+  const savingsField = document.getElementById("total_savings");
+  const loanField = document.getElementById("loan_balance");
+  const amountPaid = document.getElementById("amount_paid");
+
+  // Display fields
+  const savingsDisplay = document.getElementById("total_savings_display");
+  const loanDisplay = document.getElementById("loan_balance_display");
+  const amountPaidDisplay = document.getElementById("amount_paid_display");
+
+  // Charges
+  const withdrawalCharges = document.getElementById("closing_book_withdrawal_charges");
+  const otherCharges = document.getElementById("closing_book_other_charges");
+
+  if (!memberSelect) return;
+
+  function formatNumber(amount) {
+    return Number(amount || 0).toLocaleString("en-KE");
+  }
+
+  function calculateAmountPaid() {
+    const savings = parseFloat(savingsField.value) || 0;
+    const loan = parseFloat(loanField.value) || 0;
+    const withdrawal = parseFloat(withdrawalCharges.value) || 0;
+    const other = parseFloat(otherCharges.value) || 0;
+
+    const total = savings - (loan + withdrawal + other);
+
+    // Hidden value submitted to Rails
+    amountPaid.value = total;
+
+    // Display value
+    amountPaidDisplay.value = formatNumber(total);
+  }
+
+  function fetchClosingSummary(memberId) {
+    if (!memberId) {
+      savingsField.value = "";
+      loanField.value = "";
+      amountPaid.value = "";
+
+      savingsDisplay.value = "";
+      loanDisplay.value = "";
+      amountPaidDisplay.value = "";
+      return;
+    }
+
+    fetch(`/members/${memberId}/closing_summary`, {
+      headers: { "Accept": "application/json" }
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Hidden fields
+      savingsField.value = data.total_savings;
+      loanField.value = data.loan_balance;
+
+      // Display fields
+      savingsDisplay.value = formatNumber(data.total_savings);
+      loanDisplay.value = formatNumber(data.loan_balance);
+
+      calculateAmountPaid();
+    })
+    .catch(error => console.error("Error fetching closing summary:", error));
+  }
+
+  memberSelect.addEventListener("change", function () {
+    fetchClosingSummary(this.value);
+  });
+
+  withdrawalCharges.addEventListener("input", calculateAmountPaid);
+  otherCharges.addEventListener("input", calculateAmountPaid);
+
+  if (memberSelect.value) {
+    fetchClosingSummary(memberSelect.value);
+  }
+});
+</script>

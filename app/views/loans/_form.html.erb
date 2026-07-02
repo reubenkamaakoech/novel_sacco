@@ -46,6 +46,11 @@
   </div>
 
   <div class="mb-4">
+    <strong class="text-danger"><%= form.label :bank_charges %></strong>
+    <%= form.text_field :bank_charges, class: "form-control", id: "bank_charges" %>
+  </div>
+
+  <div class="mb-4">
     <strong><%= form.label :repayment_amount_per_month %></strong>
     <%= form.text_field :repayment_amount_per_month, class: "form-control", id: "loan_repayment" %>
   </div>
@@ -66,6 +71,7 @@ document.addEventListener("turbo:load", function() {
   const amountField = document.getElementById("loan_amount");
   const periodField = document.getElementById("loan_period");
   const repaymentField = document.getElementById("loan_repayment");
+  const bankChargesField = document.getElementById("bank_charges");
 
   let availableAmountValue = 0;
 
@@ -90,17 +96,28 @@ document.addEventListener("turbo:load", function() {
   }
 
   function updateRepayment() {
-    const amount = parseFloat(amountField.value);
-    const period = parseInt(periodField.value);
-    repaymentField.value = (!isNaN(amount) && !isNaN(period) && period > 0)
-      ? (amount / period).toFixed(2)
-      : "";
+  const amount = parseFloat(amountField.value) || 0;
+  const charges = parseFloat(bankChargesField.value) || 0;
+  const period = parseInt(periodField.value);
+
+  if (!period || period <= 0) {
+    repaymentField.value = "";
+    return;
   }
+
+  const monthly = amount / period;
+  const firstInstallment = monthly + charges;
+
+  repaymentField.value = monthly.toFixed(2);
+
+  console.log("First installment:", firstInstallment.toFixed(2));
+}
 
   // Events
   memberSelect.addEventListener("change", () => fetchAvailableAmount(memberSelect.value));
   amountField.addEventListener("input", updateRepayment);
   periodField.addEventListener("input", updateRepayment);
+  bankChargesField.addEventListener("input", updateRepayment);
 
   // Validation before submit
   document.querySelector("form").addEventListener("submit", function(e) {

@@ -1,0 +1,32 @@
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Member</th>
+        <th>Closing date</th>
+        <th>Total savings</th>
+        <th>Loan balance</th>
+        <th>Withdrawal charges</th>
+        <th>Other charges</th>
+        <th>Amount paid</th>
+        <th>Created by</th>
+        <th>Actions</th>
+      </tr>
+    <tbody>
+      <% @closing_books.each do |closing_book| %>
+      <tr>
+        <td><%= closing_book.id %></td>
+        <td><%= closing_book.member.name %></td>
+        <td><%= closing_book.closing_date %></td>
+        <td><%= number_to_currency(closing_book.total_savings, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(closing_book.loan_balance, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(closing_book.withdrawal_charges, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(closing_book.other_charges, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(closing_book.amount_paid, unit: "Ksh ") %></td>
+        <td><%= closing_book.user.username %></td>
+        <td><%= link_to "Show", closing_book, class: "btn btn-info btn-sm" %></td>
+      </tr>
+      <% end %>
+    </tbody>
+    </thead>
+

@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  member: one
+  user: one
+  closing_date: 2026-07-01
+  total_savings: 9.99
+  withdrawal_charges: 9.99
+  other_charges: 9.99
+  amount_paid: 9.99
+  remarks: MyText
+
+two:
+  member: two
+  user: two
+  closing_date: 2026-07-01
+  total_savings: 9.99
+  withdrawal_charges: 9.99
+  other_charges: 9.99
+  amount_paid: 9.99
+  remarks: MyText

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :closing_books
   get "permissions/index"
   get "permissions/update"
   get "app_configs/edit"
@@ -29,6 +30,12 @@ Rails.application.routes.draw do
   resources :members do
     member do
       get :statement
+    end
+  end
+
+  resources :members do
+    member do
+      get :closing_summary
     end
   end
 

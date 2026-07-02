@@ -1,0 +1,13 @@
+<% content_for :title, "New closing book" %>
+
+
+<div class="container">
+
+<%= render "form", closing_book: @closing_book %>
+
+<br>
+
+<div>
+  <%= link_to "Back to closing books", closing_books_path, class: "btn btn-primary btn-sm" %>
+</div>
+</div>

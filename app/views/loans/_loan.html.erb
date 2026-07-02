@@ -43,6 +43,7 @@
     <th>Id</th>
     <th>Member</th>
     <th>Amount</th>
+    <th class="text-danger">Bank Charges</th>
     <th>Payment period</th>
     <th>Repayment amount per month</th>
     <th>Balance</th> <!-- New column -->
@@ -56,6 +57,7 @@
       <td><%= loan.id %></td>
       <td><%= loan.member.name %></td>
       <td><%= number_to_currency(loan.amount, unit: "Ksh ") %></td>
+      <td class="text-danger"><%= number_to_currency(loan.bank_charges, unit: "Ksh ") %></td>
       <td><%= loan.payment_period_months %> Months</td>
       <td><%= number_to_currency(loan.repayment_amount_per_month, unit: "Ksh ") %></td>
       <td><%= number_to_currency(loan.balance, unit: "Ksh ") %></td> <!-- Show balance -->

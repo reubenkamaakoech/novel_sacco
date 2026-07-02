@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_28_034902) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_02_141941) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -59,6 +59,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_28_034902) do
     t.index ["user_id"], name: "index_app_configs_on_user_id"
   end
 
+  create_table "closing_books", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.integer "user_id", null: false
+    t.date "closing_date"
+    t.decimal "total_savings"
+    t.decimal "withdrawal_charges"
+    t.decimal "other_charges"
+    t.decimal "amount_paid"
+    t.text "remarks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "loan_balance"
+    t.index ["member_id"], name: "index_closing_books_on_member_id"
+    t.index ["user_id"], name: "index_closing_books_on_user_id"
+  end
+
   create_table "employees", force: :cascade do |t|
     t.string "full_name"
     t.decimal "daily_pay"
@@ -91,12 +107,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_28_034902) do
     t.integer "member_id", null: false
     t.decimal "available_amount"
     t.decimal "amount"
-    t.string "payment_period_months"
     t.decimal "repayment_amount_per_month"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.boolean "status", default: true, null: false
+    t.decimal "bank_charges", default: "0.0"
+    t.decimal "first_installment", default: "0.0"
+    t.integer "payment_period_months"
     t.index ["member_id"], name: "index_loans_on_member_id"
     t.index ["user_id"], name: "index_loans_on_user_id"
   end
@@ -138,6 +156,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_28_034902) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "transaction_type", default: "deposit", null: false
     t.index ["member_id"], name: "index_savings_on_member_id"
     t.index ["user_id"], name: "index_savings_on_user_id"
   end
@@ -170,6 +189,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_28_034902) do
   add_foreign_key "advances", "employees"
   add_foreign_key "advances", "users"
   add_foreign_key "app_configs", "users"
+  add_foreign_key "closing_books", "members"
+  add_foreign_key "closing_books", "users"
   add_foreign_key "employees", "users"
   add_foreign_key "loan_repayments", "loans"
   add_foreign_key "loan_repayments", "users"

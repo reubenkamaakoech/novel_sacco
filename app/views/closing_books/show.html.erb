@@ -1,0 +1,43 @@
+<% content_for :title, "Closing Book Details" %>
+
+<div class="container">
+    
+<p>
+  <strong>Member:</strong>
+  <%= @closing_book.member.name %>
+</p>
+<p>
+  <strong>Closing date:</strong>
+  <%= @closing_book.closing_date %>
+</p>
+<p>
+  <strong>Total savings:</strong>
+  <%= number_to_currency(@closing_book.total_savings, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Loan balance:</strong>
+  <%= number_to_currency(@closing_book.loan_balance, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Withdrawal charges:</strong>
+  <%= number_to_currency(@closing_book.withdrawal_charges, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Other charges:</strong>
+  <%= number_to_currency(@closing_book.other_charges, unit: "Ksh ") %>
+</p>
+
+<p>
+  <strong>Amount paid:</strong>
+  <%= number_to_currency(@closing_book.amount_paid, unit: "Ksh ") %>
+</p>
+
+<div>
+  <%= link_to "Edit", edit_closing_book_path(@closing_book), class: "btn btn-warning btn-sm" %> |
+  <%= link_to "Back", closing_books_path, class: "btn btn-primary btn-sm" %> |
+  <%= button_to "Delete", @closing_book, method: :delete, class: "btn btn-danger btn-sm" %>
+</div>
+</div>

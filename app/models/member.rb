@@ -4,6 +4,7 @@ class Member < ApplicationRecord
     has_many :loans, dependent: :destroy
     has_many :loan_repayments, through: :loans
     has_one_attached :passport_photo
+    has_one :closing_books, dependent: :destroy
 
     before_create :set_membership_number
 
@@ -26,6 +27,14 @@ class Member < ApplicationRecord
    def available_for_loans
      total_savings - locked_savings
    end
+
+   def savings_balance
+    savings.sum(:amount).to_d
+  end
+
+  def loan_balance
+    loans.where(status: true).sum(&:balance).to_d
+  end
 
    private
 
