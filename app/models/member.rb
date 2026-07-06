@@ -16,8 +16,12 @@ class Member < ApplicationRecord
       locked_percentage / 100
     end
 
-    def total_savings
-     savings.sum(:amount)
+   def total_savings
+    savings
+      .where(transaction_type: "deposit")
+      .where.not(deposit_type: "Bank Charge Paid")
+      .sum(:amount)
+      .to_d
    end
 
    def locked_savings
@@ -28,12 +32,18 @@ class Member < ApplicationRecord
      total_savings - locked_savings
    end
 
-   def savings_balance
-    savings.sum(:amount).to_d
+   def available_savings
+    savings.where(transaction_type: "deposit").sum(:amount).to_d - loan_balance
   end
 
   def loan_balance
-    loans.where(status: true).sum(&:balance).to_d
+    loans.where(status: true).sum do |loan|
+      loan.balance + loan.outstanding_bank_charge
+    end
+  end
+
+  def outstanding_bank_charges
+    loans.where(status: true).sum(&:outstanding_bank_charge)
   end
 
    private

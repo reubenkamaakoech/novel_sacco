@@ -13,25 +13,16 @@ class SavingsController < ApplicationController
 
   # GET /savings or /savings.json
   def index
-    @savings = Saving.includes(:member).all
-    @total_savings = Saving.sum(:amount)
+    @savings_summary = Member.where(status: true)
+
+    @total_savings = @savings_summary.sum(&:total_savings)
     @locked_savings = @total_savings * Member.locked_ratio
     @available_for_loans = @total_savings - @locked_savings
-    @loan_balance = Loan.sum(:amount) - LoanRepayment.sum(:amount)
 
-    @savings_summary = Member
-      .where(status: true) # only active members
-      .left_joins(:savings) # include deposits if they exist
-      .select(
-        "members.id AS member_id,
-         members.name AS member_name,
-         COALESCE(SUM(savings.amount), 0) AS amount"
-       )
-      .group("members.id, members.name")
-  end
-
-
-  # GET /savings/1 or /savings/1.json
+    @loan_balance = @savings_summary.sum(&:loan_balance)
+    @available_savings = @total_savings - @loan_balance
+  end  
+   # GET /savings/1 or /savings/1.json
   def show
   end
 
@@ -48,6 +39,7 @@ class SavingsController < ApplicationController
     @total_loans = @member.loans.sum(:amount)
     @total_repayments = @member.loan_repayments.sum(:amount)
     @loan_balance = @total_loans - @total_repayments
+    @available_savings = @member.total_savings - @member.loan_balance
     @available_loans_to_member = @available_for_loans - @total_loans
   end
 

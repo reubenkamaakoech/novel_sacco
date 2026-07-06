@@ -10,6 +10,7 @@ class Loan < ApplicationRecord
   validates :bank_charges, presence: true
   validate :member_must_be_active
   before_validation :calculate_installments
+  after_create :deduct_bank_charge_from_savings
 
    def member_must_be_active
      if member && !member.status
@@ -37,7 +38,7 @@ class Loan < ApplicationRecord
   end
 
   def total_loans
-     amount  
+     amount
   end
 
   def loan_repayments_total
@@ -46,6 +47,14 @@ class Loan < ApplicationRecord
 
   def balance
     amount.to_d - loan_repayments.sum(:amount).to_d
+  end
+
+  def outstanding_bank_charge
+    loan_repayments.exists? ? 0.to_d : bank_charges.to_d
+  end
+
+  def settlement_amount
+    balance + outstanding_bank_charge
   end
 
   def calculate_installments
@@ -57,12 +66,8 @@ class Loan < ApplicationRecord
 
   monthly = loan_amount / period
 
-  self.repayment_amount_per_month = monthly.round(2)
-  self.first_installment = (monthly + charges).round(2)
-end
-
-  def total_amount_payable
-    amount + bank_charges.to_d
+    self.repayment_amount_per_month = monthly.round(2)
+    self.first_installment = (monthly + charges).round(2)
   end
 
   private
@@ -92,5 +97,17 @@ end
     if amount.present? && amount > available_for_loans
       errors.add(:amount, "cannot be more than available amount (#{available_for_loans})")
     end
+  end
+
+  def deduct_bank_charge_from_savings
+    return if bank_charges.to_d <= 0
+
+    Saving.create!(
+      member: member,
+      user_id: user_id,
+      amount: -bank_charges.to_d,
+      transaction_type: "withdrawal",
+      deposit_type: "Bank Charge",
+      month: Date.current)
   end
 end

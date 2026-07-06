@@ -6,10 +6,11 @@ class ClosingBook < ApplicationRecord
   after_commit :finalize_closure, on: :create
 
   private
-
   def calculate_totals
     self.total_savings = member.savings_balance
-    self.loan_balance = member.loan_balance
+    self.loan_balance  = member.loan_balance
+
+    bank_charges_due = member.outstanding_bank_charges
 
     self.withdrawal_charges ||= 0
     self.other_charges ||= 0
@@ -17,6 +18,7 @@ class ClosingBook < ApplicationRecord
     self.amount_paid =
       total_savings -
       loan_balance -
+      bank_charges_due -
       withdrawal_charges -
       other_charges
   end
@@ -29,9 +31,7 @@ class ClosingBook < ApplicationRecord
     end
   end
 
-  def settle_loans
-    # we'll put the loan repayment code here
-  end
+ 
 
   def withdraw_savings
     # we'll put the savings withdrawal code here
@@ -53,16 +53,17 @@ class ClosingBook < ApplicationRecord
         loan: loan,
         user: user,
         amount: loan.balance,
+        bank_charge_paid: loan.outstanding_bank_charge,# one-time bank charge
         repayment_date: closing_date,
         repayment_month: closing_date.beginning_of_month,
         balance_at_time: loan.balance,
         balance_after: 0
       )
-
+      
       loan.update!(status: false)
     end
   end
-
+ 
   def withdraw_savings
     Saving.create!(
       member: member,

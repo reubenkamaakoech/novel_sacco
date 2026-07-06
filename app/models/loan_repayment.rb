@@ -10,6 +10,7 @@ class LoanRepayment < ApplicationRecord
   after_commit :close_loan_if_fully_paid
 
   before_create :store_balance
+  after_create :refund_bank_charge_to_savings
 
   def store_balance
     self.balance_at_time = loan.balance 
@@ -41,4 +42,17 @@ end
     errors.add(:amount, "cannot be more than remaining loan balance (#{loan.balance})")
   end
 end
+
+def refund_bank_charge_to_savings
+  return unless loan.loan_repayments.count == 1
+  return if loan.bank_charges.to_d <= 0
+
+  Saving.create!(
+    member: loan.member,
+    user_id: user_id,
+    amount: loan.bank_charges,
+    transaction_type: "deposit",
+    deposit_type: "Bank Charge Paid",
+    month: repayment_date || Date.current)
+  end
 end

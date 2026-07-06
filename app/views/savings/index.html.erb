@@ -1,56 +1,67 @@
 <% content_for :title, "Sacco Account" %>
 
-<div class="container">
-
-<div class="row mb-3">
-  <!-- Total Savings Card -->
-  <div class="col-md-3">
-    <div class="card border-success shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title text-success">Total Savings</h5>
-        <p class="card-text h4">
-          <%= number_to_currency(@total_savings, unit: "Ksh ") %>
-        </p>
-      </div>
-    </div>
-  </div>
-
-   <!-- Available for loans Card -->
-  <div class="col-md-3">
-    <div class="card border-primary shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title text-primary">Available for loans (<%= 100 - AppConfig.locked_percentage %>%) </h5>
-        <p class="card-text h4">
-          <%= number_to_currency(@available_for_loans, unit: "Ksh ") %>
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Total Loan Balance -->
-  <div class="col-md-3">
-    <div class="card border-danger shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title text-danger">Total Loans Disbursed</h5>
-        <p class="card-text h4">
-          <%= number_to_currency(@loan_balance, unit: "Ksh ") %>
-        </p>
-      </div>
-    </div>
-  </div> 
-
-  <!-- Locked Savings Card -->
-  <div class="col-md-3">
-    <div class="card border-warning shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title text-warning">Locked Savings (<%= AppConfig.locked_percentage %>%) </h5>
+<div class="px-5">
+  <div class="row mb-4">
+    <!-- Total Savings Card -->
+    <div class="col-md-3">
+      <div class="card border-success shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success">Total Savings</h5>
           <p class="card-text h4">
-          <%= number_to_currency(@locked_savings, unit: "Ksh ") %>
+            <%= number_to_currency(@total_savings || 0, unit: "Ksh ") %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Savings Card -->
+  <div class="col-md-2">
+    <div class="card border-info shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-info">Available Savings</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@available_savings, unit: "Ksh ") %>
         </p>
       </div>
     </div>
   </div>
-</div>
+
+    <!-- Available for Loans Card -->
+    <div class="col-md-2">
+      <div class="card border-primary shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Available for Loans (<%= 100 - AppConfig.locked_percentage %>%) </h5>
+          <p class="card-text h4">
+            <%= number_to_currency((@total_savings - Member.locked_ratio * (@total_savings || 0)), unit: "Ksh ") %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loans Balance  -->
+    <div class="col-md-2">
+      <div class="card border-primary shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Loan Balance</h5>
+          <p class="card-text h4">
+            <td><%= number_to_currency(@loan_balance || 0, unit:"Ksh ") %></td>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Locked Savings Card -->
+    <div class="col-md-2">
+      <div class="card border-danger shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-danger">Locked Savings (<%= AppConfig.locked_percentage %>%) </h5>
+          <p class="card-text h4">
+            <%= number_to_currency(Member.locked_ratio * (@total_savings || 0), unit: "Ksh ") %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
   
 
 <table class="table table-striped">
@@ -59,6 +70,7 @@
       <th>Id</th>
       <th>Member</th>
       <th>Total Savings</th>
+      <th>Available Savings</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -67,14 +79,15 @@
     <% @savings_summary.each do |record| %>
       
       <tr>
-        <td><%= record.member_id %></td>
-        <td><%= record.member_name %></td>
-        <td><%= number_to_currency(record.amount, unit: "Ksh ") %></td>
+        <td><%= record.id %></td>
+        <td><%= record.name %></td>
+        <td><%= number_to_currency(record.total_savings, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(record.available_savings, unit: "Ksh ") %></td>
         <td>
-          <%= link_to "View Satement", member_statement_path(member_id: record.member_id), class: "btn btn-info btn-sm" %>
+          <%= link_to "View Satement", member_statement_path(member_id: record.id), class: "btn btn-info btn-sm" %>
         </td>
       </tr>
-       <% total_savings += record.amount %>
+       <% total_savings += record.available_savings %>
     <% end %>
   
   </tbody>
@@ -110,6 +123,5 @@
     </div>
   <% end %>
 </div>
-
 </div>
 

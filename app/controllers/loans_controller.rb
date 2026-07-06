@@ -15,7 +15,7 @@ class LoansController < ApplicationController
   # GET /loans or /loans.json
   def index
     @loans = Loan.includes(:member).all
-    @total_loans = Loan.sum(:amount)
+    @total_loans = Loan.sum(:amount) + Loan.sum(:bank_charges)
     @repayments = LoanRepayment.all
     @total_repayments = @repayments.sum(:amount)
     @loan_balance = @total_loans - @total_repayments

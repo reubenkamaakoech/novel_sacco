@@ -1,6 +1,6 @@
 <% content_for :title, "Member's Statement" %>
 
-<div class="container">
+<div class="px-5">
   <h2><%= @member.name %> - <%= @member.membership_number %></h2>
 
   <div class="row mb-4">
@@ -16,8 +16,20 @@
       </div>
     </div>
 
+    <!-- Available Savings Card -->
+  <div class="col-md-2">
+    <div class="card border-info shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-info">Available Savings</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(@available_savings, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+
     <!-- Available for Loans Card -->
-    <div class="col-md-3">
+    <div class="col-md-2">
       <div class="card border-primary shadow-sm">
         <div class="card-body">
           <h5 class="card-title text-primary">Available for Loans (<%= 100 - AppConfig.locked_percentage %>%) </h5>
@@ -34,14 +46,14 @@
         <div class="card-body">
           <h5 class="card-title text-primary">Loan Balance</h5>
           <p class="card-text h4">
-            <td><%= number_to_currency(@loan_balance || 0, unit:"Ksh ") %></td>
+            <td><%= number_to_currency(@total_loans || 0, unit:"Ksh ") %></td>
           </p>
         </div>
       </div>
     </div>
 
     <!-- Locked Savings Card -->
-    <div class="col-md-4">
+    <div class="col-md-2">
       <div class="card border-danger shadow-sm">
         <div class="card-body">
           <h5 class="card-title text-danger">Locked Savings (<%= AppConfig.locked_percentage %>%) </h5>
@@ -53,7 +65,7 @@
     </div>
   </div>
 
-<% if @transactions.any? %>
+<% if @transactions.present? %>
 <table class="table">
   <tr class="table-primary">
     <th>Date</th>

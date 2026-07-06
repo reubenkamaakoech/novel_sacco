@@ -119,10 +119,11 @@ end
   # get all repayments via loans
   @repayments = LoanRepayment.where(loan_id: @member.loans.pluck(:id)).order(:created_at)
 
-  @total_savings = @savings.sum(:amount)
+  @total_savings = @member.total_savings
   @locked_savings = @total_savings * Member.locked_ratio
   @available_for_loans = @total_savings - @locked_savings
-  @total_loans = @loans.sum(:amount)
+  @total_loans = @loans.sum(:amount) - @repayments.sum(:amount) + @member.outstanding_bank_charges
+  @available_savings = @total_savings - @member.loan_balance
   @total_repayments = @repayments.sum(:amount)
   @loan_balance = @total_loans - @total_repayments
 

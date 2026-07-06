@@ -41,7 +41,9 @@
 
   <div class="mb-4 col-md-4">
     <%= form.label :repayment_month, style: "display: block" %>
-    <%= form.date_field :repayment_month, class:"form-control" %>
+    <%= form.date_field :repayment_month,
+        value: form.object.new_record? ? Date.current : form.object.repayment_month,
+        class: "form-control" %>
   </div>
 
   <div>
