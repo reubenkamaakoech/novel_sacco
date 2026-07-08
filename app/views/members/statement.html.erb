@@ -83,12 +83,20 @@
       
       <td>
         <% if t[:type] == "Saving" %>
-          <%= link_to "#{t[:deposit_type]} #{t[:type]}",
-            saving_path(t[:record]),
-            class: case t[:deposit_type]
-              when "random" then "text-dark"
-              else "text-success"
-            end %>
+          <% link_text = if ["Bank Charge", "Bank Charge Paid"].include?(t[:deposit_type])
+                 t[:deposit_type]
+               else
+                 "#{t[:deposit_type]} #{t[:type]}"
+               end %>
+
+<%= link_to link_text,
+    saving_path(t[:record]),
+    class: case t[:deposit_type]
+           when "random" then "text-dark"
+           when "Bank Charge" then "text-danger"
+           when "Bank Charge Paid" then "text-primary"
+           else "text-success"
+           end %>
         <% elsif t[:type] == "Loan" %>
           <%= link_to t[:type], loan_path(t[:record]), class: "text-danger" %>
             <span class="badge <%= t[:record].status ? 'bg-danger' : 'bg-success' %>">
@@ -106,7 +114,7 @@
       <% else %>
         <!-- Credit -->
         <td>-</td>
-        <td class="<%= 'text-primary' if t[:type] == 'Repayment' %>">
+        <td class="<%= 'text-primary' if t[:type] == 'Repayment'  || t[:deposit_type] == 'Bank Charge Paid' %>">
           <%= number_to_currency(t[:amount], unit: "Ksh ") %>
         </td>
       <% end %>
