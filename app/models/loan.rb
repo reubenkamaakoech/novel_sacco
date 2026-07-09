@@ -1,6 +1,8 @@
 class Loan < ApplicationRecord
   belongs_to :member
   has_many :loan_repayments, dependent: :destroy
+  belongs_to :refinanced_from, class_name: "Loan", optional: true
+  has_one :refinanced_to, class_name: "Loan", foreign_key: :refinanced_from_id
   
   validate :single_active_loan, on: :create   # <-- this is the new validation
   # Prevent status being set to true if loan is fully repaid
@@ -12,11 +14,19 @@ class Loan < ApplicationRecord
   before_validation :calculate_installments
   after_create :deduct_bank_charge_from_savings
 
-   def member_must_be_active
-     if member && !member.status
+  def refinance?
+    is_refinance?
+  end
+
+  def can_refinance?
+    status == true && balance.positive?
+  end
+
+  def member_must_be_active
+    if member && !member.status
       errors.add(:member_id, "is not active")
-     end
-   end
+    end
+  end
 
   validates :payment_period_months, numericality: { 
     only_integer: true, 
@@ -25,6 +35,7 @@ class Loan < ApplicationRecord
   }
 
   validate :amount_cannot_exceed_available
+  validate :refinance_amount_must_exceed_balance
 
   scope :active_with_balance, -> {
   where(status: true)
@@ -71,6 +82,15 @@ class Loan < ApplicationRecord
   end
 
   private
+  def refinance_amount_must_exceed_balance
+    return unless is_refinance?
+    return unless refinanced_from
+
+    if amount.to_d <= refinanced_from.settlement_amount.to_d
+    errors.add(:amount, "must be greater than the outstanding balance (#{refinanced_from.balance})")
+    end
+  end
+
   def prevent_reopening_fully_paid_loan
     if balance <= 0 && status
       errors.add(:status, "cannot be reactivated: loan is fully repaid")
@@ -82,7 +102,14 @@ class Loan < ApplicationRecord
   def single_active_loan
     return unless member
 
-    if member.loans.where(status: true).exists?
+      active_loans = member.loans.where(status: true)
+
+    # If this is a refinance, ignore the loan being refinanced
+    if refinanced_from_id.present?
+      active_loans = active_loans.where.not(id: refinanced_from_id)
+    end
+
+    if active_loans.exists?
       errors.add(:member_id, "already has an active loan")
     end
   end

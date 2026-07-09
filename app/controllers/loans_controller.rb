@@ -41,17 +41,68 @@ class LoansController < ApplicationController
 
   # POST /loans or /loans.json
   def create
-    @loan = Loan.new(loan_params)
+  @loan = Loan.new(loan_params)
 
     respond_to do |format|
-      if @loan.save
-        format.html { redirect_to @loan, notice: "Loan was successfully created." }
-        format.json { render :show, status: :created, location: @loan }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @loan.errors, status: :unprocessable_entity }
+      begin
+        Loan.transaction do
+          # Save the new loan first
+          @loan.save!
+
+         # If this is a refinance, settle the old loan
+        if @loan.is_refinance?
+          old_loan = @loan.refinanced_from
+
+          LoanRepayment.create!(
+            loan: old_loan,
+            user: current_user,
+            amount: old_loan.balance,
+            repayment_month: Date.current,
+            repayment_date: Date.current,
+            bank_charge_paid: true,
+            is_refinance_settlement: true )
+
+            old_loan.update!(status: false)
+        end
+      end
+
+        format.html do
+          redirect_to @loan, notice: "Loan was successfully created."
+      end
+
+        format.json do
+          render :show, status: :created, location: @loan
+      end
+
+      rescue ActiveRecord::RecordInvalid
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+
+        format.json do
+          render json: @loan.errors, status: :unprocessable_entity
+        end
       end
     end
+  end
+
+  def refinance
+    @old_loan = Loan.find(params[:id])
+
+    unless @old_loan.can_refinance?
+      redirect_to loans_path, alert: "Loan cannot be refinanced."
+      return
+    end
+
+    @loan = Loan.new(
+            member: @old_loan.member,
+            member_id: @old_loan.member_id,
+            user_id: current_user.id,
+            is_refinance: true,
+            refinanced_from: @old_loan,
+            refinanced_from_id: @old_loan.id)
+            
+    render :new
   end
 
   # PATCH/PUT /loans/1 or /loans/1.json
@@ -127,6 +178,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def loan_params
-      params.expect(loan: [ :member_id, :available_amount, :amount, :payment_period_months, :repayment_amount_per_month, :user_id, :status, :bank_charges, :first_installment ])
+      params.expect(loan: [ :member_id, :available_amount, :amount, :payment_period_months, :repayment_amount_per_month, :user_id, :status, :bank_charges, :first_installment, :refinanced_from_id, :is_refinance ])
     end
 end

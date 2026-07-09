@@ -7,20 +7,19 @@ class ClosingBook < ApplicationRecord
 
   private
   def calculate_totals
-    self.total_savings = member.savings_balance
-    self.loan_balance  = member.loan_balance
-
-    bank_charges_due = member.outstanding_bank_charges
+    self.total_savings = member.total_savings
+    self.loan_balance  = member.loans.where(status: true).sum do |loan|
+      loan.balance
+    end
 
     self.withdrawal_charges ||= 0
-    self.other_charges ||= 0
+    self.outstanding_bank_charges ||= 0
 
     self.amount_paid =
       total_savings -
       loan_balance -
-      bank_charges_due -
       withdrawal_charges -
-      other_charges
+      outstanding_bank_charges
   end
 
   def finalize_closure
@@ -31,18 +30,8 @@ class ClosingBook < ApplicationRecord
     end
   end
 
- 
-
   def withdraw_savings
     # we'll put the savings withdrawal code here
-  end
-
-   def finalize_closure
-    ActiveRecord::Base.transaction do
-      settle_loans
-      withdraw_savings
-      member.update!(status: false)
-    end
   end
 
   def settle_loans

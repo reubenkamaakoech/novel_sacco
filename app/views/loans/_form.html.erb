@@ -25,15 +25,66 @@
     </div>
   <% else %>
     <strong><%= form.label :member_id %></strong>
-    <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
+      <%= form.collection_select :member_id, Member.where(status: true), :id, :name, 
           { prompt: "-Select Member-" }, { class: "form-control", id: "member_select" } %>
-  <% end %>
-</div>
+    <% end %>
+  </div>
+
+  <div class="mb-4">   
+    <strong><%= form.label :active_loan? %></strong>   
+    <%= form.text_field :is_refinance, class: "form-control" %>
+  </div>
+
+  <div class="mb-4">
+    <strong><%= form.label :refinanced_from_loan_id %></strong>
+    <%= form.number_field :refinanced_from_id, class: "form-control" %>
+  </div>
+
+  
 
   <div class="mb-4 d-none" id="available_amount_wrapper">
-    <strong><%= form.label :available_amount %></strong>
+    <strong><%= form.label :available_amount_for_loan %></strong>
     <%= form.text_field :available_amount, class: "form-control bg-secondary-subtle", id: "available_amount", readonly: true %>
   </div>
+
+
+
+
+  <% if @loan.is_refinance? %>
+  <div class="alert alert-warning">
+    <h5>Refinance Details</h5>
+
+    <table class="table table-sm mb-0">
+
+      <tr>
+        <th>Outstanding Loan Balance</th>
+        <td id="old-loan-balance"
+            data-balance="<%= @loan.refinanced_from.settlement_amount %>">
+          <%= number_to_currency(@loan.refinanced_from.balance, unit: "Ksh ") %></td>
+      </tr>
+
+      <tr>
+        <th>Outstanding Bank Charges</th>
+        <td><%= number_to_currency(@loan.refinanced_from.outstanding_bank_charge, unit: "Ksh ") %></td>
+      </tr>
+
+      <tr>
+        <th>Settlement Amount</th>
+        <td><strong><%= number_to_currency(@loan.refinanced_from.settlement_amount, unit: "Ksh ") %></td></strong>
+      </tr>
+
+      <tr>
+        <th>Net Amount to Disburse</th>
+        <td  class="text-success" id="net-disbursement">
+          <strong><%= number_to_currency(0, unit: "Ksh ") %></strong>
+        </td>
+      </tr>
+    </table>
+  </div>
+<% end %>
+
+
+
 
   <div class="mb-4">
     <strong><%= form.label :amount %></strong>
@@ -164,5 +215,41 @@ document.addEventListener("turbo:load", () => {
       }
     });
   }
+});
+</script>
+
+<script>
+document.addEventListener("turbo:load", function () {
+  const amountField = document.getElementById("loan_amount");
+  const balanceCell = document.getElementById("old-loan-balance");
+  const netCell = document.getElementById("net-disbursement");
+
+  if (!amountField || !balanceCell || !netCell) return;
+
+  const outstanding = parseFloat(balanceCell.dataset.balance);
+
+  function updateNetDisbursement() {
+    const loanAmount = parseFloat(amountField.value) || 0;
+    const net = loanAmount - outstanding;
+
+    if (loanAmount <= outstanding) {
+       netCell.innerHTML =
+     "<span class='text-danger'>New loan amount must be greater than the outstanding balance.</span>";
+    } else {
+      netCell.innerText = new Intl.NumberFormat("en-KE", {
+       style: "currency",
+       currency: "KES"
+    }).format(net);
+    }
+
+    netCell.innerText = new Intl.NumberFormat("en-KE", {
+      style: "currency",
+      currency: "KES"
+    }).format(net);
+  }
+
+  amountField.addEventListener("input", updateNetDisbursement);
+
+  updateNetDisbursement();
 });
 </script>

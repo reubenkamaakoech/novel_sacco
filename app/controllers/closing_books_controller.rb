@@ -55,6 +55,19 @@ end
     end
   end
 
+  def closing_summary
+  member = Member.find(params[:id])
+
+  active_loan = member.loans.find_by(status: true)
+
+  render json: {
+    loan_id: active_loan&.id,
+    bank_charges: active_loan&.bank_charges,
+    outstanding_bank_charge: active_loan&.outstanding_bank_charge,
+    repayment_count: active_loan&.loan_repayments&.count
+  }
+end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_closing_book
@@ -63,6 +76,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def closing_book_params
-      params.expect(closing_book: [ :member_id, :user_id, :closing_date, :total_savings, :loan_balance, :withdrawal_charges, :other_charges, :amount_paid, :remarks ])
+      params.expect(closing_book: [ :member_id, :user_id, :closing_date, :total_savings, :loan_balance, :withdrawal_charges, :outstanding_bank_charges, :amount_paid, :remarks ])
     end
 end

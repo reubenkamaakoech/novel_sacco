@@ -44,6 +44,7 @@ end
 end
 
 def refund_bank_charge_to_savings
+  return if bank_charge_paid # just added a check to avoid double refunding
   return unless loan.loan_repayments.count == 1
   return if loan.bank_charges.to_d <= 0
 

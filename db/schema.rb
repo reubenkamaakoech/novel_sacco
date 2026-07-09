@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_03_213320) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_09_064439) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_213320) do
     t.date "closing_date"
     t.decimal "total_savings"
     t.decimal "withdrawal_charges"
-    t.decimal "other_charges"
+    t.decimal "outstanding_bank_charges"
     t.decimal "amount_paid"
     t.text "remarks"
     t.datetime "created_at", null: false
@@ -99,6 +99,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_213320) do
     t.decimal "balance_at_time"
     t.decimal "balance_after"
     t.decimal "bank_charge_paid"
+    t.boolean "is_refinance_settlement", default: false, null: false
     t.index ["loan_id", "repayment_month"], name: "index_loan_repayments_on_loan_id_and_repayment_month", unique: true
     t.index ["loan_id"], name: "index_loan_repayments_on_loan_id"
     t.index ["user_id"], name: "index_loan_repayments_on_user_id"
@@ -116,7 +117,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_213320) do
     t.decimal "bank_charges", default: "0.0"
     t.decimal "first_installment", default: "0.0"
     t.integer "payment_period_months"
+    t.integer "refinanced_from_id"
+    t.boolean "is_refinance", default: false
     t.index ["member_id"], name: "index_loans_on_member_id"
+    t.index ["refinanced_from_id"], name: "index_loans_on_refinanced_from_id"
     t.index ["user_id"], name: "index_loans_on_user_id"
   end
 
@@ -195,6 +199,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_213320) do
   add_foreign_key "employees", "users"
   add_foreign_key "loan_repayments", "loans"
   add_foreign_key "loan_repayments", "users"
+  add_foreign_key "loans", "loans", column: "refinanced_from_id"
   add_foreign_key "loans", "members"
   add_foreign_key "loans", "users"
   add_foreign_key "members", "users"

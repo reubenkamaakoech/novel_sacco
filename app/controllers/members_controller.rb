@@ -148,10 +148,12 @@ end
 
 def closing_summary
   member = Member.find(params[:id])
+  active_loan = member.loans.find_by(status: true)
 
   render json: {
     total_savings: member.total_savings,
-    loan_balance: member.loans.active_with_balance.sum(&:balance)
+    loan_balance: active_loan&.balance.to_f,
+    outstanding_bank_charge: member.outstanding_bank_charges.to_f
   }
 end
 

@@ -24,6 +24,10 @@ class Member < ApplicationRecord
       .to_d
    end
 
+   def savings_balance
+    savings.sum(:amount)
+   end
+
    def locked_savings
      total_savings * self.class.locked_ratio 
    end

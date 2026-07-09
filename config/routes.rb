@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :loans do
   member do
     patch :toggle_status
+    get :refinance
   end
   end
 

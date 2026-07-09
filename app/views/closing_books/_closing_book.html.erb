@@ -7,7 +7,7 @@
         <th>Total savings</th>
         <th>Loan balance</th>
         <th>Withdrawal charges</th>
-        <th>Other charges</th>
+        <th>Outstanding bank charges</th>
         <th>Amount paid</th>
         <th>Created by</th>
         <th>Actions</th>
@@ -21,7 +21,7 @@
         <td><%= number_to_currency(closing_book.total_savings, unit: "Ksh ") %></td>
         <td><%= number_to_currency(closing_book.loan_balance, unit: "Ksh ") %></td>
         <td><%= number_to_currency(closing_book.withdrawal_charges, unit: "Ksh ") %></td>
-        <td><%= number_to_currency(closing_book.other_charges, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(closing_book.outstanding_bank_charges, unit: "Ksh ") %></td>
         <td><%= number_to_currency(closing_book.amount_paid, unit: "Ksh ") %></td>
         <td><%= closing_book.user.username %></td>
         <td><%= link_to "Show", closing_book, class: "btn btn-info btn-sm" %></td>
