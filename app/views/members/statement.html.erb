@@ -105,7 +105,8 @@
             <%= t[:record].status ? 'Active' : 'Serviced' %>
           </span>
         <% elsif t[:type] == "Repayment" %>
-          <%= link_to t[:type], loan_repayment_path(t[:record]), class: "text-primary" %>
+          <%= link_to t[:type],
+            loan_repayment_path(t[:record], member_id: t[:record].loan.member_id) %>
         <% end %>
       </td>
 

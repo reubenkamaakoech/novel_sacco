@@ -111,7 +111,7 @@ def generate_monthly
 
     # Update loan status automatically if fully repaid
     if loan.loan_repayments.sum(:amount) >= loan.amount
-      loan.update(status: false)
+       loan.update(status: false)
     end
   end
 

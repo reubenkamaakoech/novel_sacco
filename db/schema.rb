@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_09_064439) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_11_105502) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -98,9 +98,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_09_064439) do
     t.date "repayment_date"
     t.decimal "balance_at_time"
     t.decimal "balance_after"
-    t.decimal "bank_charge_paid"
     t.boolean "is_refinance_settlement", default: false, null: false
-    t.index ["loan_id", "repayment_month"], name: "index_loan_repayments_on_loan_id_and_repayment_month", unique: true
+    t.boolean "bank_charge_paid"
     t.index ["loan_id"], name: "index_loan_repayments_on_loan_id"
     t.index ["user_id"], name: "index_loan_repayments_on_user_id"
   end
@@ -119,6 +118,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_09_064439) do
     t.integer "payment_period_months"
     t.integer "refinanced_from_id"
     t.boolean "is_refinance", default: false
+    t.boolean "bank_charge_paid", default: false, null: false
     t.index ["member_id"], name: "index_loans_on_member_id"
     t.index ["refinanced_from_id"], name: "index_loans_on_refinanced_from_id"
     t.index ["user_id"], name: "index_loans_on_user_id"

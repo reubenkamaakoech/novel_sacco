@@ -2,7 +2,7 @@ class Loan < ApplicationRecord
   belongs_to :member
   has_many :loan_repayments, dependent: :destroy
   belongs_to :refinanced_from, class_name: "Loan", optional: true
-  has_one :refinanced_to, class_name: "Loan", foreign_key: :refinanced_from_id
+  has_one :refinanced_to, class_name: "Loan", foreign_key: :refinanced_from_id, dependent: :destroy
   
   validate :single_active_loan, on: :create   # <-- this is the new validation
   # Prevent status being set to true if loan is fully repaid
@@ -61,11 +61,11 @@ class Loan < ApplicationRecord
   end
 
   def outstanding_bank_charge
-    loan_repayments.exists? ? 0.to_d : bank_charges.to_d
+     bank_charge_paid? ? 0.to_d : bank_charges.to_d
   end
 
   def settlement_amount
-    balance + outstanding_bank_charge
+    balance 
   end
 
   def calculate_installments

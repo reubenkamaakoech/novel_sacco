@@ -56,13 +56,15 @@ class LoansController < ApplicationController
           LoanRepayment.create!(
             loan: old_loan,
             user: current_user,
-            amount: old_loan.balance,
+            amount: old_loan.settlement_amount,
             repayment_month: Date.current,
             repayment_date: Date.current,
             bank_charge_paid: true,
             is_refinance_settlement: true )
 
-            old_loan.update!(status: false)
+          old_loan.update!(status: false,
+            bank_charge_paid: true)
+            
         end
       end
 
@@ -178,6 +180,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def loan_params
-      params.expect(loan: [ :member_id, :available_amount, :amount, :payment_period_months, :repayment_amount_per_month, :user_id, :status, :bank_charges, :first_installment, :refinanced_from_id, :is_refinance ])
+      params.expect(loan: [ :member_id, :available_amount, :amount, :payment_period_months, :repayment_amount_per_month, :user_id, :status, :bank_charges, :first_installment, :refinanced_from_id, :is_refinance, :bank_charge_paid ])
     end
 end

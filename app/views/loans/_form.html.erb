@@ -30,6 +30,7 @@
     <% end %>
   </div>
 
+  <% if action_name == "refinance" %>
   <div class="mb-4">   
     <strong><%= form.label :active_loan? %></strong>   
     <%= form.text_field :is_refinance, class: "form-control" %>
@@ -39,6 +40,7 @@
     <strong><%= form.label :refinanced_from_loan_id %></strong>
     <%= form.number_field :refinanced_from_id, class: "form-control" %>
   </div>
+  <% end %>
 
   
 
@@ -218,6 +220,8 @@ document.addEventListener("turbo:load", () => {
 });
 </script>
 
+
+<!-- This script calculates the net disbursement for a refinanced loan -->
 <script>
 document.addEventListener("turbo:load", function () {
   const amountField = document.getElementById("loan_amount");

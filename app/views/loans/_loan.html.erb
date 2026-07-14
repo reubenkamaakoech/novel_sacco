@@ -43,6 +43,7 @@
     <th>Id</th>
     <th>Member</th>
     <th>Amount</th>
+    <th>Bank Charges Paid</th>
     <th>Outstanding Bank Charges</th>
     <th>Payment period</th>
     <th>Repayment amount per month</th>
@@ -58,6 +59,7 @@
       <td><%= loan.id %></td>
       <td><%= loan.member.name %></td>
       <td><%= number_to_currency(loan.amount, unit: "Ksh ") %></td>
+      <td><%= loan.bank_charge_paid ? "Yes" : "No" %></td>
       <td style="color: <%= loan.outstanding_bank_charge > 0 ? 'red' : 'black' %>;"><%= number_to_currency(loan.outstanding_bank_charge, unit: "Ksh ") %></td>
       <td><%= loan.payment_period_months %> Months</td>
       <td><%= number_to_currency(loan.repayment_amount_per_month, unit: "Ksh ") %></td>

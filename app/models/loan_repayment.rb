@@ -3,8 +3,10 @@ class LoanRepayment < ApplicationRecord
   belongs_to :loan
   has_one :member, through: :loan
 
-  validates :repayment_month, uniqueness: { scope: :loan_id, message: "already exists for this loan in this month" }
+  validates :repayment_month, uniqueness: { scope: :loan_id, message: "already exists for this loan in this month" },
+          unless: :is_refinance_settlement?
   
+  validate :one_normal_repayment_per_month
   validate :cannot_exceed_loan_balance
    
   after_commit :close_loan_if_fully_paid
@@ -18,6 +20,18 @@ class LoanRepayment < ApplicationRecord
   end
 
   private
+def one_normal_repayment_per_month
+  return if is_refinance_settlement?
+
+  if LoanRepayment.where(
+       loan_id: loan_id,
+       repayment_month: repayment_month,
+       is_refinance_settlement: false
+     ).where.not(id: id).exists?
+
+    errors.add(:repayment_month, "already exists for this loan in this month")
+  end
+end
   
   def close_loan_if_fully_paid
   return unless loan
@@ -31,15 +45,11 @@ class LoanRepayment < ApplicationRecord
   end
 end
 
-  def cannot_exceed_loan_balance
+ def cannot_exceed_loan_balance
   return if amount.blank? || loan.blank?
 
-    # total already repaid before this repayment
-     total_repaid = loan.loan_repayments.where.not(id: id).sum(:amount)
-    
-    # If this repayment pushes total above the loan amount, block it
-    if (total_repaid + amount) > loan.amount
-    errors.add(:amount, "cannot be more than remaining loan balance (#{loan.balance})")
+  if amount > loan.balance
+    errors.add(:amount, "cannot exceed remaining balance (#{loan.balance})")
   end
 end
 
@@ -55,5 +65,8 @@ def refund_bank_charge_to_savings
     transaction_type: "deposit",
     deposit_type: "Bank Charge Paid",
     month: repayment_date || Date.current)
+
+    loan.update!(bank_charge_paid: true)
+    update_column(:bank_charge_paid, true) # optional if you want to record it on this repayment
   end
 end

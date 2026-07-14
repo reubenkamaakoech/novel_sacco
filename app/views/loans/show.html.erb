@@ -47,6 +47,12 @@
     <% end %>
   </div>
 
+  <div class="mt-2 mb-3">
+    <% if @loan.can_refinance? %>
+      <%= link_to "Refinance", refinance_loan_path(@loan), class: "btn btn-warning btn-sm" %>
+    <% end %>  
+  </div>
+
   <div>
    <%= link_to "Back", loans_path, class: "btn btn-primary btn-sm" %>
 
@@ -106,3 +112,7 @@
 <% end %>
   </div>
 </div>
+
+
+        
+      
