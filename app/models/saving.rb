@@ -1,6 +1,7 @@
 class Saving < ApplicationRecord
   belongs_to :member
   belongs_to :user
+  belongs_to :loan, optional: true
 
   SAVING_CATEGORIES = ["random", "ordinary"]
 

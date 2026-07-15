@@ -89,25 +89,32 @@
                  "#{t[:deposit_type]} #{t[:type]}"
                end %>
 
-<%= link_to link_text,
-    saving_path(t[:record]),
-    class: case t[:deposit_type]
-           when "random" then "text-dark"
-           when "Bank Charge" then "text-danger"
-           when "Bank Charge Paid" then "text-primary"
-           else "text-success"
-           end %>
-        <% elsif t[:type] == "Loan" %>
-          <% loan_text = t[:record].is_refinance? ? "Refinanced Loan" : "Loan" %>
-          <%= link_to loan_text, loan_path(t[:record]), class: "text-danger" %>
+        <%= link_to link_text,
+          saving_path(t[:record]),
+            class: case t[:deposit_type]
+                  when "random" then "text-dark"
+                  when "Bank Charge" then "text-danger"
+                  when "Bank Charge Paid" then "text-primary"
+                  else "text-success"
+                  end %>
 
-          <span class="badge <%= t[:record].status ? 'bg-danger' : 'bg-success' %>">
-            <%= t[:record].status ? 'Active' : 'Serviced' %>
-          </span>
-        <% elsif t[:type] == "Repayment" %>
-          <%= link_to t[:type],
-            loan_repayment_path(t[:record], member_id: t[:record].loan.member_id) %>
-        <% end %>
+          <% if ["Bank Charge", "Bank Charge Paid"].include?(t[:deposit_type]) && t[:record].loan.present? %>
+            <span class="badge <%= t[:record].loan.bank_charge_paid? ? 'bg-success' : 'bg-danger' %>">
+              <%= t[:record].loan.bank_charge_paid? ? "Serviced" : "Active" %>
+            </span>
+          <% end %>
+
+          <% elsif t[:type] == "Loan" %>
+            <% loan_text = t[:record].is_refinance? ? "Refinanced Loan" : "Loan" %>
+              <%= link_to loan_text, loan_path(t[:record]), class: "text-danger" %>
+
+            <span class="badge <%= t[:record].status ? 'bg-danger' : 'bg-success' %>">
+              <%= t[:record].status ? 'Active' : 'Serviced' %>
+            </span>
+          <% elsif t[:type] == "Repayment" %>
+            <%= link_to t[:type],
+              loan_repayment_path(t[:record], member_id: t[:record].loan.member_id) %>
+          <% end %>
       </td>
 
       <% if t[:amount] < 0 %>

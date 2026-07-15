@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_11_105502) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_15_130823) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -162,6 +162,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_11_105502) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "transaction_type", default: "deposit", null: false
+    t.integer "loan_id"
+    t.index ["loan_id"], name: "index_savings_on_loan_id"
     t.index ["member_id"], name: "index_savings_on_member_id"
     t.index ["user_id"], name: "index_savings_on_user_id"
   end
@@ -203,6 +205,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_11_105502) do
   add_foreign_key "loans", "members"
   add_foreign_key "loans", "users"
   add_foreign_key "members", "users"
+  add_foreign_key "savings", "loans"
   add_foreign_key "savings", "members"
   add_foreign_key "savings", "users"
 end

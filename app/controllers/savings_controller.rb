@@ -135,6 +135,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def saving_params
-      params.expect(saving: [ :member_id, :amount, :deposit_type, :month, :user_id ])
+      params.expect(saving: [ :member_id, :amount, :deposit_type, :month, :user_id, :loan_id, :transaction_type ])
     end
 end

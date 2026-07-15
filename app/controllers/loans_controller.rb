@@ -65,6 +65,7 @@ class LoansController < ApplicationController
           unless old_loan.bank_charge_paid?
             Saving.create!(
               member: old_loan.member,
+              loan: old_loan,
               user: current_user,
               amount: old_loan.bank_charges,
               transaction_type: "deposit",

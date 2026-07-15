@@ -3,6 +3,7 @@ class Loan < ApplicationRecord
   has_many :loan_repayments, dependent: :destroy
   belongs_to :refinanced_from, class_name: "Loan", optional: true
   has_one :refinanced_to, class_name: "Loan", foreign_key: :refinanced_from_id, dependent: :destroy
+  has_many :savings, dependent: :nullify
   
   validate :single_active_loan, on: :create   # <-- this is the new validation
   # Prevent status being set to true if loan is fully repaid
@@ -131,6 +132,7 @@ class Loan < ApplicationRecord
 
     Saving.create!(
       member: member,
+      loan: self,
       user_id: user_id,
       amount: -bank_charges.to_d,
       transaction_type: "withdrawal",
