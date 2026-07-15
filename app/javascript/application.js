@@ -1,17 +1,12 @@
-import "@hotwired/turbo-rails"
-import * as bootstrap from "bootstrap"
+console.log("START OF APPLICATION");
 
-window.bootstrap = bootstrap
+import "@hotwired/turbo-rails";
+import * as bootstrap from "bootstrap";
 
 document.addEventListener("turbo:load", () => {
-  document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => {
+  console.log("Turbo loaded");
 
-    el.addEventListener('click', function (e) {
-      e.preventDefault()
-
-      const instance = bootstrap.Dropdown.getOrCreateInstance(el)
-      instance.toggle()
-    })
-
-  })
-})
+  document.querySelectorAll(".dropdown-toggle").forEach((element) => {
+    bootstrap.Dropdown.getOrCreateInstance(element);
+  });
+});
