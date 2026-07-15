@@ -65,7 +65,7 @@ class Loan < ApplicationRecord
   end
 
   def settlement_amount
-    balance 
+    balance + outstanding_bank_charge
   end
 
   def calculate_installments

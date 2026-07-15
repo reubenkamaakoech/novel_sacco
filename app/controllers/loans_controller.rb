@@ -56,17 +56,26 @@ class LoansController < ApplicationController
           LoanRepayment.create!(
             loan: old_loan,
             user: current_user,
-            amount: old_loan.settlement_amount,
+            amount: old_loan.balance,
             repayment_month: Date.current,
             repayment_date: Date.current,
             bank_charge_paid: true,
             is_refinance_settlement: true )
+        
+          unless old_loan.bank_charge_paid?
+            Saving.create!(
+              member: old_loan.member,
+              user: current_user,
+              amount: old_loan.bank_charges,
+              transaction_type: "deposit",
+              deposit_type: "Bank Charge Paid",
+              month: Date.current)
 
-          old_loan.update!(status: false,
-            bank_charge_paid: true)
+          old_loan.update!(bank_charge_paid: true)
             
         end
       end
+    end
 
         format.html do
           redirect_to @loan, notice: "Loan was successfully created."

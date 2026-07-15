@@ -45,8 +45,9 @@ end
   end
 end
 
- def cannot_exceed_loan_balance
+def cannot_exceed_loan_balance
   return if amount.blank? || loan.blank?
+  return if is_refinance_settlement?
 
   if amount > loan.balance
     errors.add(:amount, "cannot exceed remaining balance (#{loan.balance})")

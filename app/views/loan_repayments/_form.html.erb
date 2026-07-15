@@ -31,7 +31,7 @@
 <!-- Loan dropdown -->
 <div class="mb-3">
   <%= form.label :loan_id, "Select Loan" %>
-  <%= form.select :loan_id, [], { prompt: "-Select loan-" }, class: "form-control", id: "loan_select" %>
+  <%= form.select :loan_id, [], { prompt: "-Select loan-" }, class: "form-control", id: "loan_select", data: { selected: @loan_repayment.loan_id } %>
 </div>
 
   <div class="mb-4">
@@ -66,11 +66,16 @@
     fetch(`/members/${memberId}/loans.json`)
   .then(res => res.json())
   .then(loans => {
-    let options = '<option value="">-Select loan-</option>';
-    loans.forEach(l => {
-      options += `<option value="${l.id}">${l.id} - Balance: Ksh ${l.balance}</option>`;
-    });
-    loanSelect.innerHTML = options;
+    const selectedLoanId = loanSelect.dataset.selected;
+
+let options = '<option value="">-Select loan-</option>';
+
+loans.forEach(l => {
+  const selected = String(l.id) === String(selectedLoanId) ? "selected" : "";
+  options += `<option value="${l.id}" ${selected}>${l.id} - Balance: Ksh ${l.balance}</option>`;
+});
+
+loanSelect.innerHTML = options;
   });  }
 
   // Fetch loans on member change

@@ -131,7 +131,8 @@ end
   @transactions = []
 
   @savings.each do |s|
-    @transactions << { date: s.created_at, type: "Saving", amount: s.amount, deposit_type: s.deposit_type, record: s }
+    next if s.deposit_type == "Bank Charge Paid" && s.amount.to_d.zero?
+      @transactions << { date: s.created_at, type: "Saving", amount: s.amount, deposit_type: s.deposit_type, record: s }
   end
 
   @loans.each do |l|

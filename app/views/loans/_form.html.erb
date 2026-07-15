@@ -62,7 +62,7 @@
         <th>Outstanding Loan Balance</th>
         <td id="old-loan-balance"
             data-balance="<%= @loan.refinanced_from.settlement_amount %>">
-          <%= number_to_currency(@loan.refinanced_from.balance, unit: "Ksh ") %></td>
+          <%= number_to_currency(@loan.refinanced_from.settlement_amount, unit: "Ksh ") %></td>
       </tr>
 
       <tr>
@@ -237,20 +237,15 @@ document.addEventListener("turbo:load", function () {
     const net = loanAmount - outstanding;
 
     if (loanAmount <= outstanding) {
-       netCell.innerHTML =
-     "<span class='text-danger'>New loan amount must be greater than the outstanding balance.</span>";
+      netCell.innerHTML =
+        "<span class='text-danger'>New loan amount must be greater than the outstanding balance.</span>";
     } else {
       netCell.innerText = new Intl.NumberFormat("en-KE", {
-       style: "currency",
-       currency: "KES"
-    }).format(net);
+        style: "currency",
+        currency: "KES"
+      }).format(net);
     }
-
-    netCell.innerText = new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES"
-    }).format(net);
-  }
+  } // <-- You were missing this closing brace
 
   amountField.addEventListener("input", updateNetDisbursement);
 

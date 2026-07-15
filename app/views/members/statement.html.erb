@@ -141,8 +141,11 @@
       class: "btn btn-warning btn-sm" %>
 
   <%= link_to "New Loan Repayment",
-      new_loan_repayment_path(loan_id: active_loan.id),
-      class: "btn btn-success btn-sm" %>
+    new_loan_repayment_path(
+      loan_id: active_loan.id,
+      member_id: @member.id
+    ),
+    class: "btn btn-success btn-sm" %>
 
 <% else %>
 
