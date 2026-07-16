@@ -50,6 +50,26 @@ class Member < ApplicationRecord
     loans.where(status: true).sum(&:outstanding_bank_charge)
   end
 
+  def monthly_loan_repayment
+    loans.find_by(status: true)&.repayment_amount_per_month.to_d
+  end
+
+  def monthly_total
+    monthly_contribution.to_d + monthly_loan_repayment
+  end
+
+  def self.total_monthly_contributions
+   sum(:monthly_contribution)
+  end
+
+  def self.total_monthly_loan_repayments
+   all.sum(&:monthly_loan_repayment)
+  end
+
+  def self.total_monthly_collections
+    total_monthly_contributions + total_monthly_loan_repayments
+  end
+
    private
 
    def set_membership_number

@@ -3,7 +3,7 @@
 <div class="px-5">
   <div class="row mb-4">
     <!-- Total Savings Card -->
-    <div class="col-md-3">
+    <div class="col-md-2">
       <div class="card border-success shadow-sm">
         <div class="card-body">
           <h5 class="card-title text-success">Total Savings</h5>
@@ -25,6 +25,19 @@
       </div>
     </div>
   </div>
+
+  <!-- Monthly Contribution + Repayment Card -->
+  <div class="col-md-2">
+    <div class="card border-info shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-warning">Monthly Contribution + Repayment</h5>
+        <p class="card-text h4">
+          <%= number_to_currency(Member.total_monthly_collections, unit: "Ksh ") %>
+        </p>
+      </div>
+    </div>
+  </div>
+
 
     <!-- Available for Loans Card -->
     <div class="col-md-2">
@@ -71,6 +84,7 @@
       <th>Member</th>
       <th>Total Savings</th>
       <th>Available Savings</th>
+      <th>Contribution + Repayment</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -82,7 +96,10 @@
         <td><%= record.id %></td>
         <td><%= record.name %></td>
         <td><%= number_to_currency(record.total_savings, unit: "Ksh ") %></td>
-        <td><%= number_to_currency(record.available_savings, unit: "Ksh ") %></td>
+        <td><%= number_to_currency(record.available_savings, unit: "Ksh ") %></td>      
+        <td class="<%= 'text-danger fw-bold' if record.loans.exists?(status: true) %>">
+          <%= number_to_currency(record.monthly_total, unit: "Ksh ") %></td>        
+        </td>
         <td>
           <%= link_to "View Satement", member_statement_path(member_id: record.id), class: "btn btn-info btn-sm" %>
         </td>
@@ -124,4 +141,8 @@
   <% end %>
 </div>
 </div>
+
+
+
+
 
